@@ -4,14 +4,24 @@
       alt="Quasar logo"
       src="~assets/quasar-logo-vertical.svg"
       style="width: 200px; height: 200px"
-    >
+    />
+    <q-btn @click="run">点击请求，控制台查看</q-btn>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-
+import { defineComponent } from 'vue'
+import { QueryArtists } from 'src/utils/request/song/song'
 export default defineComponent({
-  name: 'PageIndex'
+  name: 'PageIndex',
+  setup() {
+    const run = async () => {
+      let res = await QueryArtists({ id: '5001' })
+      console.log(res)
+    }
+    return {
+      run,
+    }
+  },
 })
 </script>
