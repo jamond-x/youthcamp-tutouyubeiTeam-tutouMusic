@@ -1,8 +1,12 @@
-# 秃头音乐
+<h1 align="center" >秃头音乐</h1>
 
-秃头预备选手专属音乐APP
+<p align="center" >秃头预备选手专属音乐APP</p>
 
-## 安装依赖
+### 运行项目
+
+#### 前端
+
+#### 安装依赖
 
 > 将仓库下载到本地后运行该命令安装依赖
 
@@ -10,20 +14,34 @@
 npm install
 ```
 
-### 本地运行项目
+#### 本地运行项目
 ```bash
 npm run dev
 ```
 
-### 打包构建
+#### 打包构建
 ```bash
 npm run build
 ```
 
-### Customize the configuration
+#### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
+#### 后端
 
+#### 本地运行
+
+将[项目](https://github.com/Binaryify/NeteaseCloudMusicApi) `clone`到本地运行
+
+```bash	
+node app.js
+```
+
+具体信息查看[官网](https://neteasecloudmusicapi.vercel.app/#/)
+
+#### 或者部署至服务器？
+
+待定
 
 ### 技术栈
 
@@ -36,9 +54,8 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 > quasar1中文文档和quasar最新版本quasar2英文文档几乎相同，最终以英文文档为准
 >
-> 建议
+> 建议quasar看下组件怎么用就好（其实大同小异），看看quasar的布局class
 >
-> quasar看下组件怎么用就好（其实大同小异），看看quasar的布局class
 
 
 
@@ -46,11 +63,11 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 #### 推荐插件
 
-在 `.vscode/extensions.json`中列出了推荐安装的插件，打开 VSCode 的时候会提示是否安装，最好全部安装一下。
+在 `.vscode/extensions.json`中列出了推荐安装的插件，打开 VSCode 的时候会提示是否安装，最好全部安装一下。大家有觉得好的插件也可以推荐。
 
 #### workspace 设置
 
-在 `.vscode/settings.json` 中配置了项目的共享配置，这些配置在所有的协作者本地都是一样的，保证大家的环境一致性。
+在 `.vscode/settings.json` 中配置了项目的共享配置，这些配置在所有的协作者本地都是一样的，保证大家的环境一致。其中有自动格式化代码的工具（保存文件后第一时间自动规范代码格式），注意下是否生效。
 
 #### 文件结构
 
