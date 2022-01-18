@@ -1,0 +1,15 @@
+@mixin custom-font($size, $weight, $spacing, $line_height) {
+  font-size: $size;
+  font-weight: $weight;
+  letter-spacing: $spacing;
+  line-height: $line_height;
+}
+
+@font-face {
+  font-family: GEO;
+  src: url(https://cdn.jsdelivr.net/gh/jamond-x/public-resources/fonts/GEO.otf);
+}
+
+.font-GEO {
+  font-family: GEO;
+}

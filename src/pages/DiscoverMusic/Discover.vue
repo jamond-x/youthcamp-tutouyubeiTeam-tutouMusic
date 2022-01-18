@@ -1,13 +1,11 @@
 <template>
-  <q-page class="flex flex-center">
-    <h2>WELCOME</h2>
-  </q-page>
+  <q-page class="font-GEO flex flex-center"><h2>DISCOVER PAGE</h2> </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 export default defineComponent({
-  name: 'PageIndex',
+  name: 'Discover',
   components: {},
   setup() {
     return {}
@@ -15,4 +13,6 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import 'src/css/common.scss';
+</style>

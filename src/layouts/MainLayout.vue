@@ -1,117 +1,114 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="lHh Lpr fff">
+    <q-header class="bg-transparent" bordered>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
         <q-toolbar-title>
-          Quasar App
+          <q-input
+            class="q-ml-sm"
+            label="Search songs singers ..."
+            borderless
+            :input-style="{ fontSize: '16px' }"
+          >
+            <template v-slot:prepend>
+              <q-icon name="fas fa-search" size="18px" />
+            </template>
+          </q-input>
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn icon="fas fa-bell" size="12px" rounded />
+        <q-separator vertical inset class="q-mx-md" />
+        <div>
+          <q-btn class="user" rounded>
+            <q-avatar>
+              <img
+                src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png"
+              />
+            </q-avatar>
+            <span class="q-ml-md">秃头预备</span>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer class="bg-black" :breakpoint="600" show-if-above width="230">
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <div class="logo font-GEO row justify-center q-my-xl">TT</div>
+        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        <q-separator class="q-mx-lg q-mt-lg" />
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-footer class="bg-transparent">
+      <BroadcastBar />
+    </q-footer>
   </q-layout>
 </template>
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
-
+import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
+    title: '发现音乐',
+    icon: 'fas fa-music',
+    link: 'discover',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    title: '我的主页',
+    icon: 'fas fa-user',
+    link: '/user',
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: '我的歌单',
+    icon: 'fas fa-stream',
+    link: '/playlist',
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    title: '拓展',
+    icon: 'fab fa-artstation',
+    link: '',
   },
   {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
+    title: '设置',
+    icon: 'fas fa-cog',
+    link: '',
   },
   {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
+    title: 'XXX',
+    icon: 'fab fa-atlassian',
+    link: '',
   },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
+]
 
 import { defineComponent, ref } from 'vue'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    EssentialLink,
+    BroadcastBar,
   },
 
-  setup () {
+  setup() {
     const leftDrawerOpen = ref(false)
-
+    const $q = useQuasar()
+    $q.dark.set(true)
     return {
       essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
     }
-  }
+  },
 })
 </script>
+
+<style lang="scss">
+@import 'src/css/common.scss';
+
+.user {
+  @include custom-font(inherit, 600, 1px, inherit);
+}
+.logo {
+  @include custom-font(45px, inherit, 1px, inherit);
+}
+</style>
