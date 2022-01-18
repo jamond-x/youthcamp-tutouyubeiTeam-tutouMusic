@@ -16,6 +16,6 @@ export const REQUEST_BASE_URL = IS_DEV ? 'http://localhost:3000' : 'https://xxxx
 export const EXAMPLE_URLS = {
   QUERY_SONGS: '/song/url',
   ARTIST_LIST: '/artist/list',
-  TEST_URL: '/playlist/hot',
+  TEST_URL: '/song/url?id=347230',
   // ....
 }

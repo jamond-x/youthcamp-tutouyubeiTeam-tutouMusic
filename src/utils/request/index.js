@@ -1,12 +1,13 @@
 import axios from 'axios'
-import { CodeDictionary } from '../const'
-import { Dialog } from 'quasar'
+// import { CodeDictionary } from '../const'
+// import { Dialog } from 'quasar'
 
 export const createApi = (api = axios) => {
   return async config => {
     try {
       const headers = config.headers
       // 这里配置一些header
+      debugger
       const res = await api.request({
         ...config,
         headers,
@@ -15,7 +16,8 @@ export const createApi = (api = axios) => {
       // if (res.data.code !== CodeDictionary.SUCCESS) {
       // }
 
-      return res.data
+      // return res.data
+      return res
     } catch (error) {
       //if (error.response.status === 401) {
       //}

@@ -13,8 +13,8 @@ const api = createApi(
 // 直接使用 QuerySongs() 函数即可
 export const QueryArtists = async data => {
   return await api({
-    methods: 'POST',
-    url: EXAMPLE_URLS.TEST_URL,
+    method: 'POST',
+    url: EXAMPLE_URLS.ARTIST_LIST,
     data,
     //id: '347230'
   })

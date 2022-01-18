@@ -16,7 +16,7 @@ export default defineComponent({
   name: 'PageIndex',
   setup() {
     const run = async () => {
-      let res = await QueryArtists({ id: '5001' })
+      let res = await QueryArtists({})
       console.log(res)
     }
     return {
