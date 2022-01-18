@@ -7,7 +7,6 @@ export const createApi = (api = axios) => {
     try {
       const headers = config.headers
       // 这里配置一些header
-      debugger
       const res = await api.request({
         ...config,
         headers,
@@ -16,8 +15,7 @@ export const createApi = (api = axios) => {
       // if (res.data.code !== CodeDictionary.SUCCESS) {
       // }
 
-      // return res.data
-      return res
+      return res.data
     } catch (error) {
       //if (error.response.status === 401) {
       //}
