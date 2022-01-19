@@ -39,14 +39,27 @@
       <router-view />
     </q-page-container>
     <q-footer class="bg-transparent">
-      <BroadcastBar />
+      <BroadcastBar @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus" />
     </q-footer>
+    <q-dialog
+      v-model="broadcastPageStatus"
+      transition-show="slide-up"
+      transition-hide="slide-down"
+      transition-duration="700"
+      persistent
+      full-width
+      full-height
+      no-shake
+    >
+      <Broadcasting />
+    </q-dialog>
   </q-layout>
 </template>
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
-import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
+import BroadcastBar from 'src/pages/BroadcastSongs/Bar.vue'
+import Broadcasting from 'src/pages/BroadcastSongs/Broadcasting.vue'
 const linksList = [
   {
     title: '发现音乐',
@@ -89,6 +102,7 @@ export default defineComponent({
   components: {
     EssentialLink,
     BroadcastBar,
+    Broadcasting,
   },
 
   setup() {
@@ -97,6 +111,7 @@ export default defineComponent({
     $q.dark.set(true)
     return {
       essentialLinks: linksList,
+      broadcastPageStatus: ref(false),
     }
   },
 })
