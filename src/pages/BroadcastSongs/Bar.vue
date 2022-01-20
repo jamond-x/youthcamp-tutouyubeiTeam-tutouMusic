@@ -3,18 +3,18 @@
     <div class="song-detail row justify-start items-center">
       <q-img
         class="img q-ml-xl"
-        src="https://pic1.zhimg.com/80/v2-83ca68baff4c5c4236f0c0da143b5d00_720w.jpg?source=1940ef5c"
+        :src="songsList[currentSongIndex].al.picUrl"
         @click="$emit('toggleBroadcastPage')"
       ></q-img>
       <div class="q-ml-md">
-        <div class="song-name">龙卷风</div>
-        <div class="singer">周杰伦</div>
+        <div class="song-name">{{ songsList[currentSongIndex].name }}</div>
+        <div class="singer">{{ singers }}</div>
       </div>
-      <div class="offset-2">爱像一阵风 吹完她就走~</div>
+      <div class="album offset-2">{{ songsList[currentSongIndex].al.name }}</div>
     </div>
     <div class="controller column">
       <div class="row justify-around">
-        <q-btn icon="fas fa-step-backward" size="10px" flat rounded />
+        <q-btn @click="switchSong(false)" icon="fas fa-step-backward" size="10px" flat rounded />
         <q-btn
           @click="togglePlay"
           v-if="playStatus"
@@ -24,10 +24,10 @@
           rounded
         />
         <q-btn v-else @click="togglePlay" icon="fas fa-play-circle" size="19px" flat rounded />
-        <q-btn icon="fas fa-step-forward" size="10px" flat rounded />
+        <q-btn @click="switchSong(true)" icon="fas fa-step-forward" size="10px" flat rounded />
       </div>
       <q-linear-progress size="sm" :value="progress" color="white" label="Change Model" />
-      <audio class="audio" ref="audio" :src="audioUrl"></audio>
+      <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
     </div>
     <div class="tools row reverse items-center">
       <q-btn icon="fas fa-stream" flat rounded class="q-mr-lg" />
@@ -48,19 +48,43 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, watch } from 'vue'
+import { defineComponent, ref, reactive, watch, computed } from 'vue'
 import { throttle } from 'quasar'
 // import { useQuasar } from 'quasar'
 
-const playList = [
-  'https://cdn.jsdelivr.net/gh/jamond-x/public-resources/mp3/一只小童 - summertime（铃声版）.mp3',
-  'https://cdn.jsdelivr.net/gh/jamond-x/public-resources/mp3/小海盗口琴,蓝馍馍 - 个性口琴短信铃声(二).mp3',
-  'https://cdn.jsdelivr.net/gh/jamond-x/public-resources/mp3/Various Artists - 海绵宝宝片尾曲.mp3',
-]
+import {
+  GetSongUrl,
+  GetSongDetail,
+  Check_Music,
+  Search,
+} from 'src/utils/request/broadcastSong/broadcast'
+
+import { isUnNull } from 'src/utils'
+
+let hello = {
+  al: {
+    id: 18905,
+    name: 'Hey，尽情享受音乐吧',
+    picUrl:
+      'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01a6335c643c5ea801203d2250753c.jpg%401280w_1l_2o_100sh.jpg&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1645283402&t=cbda9c0a58289845c521f96121138dd6',
+    tns: Array(0),
+    pic_str: '109951165566379710',
+  },
+  ar: [{ id: 6452, name: 'TT君', tns: [], alias: [] }],
+  id: 186016,
+
+  mv: 504177,
+  name: 'HELLO!',
+  no: 1,
+  publishTime: 1059580800000,
+}
+
+let songsList_ = [hello]
 
 export default defineComponent({
-  name: 'Playlist',
+  name: 'Bar',
   emits: ['toggleBroadcastPage'],
+  props: {},
   components: {},
   setup() {
     // let $q = useQuasar()
@@ -73,42 +97,87 @@ export default defineComponent({
     // }
     //TODO: $q is not a function
     const audio = ref()
-    let songDuration
+    let songsList = reactive(songsList_)
     let volume = ref()
-    let audioUrl = ref()
+    let songIds = ref('')
     let currentTime = ref()
     let progress = ref(0)
     let playStatus = ref(false)
-    // TODO: unManned 后手动清楚定时器？
-    audioUrl.value = playList[0]
-    onMounted(() => {
-      let audioObj = new Audio(audio.value.src)
+    let currentSongIndex = ref(0)
+    // TODO: 手动清除定时器？
+    let intervalTimer
+
+    let clearTimer = () => {
+      clearInterval(intervalTimer)
+      intervalTimer = null
+    }
+
+    const listenProgress = url => {
+      let audioObj = new Audio(url)
       audioObj.onloadedmetadata = () => {
-        // togglePlay = togglePlay_
-        songDuration = audio.value.duration
-        setInterval(() => {
-          if (audio.value.currentTime) {
+        audioObj = null
+        intervalTimer = setInterval(() => {
+          if (!isUnNull(audio.value.currentTime)) {
             currentTime.value = audio.value.currentTime
-            progress.value = currentTime.value / songDuration
+            progress.value = currentTime.value / audio.value.duration
             playStatus.value = !audio.value.paused
           }
         }, 500)
+        audio.value.play()
+        playStatus.value = true
       }
-    })
+    }
+
+    const queryUrls = async id => {
+      const { data } = await GetSongUrl({ id })
+      for (let obj of data) {
+        for (let j of songsList) {
+          if (obj.id === j.id) {
+            j.songUrl = obj.url
+          }
+        }
+      }
+    }
+
     //TODO: 缓缓暂停、播放
-    const togglePlay = throttle(() => {
+    const togglePlay = throttle(async () => {
       if (audio.value.paused) {
-        setTimeout(() => {
-          audio.value.play()
-        }, 300)
+        if (isUnNull(intervalTimer)) {
+          // TODO: 多层对象解构
+          if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
+            alert('歌曲没有版权')
+            return
+          }
+          listenProgress(songsList[currentSongIndex.value].songUrl)
+          return
+        }
+        audio.value.play()
         playStatus.value = true
       } else {
-        setTimeout(() => {
-          audio.value.pause()
-        }, 300)
+        audio.value.pause()
         playStatus.value = false
       }
-    }, 1000)
+    }, 500)
+
+    const switchSong = direction => {
+      clearTimer()
+      currentTime.value = 0
+      progress.value = 0
+      playStatus.value = false
+      if (direction) {
+        if (currentSongIndex.value === songsList.length - 1) {
+          currentSongIndex.value = 0
+          return
+        }
+        currentSongIndex.value++
+        return
+      }
+      if (currentSongIndex.value === 0) {
+        currentSongIndex.value = songsList.length - 1
+        return
+      }
+      currentSongIndex.value--
+    }
 
     watch(
       () => volume.value,
@@ -117,13 +186,61 @@ export default defineComponent({
       }
     )
 
+    let singers = computed(() => {
+      let singers = ''
+      for (let artist of songsList[currentSongIndex.value].ar) {
+        singers += ` ${artist.name}`
+      }
+      return singers
+    })
+
+    // const getSongDetail = async ids => {
+    //   let res = await GetSongDetail({ ids })
+    //   console.log(res)
+    //   // window.localStorage.setItem('songInfo', JSON.stringify(res.songs))
+    //   return res
+    // }
+    // getSongDetail('186016')
+
+    // const Check_Music_ = async id => {
+    //   console.log(await Check_Music({ id }))
+    // }
+
+    // Check_Music_('347230')
+    const Search_ = async keywords => {
+      // const {
+      //   result: { songs },
+      // } = await Search({ keywords })
+      // songsList = songs
+      // console.log(songs)
+      // window.localStorage.setItem('songs', JSON.stringify(songs))
+      // console.log(songsList[currentSongIndex.value].al.picUrl)
+      songsList.pop()
+      for (let i of JSON.parse(window.localStorage.getItem('songs'))) {
+        songsList.push(i)
+      }
+      songsList.forEach(el => {
+        songIds.value += `,${el.id}`
+      })
+      let arr = songIds.value.split('')
+      arr.shift()
+      songIds.value = arr.join('')
+      queryUrls(songIds.value)
+    }
+    setTimeout(() => {
+      Search_('泰勒')
+    }, 2000)
+
     return {
       audio,
       togglePlay,
       playStatus,
       progress,
       volume,
-      audioUrl,
+      songsList,
+      currentSongIndex,
+      singers,
+      switchSong,
     }
   },
 })
@@ -159,6 +276,9 @@ export default defineComponent({
     .singer {
       @include custom-font(15px, 100, 1px, inherit);
       @extend .pointer;
+    }
+    .album {
+      @include custom-font(17px, 900, 1px, inherit);
     }
   }
 }

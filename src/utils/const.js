@@ -19,3 +19,12 @@ export const EXAMPLE_URLS = {
   TEST_URL: '/song/url?id=347230',
   // ....
 }
+
+export const BROADCAST = {
+  SEARCH: '/cloudsearch ',
+  GET_URL: '/song/url',
+  CHECK_MUSIC: '/check/music',
+  GET_LYRIC: '/lyric',
+  GET_COMMENT: '/comment/music',
+  SONG_DETAIL: '/song/detail',
+}
