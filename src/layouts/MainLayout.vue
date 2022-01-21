@@ -28,7 +28,7 @@
         </div>
       </q-toolbar>
     </q-header>
-    <q-drawer class="bg-black" :breakpoint="600" show-if-above width="230">
+    <q-drawer class="bg-black" :breakpoint="600" show-if-above :width="230">
       <q-list>
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />

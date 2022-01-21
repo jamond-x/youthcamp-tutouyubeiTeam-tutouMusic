@@ -14,7 +14,14 @@
     </div>
     <div class="controller column">
       <div class="row justify-around">
-        <q-btn @click="switchSong(1)" icon="fas fa-step-backward" size="10px" flat rounded />
+        <q-btn
+          @click="switchSong(autoplayModeForBtnSwitch + 1)"
+          icon="fas fa-step-backward"
+          size="10px"
+          flat
+          rounded
+        />
+        <!-- 1 -->
         <q-btn
           @click="togglePlay"
           v-if="playStatus"
@@ -24,7 +31,14 @@
           rounded
         />
         <q-btn v-else @click="togglePlay" icon="fas fa-play-circle" size="19px" flat rounded />
-        <q-btn @click="switchSong(0)" icon="fas fa-step-forward" size="10px" flat rounded />
+        <q-btn
+          @click="switchSong(autoplayModeForBtnSwitch)"
+          icon="fas fa-step-forward"
+          size="10px"
+          flat
+          rounded
+        />
+        <!--switchSong( 0) -->
       </div>
       <q-linear-progress size="sm" :value="progress" color="white" label="Change Model" />
       <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
@@ -154,7 +168,6 @@ export default defineComponent({
     let currentSongIndex = ref(0)
     const songsList = reactive(songsList_)
     const songListLayer = reactive(songListLayer_)
-
     let modeListObj = [
       {
         val: 'random',
@@ -185,13 +198,18 @@ export default defineComponent({
       audioObj.onloadedmetadata = () => {
         audioObj = null
         intervalTimer = setInterval(() => {
-          if (!isUnNull(audio.value.currentTime)) {
-            currentTime.value = audio.value.currentTime
-            progress.value = currentTime.value / audio.value.duration
-            playStatus.value = !audio.value.paused
-            if (progress.value === 1) {
-              autoSwitchSong(autoplayMode.value.val)
+          try {
+            if (!isUnNull(audio.value.currentTime)) {
+              currentTime.value = audio.value.currentTime
+              progress.value = currentTime.value / audio.value.duration
+              playStatus.value = !audio.value.paused
+              if (progress.value === 1) {
+                autoSwitchSong(autoplayMode.value.val)
+              }
             }
+          } catch (err) {
+            console.log(err)
+            clearTimer()
           }
         }, 500)
         audio.value.play()
@@ -233,7 +251,7 @@ export default defineComponent({
     }, 500)
     /**
      *
-     * @param {number} direction   0: 下一首  1: 上一首  2: 随机切换
+     * @param {number} direction   0: 下一首  1: 上一首  2或 3: 随机切换
      */
     const switchSong = direction => {
       clearTimer()
@@ -256,7 +274,7 @@ export default defineComponent({
         currentSongIndex.value--
         return
       }
-      if (direction === 2) {
+      if (direction === 2 || direction === 3) {
         let len = songsList.length
         currentSongIndex.value = Math.floor(Math.random() * (len - 1))
       }
@@ -308,7 +326,12 @@ export default defineComponent({
       }
       return '随机播放'
     })
-
+    let autoplayModeForBtnSwitch = computed(() => {
+      if (autoplayMode.value.val === 'listLoop' || autoplayMode.value.val === 'selfLoop') {
+        return 0
+      }
+      return 2
+    })
     // const getSongDetail = async ids => {
     //   let res = await GetSongDetail({ ids })
     //   console.log(res)
@@ -369,6 +392,7 @@ export default defineComponent({
       currentSongIndex,
       singers,
       autoplayMode_,
+      autoplayModeForBtnSwitch,
       changMode,
       switchSong,
       columns,
