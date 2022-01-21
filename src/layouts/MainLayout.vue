@@ -38,9 +38,10 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer class="bg-transparent">
+    <q-footer class="footer bg-transparent">
       <BroadcastBar
         @play="handlePlay"
+        @pause="handlePause"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
       />
     </q-footer>
@@ -53,8 +54,9 @@
       full-width
       full-height
       no-shake
+      class="broadcast-panel"
     >
-      <Broadcasting />
+      <Broadcasting :songId="currentSongId" :songDetail="currentSongDetail" />
     </q-dialog>
   </q-layout>
 </template>
@@ -99,7 +101,7 @@ const linksList = [
 import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
 
-import { provide, reactive } from 'vue'
+import { reactive } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -116,30 +118,32 @@ export default defineComponent({
     $q.dark.set(true)
 
     let currentSongId = ref()
-    let currentSongDetail = reactive()
-
+    let currentSongDetail = reactive(JSON.parse(window.localStorage.getItem('songs'))[0])
     let playStatus = ref(false)
-
-    const changePlayStatus = status => {
-      playStatus.value = status
-    }
-
-    provide('playStatus', playStatus.value)
-    provide('changePlayStatus', changePlayStatus)
 
     const handlePlay = songId => {
       if (currentSongId.value != songId) {
         currentSongId.value = songId
       }
+      playStatus.value = true
       console.log('开始播放！！')
     }
     const handlePause = songId => {
+      if (currentSongId.value != songId) {
+        // 优化
+        currentSongId.value = songId
+      }
+      playStatus.value = false
+
       console.log('停止播放！！')
     }
     return {
       essentialLinks: linksList,
       broadcastPageStatus: ref(false),
       handlePlay,
+      handlePause,
+      currentSongId,
+      currentSongDetail,
     }
   },
 })
@@ -153,5 +157,12 @@ export default defineComponent({
 }
 .logo {
   @include custom-font(45px, inherit, 1px, inherit);
+}
+
+.footer {
+  z-index: 2001;
+}
+.broadcast-panel {
+  z-index: 2000;
 }
 </style>
