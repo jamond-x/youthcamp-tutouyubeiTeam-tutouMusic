@@ -39,7 +39,10 @@
       <router-view />
     </q-page-container>
     <q-footer class="bg-transparent">
-      <BroadcastBar @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus" />
+      <BroadcastBar
+        @play="handlePlay"
+        @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
+      />
     </q-footer>
     <q-dialog
       v-model="broadcastPageStatus"
@@ -96,6 +99,8 @@ const linksList = [
 import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
 
+import { provide, reactive } from 'vue'
+
 export default defineComponent({
   name: 'MainLayout',
 
@@ -109,9 +114,32 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
     $q.dark.set(true)
+
+    let currentSongId = ref()
+    let currentSongDetail = reactive()
+
+    let playStatus = ref(false)
+
+    const changePlayStatus = status => {
+      playStatus.value = status
+    }
+
+    provide('playStatus', playStatus.value)
+    provide('changePlayStatus', changePlayStatus)
+
+    const handlePlay = songId => {
+      if (currentSongId.value != songId) {
+        currentSongId.value = songId
+      }
+      console.log('开始播放！！')
+    }
+    const handlePause = songId => {
+      console.log('停止播放！！')
+    }
     return {
       essentialLinks: linksList,
       broadcastPageStatus: ref(false),
+      handlePlay,
     }
   },
 })

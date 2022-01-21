@@ -21,7 +21,6 @@
           flat
           rounded
         />
-        <!-- 1 -->
         <q-btn
           @click="togglePlay"
           v-if="playStatus"
@@ -38,7 +37,6 @@
           flat
           rounded
         />
-        <!--switchSong( 0) -->
       </div>
       <q-linear-progress size="sm" :value="progress" color="white" label="Change Model" />
       <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
@@ -62,8 +60,6 @@
         class="q-mr-lg"
       />
       <q-btn :label="autoplayMode_" @click="changMode" flat rounded />
-      <!-- fas fa-random -->
-      <!-- fas fa-redo -->
       <q-knob
         show-value
         font-size="12px"
@@ -146,10 +142,10 @@ const songListLayer_ = [
 
 export default defineComponent({
   name: 'Bar',
-  emits: ['toggleBroadcastPage'],
+  emits: ['toggleBroadcastPage', 'switchSong', 'pause', 'play'],
   props: {},
   components: {},
-  setup() {
+  setup(_, context) {
     // let $q = useQuasar()
     // let togglePlay = () => {
     //   $q.notify({
@@ -214,6 +210,7 @@ export default defineComponent({
         }, 500)
         audio.value.play()
         playStatus.value = true
+        context.emit('play', songsList[currentSongIndex.value].id)
       }
     }
 
@@ -229,14 +226,14 @@ export default defineComponent({
     }
 
     //TODO: 缓缓暂停、播放
+    //TODO: 添加键盘控制播放功能
     const togglePlay = throttle(async () => {
       if (audio.value.paused) {
         if (isUnNull(intervalTimer)) {
           // TODO: 多层对象解构
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
-            alert('歌曲没有版权')
-            switchSong(0)
-            togglePlay()
+            alert('该歌曲没有版权')
+            autoSwitchSong(autoplayMode.value.val)
             return
           }
           listenProgress(songsList[currentSongIndex.value].songUrl)
@@ -244,9 +241,11 @@ export default defineComponent({
         }
         audio.value.play()
         playStatus.value = true
+        context.emit('play', songsList[currentSongIndex.value].id)
       } else {
         audio.value.pause()
         playStatus.value = false
+        context.emit('pause', songsList[currentSongIndex.value].id)
       }
     }, 500)
     /**
@@ -414,6 +413,8 @@ export default defineComponent({
   .song-detail {
     .pointer {
       cursor: pointer;
+      max-width: 170px;
+      user-select: none;
     }
     .img {
       width: 50px;
@@ -435,6 +436,7 @@ export default defineComponent({
     }
     .album {
       @include custom-font(17px, 900, 1px, inherit);
+      @extend .pointer;
     }
   }
 
