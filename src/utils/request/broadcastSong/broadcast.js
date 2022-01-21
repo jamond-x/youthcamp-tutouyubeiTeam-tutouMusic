@@ -9,14 +9,15 @@ const api = createApi(
 )
 
 /**
- *@description 获取歌曲URL
+ *@description 搜索
  * @param { Object } data{keywords: '关键词'}
  * @returns
  */
 export const Search = async data => {
   return await api({
     method: 'POST',
-    url: `${BROADCAST.SEARCH}&timestamp=${new Date().getTime()}`,
+    url: BROADCAST.SEARCH,
+    // `${BROADCAST.SEARCH}&timestamp=${new Date().getTime()}`
     data,
   })
 }

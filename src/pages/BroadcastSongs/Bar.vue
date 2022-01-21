@@ -14,7 +14,7 @@
     </div>
     <div class="controller column">
       <div class="row justify-around">
-        <q-btn @click="switchSong(false)" icon="fas fa-step-backward" size="10px" flat rounded />
+        <q-btn @click="switchSong(1)" icon="fas fa-step-backward" size="10px" flat rounded />
         <q-btn
           @click="togglePlay"
           v-if="playStatus"
@@ -24,13 +24,32 @@
           rounded
         />
         <q-btn v-else @click="togglePlay" icon="fas fa-play-circle" size="19px" flat rounded />
-        <q-btn @click="switchSong(true)" icon="fas fa-step-forward" size="10px" flat rounded />
+        <q-btn @click="switchSong(0)" icon="fas fa-step-forward" size="10px" flat rounded />
       </div>
       <q-linear-progress size="sm" :value="progress" color="white" label="Change Model" />
       <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
     </div>
     <div class="tools row reverse items-center">
-      <q-btn icon="fas fa-stream" flat rounded class="q-mr-lg" />
+      <q-card class="list-card" v-show="songsListLayerStatus">
+        <q-table
+          title="播放列表"
+          :columns="columns"
+          :rows="songListLayer"
+          row-key="name"
+          dark
+          color="amber"
+        />
+      </q-card>
+      <q-btn
+        @click="songsListLayerStatus = !songsListLayerStatus"
+        icon="fas fa-stream"
+        flat
+        rounded
+        class="q-mr-lg"
+      />
+      <q-btn :label="autoplayMode_" @click="changMode" flat rounded />
+      <!-- fas fa-random -->
+      <!-- fas fa-redo -->
       <q-knob
         show-value
         font-size="12px"
@@ -81,6 +100,36 @@ let hello = {
 
 let songsList_ = [hello]
 
+const columns = [
+  {
+    name: 'name',
+    required: true,
+    label: '歌曲名称',
+    align: 'left',
+    sortable: true,
+  },
+  { name: 'singer', align: 'center', label: '歌手', field: 'calories', sortable: true },
+  { name: 'album', label: '专辑', field: 'fat', sortable: true },
+]
+
+const songListLayer_ = [
+  {
+    name: '安静',
+    singer: '周杰伦',
+    album: 'jay',
+  },
+  {
+    name: '安静',
+    singer: '周杰伦',
+    album: 'jay',
+  },
+  {
+    name: '安静',
+    singer: '周杰伦',
+    album: 'jay',
+  },
+]
+
 export default defineComponent({
   name: 'Bar',
   emits: ['toggleBroadcastPage'],
@@ -97,13 +146,32 @@ export default defineComponent({
     // }
     //TODO: $q is not a function
     const audio = ref()
-    let songsList = reactive(songsList_)
     let volume = ref()
     let songIds = ref('')
     let currentTime = ref()
     let progress = ref(0)
     let playStatus = ref(false)
     let currentSongIndex = ref(0)
+    const songsList = reactive(songsList_)
+    const songListLayer = reactive(songListLayer_)
+
+    let modeListObj = [
+      {
+        val: 'random',
+        next: null,
+      },
+    ]
+    modeListObj.unshift({
+      val: 'selfLoop',
+      next: modeListObj[0],
+    })
+    modeListObj.unshift({
+      val: 'listLoop',
+      next: modeListObj[0],
+    })
+    modeListObj[2].next = modeListObj[0]
+    let autoplayMode = ref(modeListObj[0])
+
     // TODO: 手动清除定时器？
     let intervalTimer
 
@@ -121,6 +189,9 @@ export default defineComponent({
             currentTime.value = audio.value.currentTime
             progress.value = currentTime.value / audio.value.duration
             playStatus.value = !audio.value.paused
+            if (progress.value === 1) {
+              autoSwitchSong(autoplayMode.value.val)
+            }
           }
         }, 500)
         audio.value.play()
@@ -146,6 +217,8 @@ export default defineComponent({
           // TODO: 多层对象解构
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
             alert('歌曲没有版权')
+            switchSong(0)
+            togglePlay()
             return
           }
           listenProgress(songsList[currentSongIndex.value].songUrl)
@@ -158,13 +231,16 @@ export default defineComponent({
         playStatus.value = false
       }
     }, 500)
-
+    /**
+     *
+     * @param {number} direction   0: 下一首  1: 上一首  2: 随机切换
+     */
     const switchSong = direction => {
       clearTimer()
       currentTime.value = 0
       progress.value = 0
       playStatus.value = false
-      if (direction) {
+      if (direction === 0) {
         if (currentSongIndex.value === songsList.length - 1) {
           currentSongIndex.value = 0
           return
@@ -172,11 +248,38 @@ export default defineComponent({
         currentSongIndex.value++
         return
       }
-      if (currentSongIndex.value === 0) {
-        currentSongIndex.value = songsList.length - 1
+      if (direction === 1) {
+        if (currentSongIndex.value === 0) {
+          currentSongIndex.value = songsList.length - 1
+          return
+        }
+        currentSongIndex.value--
         return
       }
-      currentSongIndex.value--
+      if (direction === 2) {
+        let len = songsList.length
+        currentSongIndex.value = Math.floor(Math.random() * (len - 1))
+      }
+    }
+
+    const autoSwitchSong = mode => {
+      if (mode === 'selfLoop') {
+        togglePlay()
+        return
+      }
+      if (mode === 'listLoop') {
+        switchSong(0)
+        togglePlay()
+        return
+      }
+      if (mode === 'random') {
+        switchSong(2)
+        togglePlay()
+      }
+    }
+
+    const changMode = () => {
+      autoplayMode.value = autoplayMode.value.next
     }
 
     watch(
@@ -189,9 +292,21 @@ export default defineComponent({
     let singers = computed(() => {
       let singers = ''
       for (let artist of songsList[currentSongIndex.value].ar) {
-        singers += ` ${artist.name}`
+        singers += `/${artist.name}`
       }
-      return singers
+      let temp = singers.split('')
+      temp.shift()
+      return temp.join('')
+    })
+
+    let autoplayMode_ = computed(() => {
+      if (autoplayMode.value.val === 'listLoop') {
+        return '列表循环'
+      }
+      if (autoplayMode.value.val === 'selfLoop') {
+        return '单曲循环'
+      }
+      return '随机播放'
     })
 
     // const getSongDetail = async ids => {
@@ -208,17 +323,23 @@ export default defineComponent({
 
     // Check_Music_('347230')
     const Search_ = async keywords => {
+      // songsList.pop()
       // const {
       //   result: { songs },
       // } = await Search({ keywords })
-      // songsList = songs
       // console.log(songs)
+      // for (let i of songs) {
+      //   songsList.push(i)
+      // }
+
       // window.localStorage.setItem('songs', JSON.stringify(songs))
       // console.log(songsList[currentSongIndex.value].al.picUrl)
+
       songsList.pop()
       for (let i of JSON.parse(window.localStorage.getItem('songs'))) {
         songsList.push(i)
       }
+
       songsList.forEach(el => {
         songIds.value += `,${el.id}`
       })
@@ -228,8 +349,14 @@ export default defineComponent({
       queryUrls(songIds.value)
     }
     setTimeout(() => {
-      Search_('泰勒')
+      Search_('比伯')
     }, 2000)
+
+    // let temp = songsList.map(el => {
+    //   if (!isUnNull(el.songUrl)) {
+    //     el = { name: el.name, singer: el.ar[0].name, album: el.al.name }
+    //   }
+    // }) // TODO: 播放列表
 
     return {
       audio,
@@ -237,10 +364,15 @@ export default defineComponent({
       playStatus,
       progress,
       volume,
+      songsListLayerStatus: ref(false),
       songsList,
       currentSongIndex,
       singers,
+      autoplayMode_,
+      changMode,
       switchSong,
+      columns,
+      songListLayer,
     }
   },
 })
@@ -279,6 +411,16 @@ export default defineComponent({
     }
     .album {
       @include custom-font(17px, 900, 1px, inherit);
+    }
+  }
+
+  .tools {
+    .list-card {
+      width: 400px;
+      height: 350px;
+      position: fixed;
+      bottom: 50px;
+      right: 10px;
     }
   }
 }
