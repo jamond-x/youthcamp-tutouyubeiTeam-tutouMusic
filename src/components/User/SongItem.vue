@@ -25,7 +25,7 @@ export default {
   display: flex;
   width: 30%;
   height: 5rem;
-  border-radius: 5px;
+  border-radius: 15px;
   box-sizing: border-box;
   padding: 0.5rem;
   transition: background 0.2s;
@@ -34,7 +34,7 @@ export default {
 }
 
 .song-item img {
-  border-radius: 5px;
+  border-radius: 15px;
   margin-right: 0.75rem;
 }
 
