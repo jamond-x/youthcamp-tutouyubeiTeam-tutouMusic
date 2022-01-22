@@ -11,25 +11,52 @@
       <UserLikeBar :list="like" />
     </div>
 
-    <div class="content"></div>
+    <div class="content">
+      <q-tabs v-model="tab" indicator-color="transparent" active-bg-color="#303030" align="left">
+        <q-tab :ripple="false" name="album" label="专辑" content-class="tab-item" />
+        <q-tab :ripple="false" name="artist" label="艺人" content-class="tab-item" />
+      </q-tabs>
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel name="album" class="tab-panel">
+          <div class="text-h6">专辑</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        </q-tab-panel>
+
+        <q-tab-panel name="artist" class="tab-panel">
+          <div class="sub-artists">
+            <ArtistItem
+              v-for="(item, index) in subartists"
+              :key="index"
+              :aid="item.id"
+              :avatar="item.picUrl"
+              :name="item.name"
+            />
+          </div>
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import { QueryUser, QueryPlayList } from 'src/utils/request/user'
+import { QueryUser, QueryPlayList, QuerySubArtist } from 'src/utils/request/user'
 import UserProfile from './UserProfile.vue'
 import UserLikeBar from './UserLikeBar.vue'
+import ArtistItem from 'src/components/User/ArtistItem.vue'
 export default defineComponent({
   name: 'User',
   components: {
     UserProfile,
     UserLikeBar,
+    ArtistItem,
   },
   data() {
     return {
       userdata: {},
       like: 0,
+      tab: 'album',
+      subartists: [],
     }
   },
   methods: {},
@@ -40,6 +67,9 @@ export default defineComponent({
     })
     QueryPlayList(58323110).then(res => {
       that.like = res.playlist[0].id
+    })
+    QuerySubArtist().then(res => {
+      that.subartists = res.data
     })
   },
 })
@@ -55,5 +85,17 @@ export default defineComponent({
   box-sizing: border-box;
   height: 300px;
   padding: 1rem 0;
+}
+
+.tab-panel {
+  background: #121212;
+  padding: 0;
+}
+
+.sub-artists {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 5rem;
 }
 </style>
