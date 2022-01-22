@@ -2,7 +2,7 @@
   <div class="song-item">
     <img :src="cover" alt="title" />
     <div class="song-item-content">
-      <div class="text-h5">{{ title }}</div>
+      <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
       <div class="text-subtitle2">{{ singer }}</div>
     </div>
   </div>
@@ -31,15 +31,27 @@ export default {
   transition: background 0.2s;
   cursor: pointer;
   user-select: none;
+  position: relative;
+}
+
+.song-item-content {
+  position: relative;
+  width: calc(100% - 4.75rem);
 }
 
 .song-item img {
   border-radius: 15px;
   margin-right: 0.75rem;
+  height: 4rem;
+  width: 4rem;
 }
 
-.text-h5 {
-  font-weight: 600;
+.text-h6 {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .song-item:hover {
