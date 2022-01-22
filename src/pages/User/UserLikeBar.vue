@@ -20,7 +20,7 @@
           :key="index"
           :cover="song.al.picUrl"
           :title="song.name"
-          singer="歌手"
+          :singer="song.ar[0].name"
         />
       </div>
     </div>
