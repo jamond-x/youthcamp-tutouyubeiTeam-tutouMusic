@@ -17,7 +17,7 @@ export const Search = async data => {
   return await api({
     method: 'POST',
     url: BROADCAST.SEARCH,
-    // `${BROADCAST.SEARCH}&timestamp=${new Date().getTime()}`
+    // `${BROADCAST.SEARCH}?timestamp=${new Date().getTime()}`
     data,
   })
 }
@@ -36,7 +36,7 @@ export const GetSongUrl = async data => {
 }
 
 /**
- *@description 获取歌曲URL
+ *@description 查询歌曲是否可用
  * @param { Object } data{id: '33894312'} 歌曲id
  * @returns
  */
@@ -49,14 +49,14 @@ export const Check_Music = async data => {
 }
 
 /**
- *@description 获取歌曲评论
+ *@description 获取歌曲歌词
  * @param { Object } data{id: '186016'} 歌曲id
  * @returns
  */
 export const GetLyric = async data => {
   return await api({
     method: 'POST',
-    url: BROADCAST.GET_LYRIC,
+    url: `${BROADCAST.GET_LYRIC}?timestamp=${new Date().getTime()}`,
     data,
   })
 }

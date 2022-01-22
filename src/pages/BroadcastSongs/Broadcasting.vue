@@ -21,15 +21,12 @@
           {{ item }}
         </li>
       </ul>
-      <div>{{ songCurrentTime }}</div>
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, reactive, computed, onMounted, watch } from 'vue'
-import { scroll } from 'quasar'
-// import { isUnNull } from 'src/utils'
 import { GetLyric } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 export default defineComponent({
@@ -56,8 +53,16 @@ export default defineComponent({
   setup(props) {
     let lyric_ = ref()
     let lyricBar = ref
+
     let currentLyric = ref()
+    let backup = []
+    let index = ref(1)
+    let lyricMap = new Map()
+
     let singers = computed(() => {
+      if (isUnNull(props.songDetail)) {
+        return ''
+      }
       let singers = ''
       for (let artist of props.songDetail.ar) {
         singers += `/${artist.name}`
@@ -67,29 +72,64 @@ export default defineComponent({
       return temp.join('')
     })
 
+    const initLyric = () => {
+      index.value = 1
+      lyricMap = new Map()
+      currentLyric.value = undefined
+      lyric_.value = lyric_.value.split('\n')
+      lyric_.value = lyric_.value.map(el => {
+        let temp = el.split('').splice(11).join('')
+        let min = el.split('').splice(2, 1).join('')
+        let s = el.split('').splice(4, 2).join('')
+        s = parseInt(min) * 60 + parseInt(s)
+        lyricMap.set(s, temp)
+        return temp
+      })
+      for (let i = 0; i < lyric_.value.length; i++) {
+        backup[i] = lyric_.value[i]
+      }
+      lyric_.value = lyric_.value.splice(0, 1)
+      // 通过改变值使其变化  变化时僵硬的  看看 vue 的示例  滑动改变！
+      // https://v3.cn.vuejs.org/guide/transitions-list.html#%E5%88%97%E8%A1%A8%E7%9A%84%E7%A7%BB%E5%8A%A8%E8%BF%87%E6%B8%A1
+      // for (let i = 0; i < 5; i++) {
+      //   lyric_.value.unshift('')
+      // }
+    }
+
     const GetLyric_ = async id => {
       if (isUnNull(id)) {
         console.log('播放列表为空')
       }
       // window.localStorage.setItem('lyric', JSON.stringify(await GetLyric({ id })))
-      const {
-        lrc: { lyric },
-      } = JSON.parse(window.localStorage.getItem('lyric'))
-      lyric_.value = lyric
+      if (isUnNull(JSON.parse(window.localStorage.getItem(id)))) {
+        const {
+          lrc: { lyric },
+        } = await GetLyric({ id })
+        console.log(lyric)
+        if (isUnNull(lyric)) {
+          console.log('获取歌词失败')
+          return
+        }
+        lyric_.value = lyric
+        window.localStorage.setItem(id, JSON.stringify(lyric_.value))
+      } else {
+        lyric_.value = JSON.parse(window.localStorage.getItem(id))
+        console.log(lyric_.value)
+      }
+      initLyric()
     }
-    GetLyric_(props.songId)
-    let lyricMap = new Map()
-    lyric_.value = lyric_.value.split('\n')
-    lyric_.value = lyric_.value.map(el => {
-      let temp = el.split('').splice(11).join('')
-      let min = el.split('').splice(2, 1).join('')
-      let s = el.split('').splice(4, 2).join('')
-      s = parseInt(min) * 60 + parseInt(s)
-      lyricMap.set(s, temp)
-      return temp
+    onMounted(() => {
+      GetLyric_(props.songId)
     })
-    console.log(lyricMap)
 
+    const next = () => {
+      // if (lyric_.value.length >= 6) {
+      lyric_.value.splice(0, 1)
+      // }
+      // if (!isUnNull(backup[index.value++])) {
+      lyric_.value.push(backup[index.value++])
+      // }
+    }
     watch(
       () => props.songCurrentTime,
       time => {
@@ -99,23 +139,12 @@ export default defineComponent({
         }
       }
     )
-    let backup = lyric_.value
-    let index = ref(8)
-    lyric_.value = lyric_.value.splice(0, 8)
-
-    // 通过改变值使其变化  变化时僵硬的  看看 vue 的示例  滑动改变！
-    // https://v3.cn.vuejs.org/guide/transitions-list.html#%E5%88%97%E8%A1%A8%E7%9A%84%E7%A7%BB%E5%8A%A8%E8%BF%87%E6%B8%A1
-    for (let i = 0; i < 5; i++) {
-      lyric_.value.unshift('')
-    }
-    const next = () => {
-      if (lyric_.value.length >= 6) {
-        lyric_.value.splice(0, 1)
+    watch(
+      () => props.songId,
+      newVal => {
+        GetLyric_(newVal)
       }
-      if (!isUnNull(backup[index.value++])) {
-        lyric_.value.push(backup[index.value++])
-      }
-    }
+    )
 
     return {
       singers,
@@ -167,12 +196,13 @@ export default defineComponent({
       overflow-y: scroll;
       li {
         text-align: center;
+        opacity: 0.4;
       }
       .selected {
         font-size: 19px;
         font-weight: 900;
         word-spacing: 2px;
-        color: yellow;
+        opacity: 1;
       }
     }
 

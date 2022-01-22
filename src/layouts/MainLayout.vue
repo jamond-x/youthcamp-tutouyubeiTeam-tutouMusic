@@ -131,6 +131,7 @@ export default defineComponent({
     const handlePlay = songId => {
       if (currentSongId.value != songId) {
         currentSongId.value = songId
+        console.log('songId改变')
       }
       playStatus.value = true
       console.log('开始播放！！')

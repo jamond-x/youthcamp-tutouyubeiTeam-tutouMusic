@@ -359,7 +359,6 @@ export default defineComponent({
       let s = temp % 60
       if (m < 10) m = `0${m}`
       if (s < 10) s = `0${s}`
-      console.log(`${m}:${s}`)
       return `${m}:${s}`
     })
 
