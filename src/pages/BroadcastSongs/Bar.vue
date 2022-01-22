@@ -142,7 +142,14 @@ const songListLayer_ = [
 
 export default defineComponent({
   name: 'Bar',
-  emits: ['toggleBroadcastPage', 'switchSong', 'pause', 'play'],
+  emits: [
+    'toggleBroadcastPage',
+    'switchSong',
+    'pause',
+    'play',
+    'updateCurrentTime',
+    'updateDuration',
+  ],
   props: {},
   components: {},
   setup(_, context) {
@@ -197,6 +204,7 @@ export default defineComponent({
           try {
             if (!isUnNull(audio.value.currentTime)) {
               currentTime.value = audio.value.currentTime
+              context.emit('updateCurrentTime', currentTime.value)
               progress.value = currentTime.value / audio.value.duration
               playStatus.value = !audio.value.paused
               if (progress.value === 1) {
@@ -207,7 +215,7 @@ export default defineComponent({
             console.log(err)
             clearTimer()
           }
-        }, 500)
+        }, 100)
         audio.value.play()
         playStatus.value = true
         context.emit('play', songsList[currentSongIndex.value].id)
@@ -230,7 +238,6 @@ export default defineComponent({
     const togglePlay = throttle(async () => {
       if (audio.value.paused) {
         if (isUnNull(intervalTimer)) {
-          // TODO: 多层对象解构
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
             alert('该歌曲没有版权')
             autoSwitchSong(autoplayMode.value.val)
@@ -243,6 +250,7 @@ export default defineComponent({
         playStatus.value = true
         context.emit('play', songsList[currentSongIndex.value].id)
       } else {
+        clearTimer()
         audio.value.pause()
         playStatus.value = false
         context.emit('pause', songsList[currentSongIndex.value].id)

@@ -42,6 +42,7 @@
       <BroadcastBar
         @play="handlePlay"
         @pause="handlePause"
+        @updateCurrentTime="handleUpdateCurrentTime"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
       />
     </q-footer>
@@ -56,7 +57,12 @@
       no-shake
       class="broadcast-panel"
     >
-      <Broadcasting :songId="currentSongId" :songDetail="currentSongDetail" />
+      <Broadcasting
+        :songId="currentSongId"
+        :songDetail="currentSongDetail"
+        :songCurrentTime="currentTime"
+        :playStatus="playStatus"
+      />
     </q-dialog>
   </q-layout>
 </template>
@@ -120,6 +126,7 @@ export default defineComponent({
     let currentSongId = ref()
     let currentSongDetail = reactive(JSON.parse(window.localStorage.getItem('songs'))[0])
     let playStatus = ref(false)
+    let currentTime = ref()
 
     const handlePlay = songId => {
       if (currentSongId.value != songId) {
@@ -137,13 +144,21 @@ export default defineComponent({
 
       console.log('停止播放！！')
     }
+
+    const handleUpdateCurrentTime = time => {
+      time = parseInt(time)
+      currentTime.value = time
+    }
     return {
       essentialLinks: linksList,
       broadcastPageStatus: ref(false),
       handlePlay,
       handlePause,
+      handleUpdateCurrentTime,
       currentSongId,
       currentSongDetail,
+      currentTime,
+      playStatus,
     }
   },
 })

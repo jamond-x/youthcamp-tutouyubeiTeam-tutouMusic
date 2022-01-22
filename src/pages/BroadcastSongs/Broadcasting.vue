@@ -11,18 +11,24 @@
     </div>
     <div class="lyric flex flex-center">
       <ul class="q-mt-xl q-mr-xl" ref="lyricBar" id="lyricBar">
-        <!-- <li v-for="item in 10" :key="item">&nbsp;</li> -->
-        <li class="q-ma-md" v-for="(item, index) in lyric_" :key="index">{{ item }}</li>
-        <!-- <li v-for="item in 10" :key="item">&nbsp;</li> -->
+        <li v-for="item in 2" :key="item">&nbsp;</li>
+        <li
+          class="q-ma-md"
+          :class="{ selected: item == currentLyric }"
+          v-for="(item, index) in lyric_"
+          :key="index"
+        >
+          {{ item }}
+        </li>
       </ul>
+      <div>{{ songCurrentTime }}</div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, ref, reactive, computed, onMounted, watch } from 'vue'
 import { scroll } from 'quasar'
-const { getVerticalScrollPosition, setVerticalScrollPosition } = scroll
 // import { isUnNull } from 'src/utils'
 import { GetLyric } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
@@ -31,18 +37,26 @@ export default defineComponent({
   props: {
     playStatus: {
       type: Boolean,
+      required: true,
     },
     songId: {
-      type: String,
+      type: Number,
+      required: true,
     },
     songDetail: {
       type: Object,
+      required: true,
+    },
+    songCurrentTime: {
+      type: Number,
+      required: true,
     },
   },
   components: {},
   setup(props) {
     let lyric_ = ref()
     let lyricBar = ref
+    let currentLyric = ref()
     let singers = computed(() => {
       let singers = ''
       for (let artist of props.songDetail.ar) {
@@ -64,50 +78,50 @@ export default defineComponent({
       lyric_.value = lyric
     }
     GetLyric_(props.songId)
+    let lyricMap = new Map()
     lyric_.value = lyric_.value.split('\n')
     lyric_.value = lyric_.value.map(el => {
-      return el.split('').splice(11).join('')
+      let temp = el.split('').splice(11).join('')
+      let min = el.split('').splice(2, 1).join('')
+      let s = el.split('').splice(4, 2).join('')
+      s = parseInt(min) * 60 + parseInt(s)
+      lyricMap.set(s, temp)
+      return temp
     })
+    console.log(lyricMap)
 
-    onMounted(() => {
-      let obj = document.getElementById('lyricBar')
-      // let position = 100
-      // setInterval(() => {
-      //   setVerticalScrollPosition(obj, position, 500)
-      //   position += 100
-      // }, 1000)
-
-      // setTimeout(() => {
-      //   setVerticalScrollPosition(obj, 100, 500)
-      // }, 1000)
-      // setTimeout(() => {
-      //   setVerticalScrollPosition(obj, 200, 500)
-      // }, 2000)
-      // setTimeout(() => {
-      //   setVerticalScrollPosition(obj, 300, 500)
-      // }, 3000)
-
-      // let position = 100
-      // setInterval(() => {
-      //   // 定时清除
-      //   setVerticalScrollPosition(obj, (position += 50), 1000)
-      // }, 1000)
-    })
+    watch(
+      () => props.songCurrentTime,
+      time => {
+        if (lyricMap.has(time)) {
+          next()
+          currentLyric.value = lyricMap.get(time)
+        }
+      }
+    )
     let backup = lyric_.value
-    lyric_.value = lyric_.value.splice(0, 10)
+    let index = ref(8)
+    lyric_.value = lyric_.value.splice(0, 8)
 
-    setTimeout(() => {
-      lyric_.value = backup.splice(1, 11)
-    }, 1000)
-    setTimeout(() => {
-      lyric_.value = backup.splice(2, 12)
-    }, 2000)
     // 通过改变值使其变化  变化时僵硬的  看看 vue 的示例  滑动改变！
     // https://v3.cn.vuejs.org/guide/transitions-list.html#%E5%88%97%E8%A1%A8%E7%9A%84%E7%A7%BB%E5%8A%A8%E8%BF%87%E6%B8%A1
+    for (let i = 0; i < 5; i++) {
+      lyric_.value.unshift('')
+    }
+    const next = () => {
+      if (lyric_.value.length >= 6) {
+        lyric_.value.splice(0, 1)
+      }
+      if (!isUnNull(backup[index.value++])) {
+        lyric_.value.push(backup[index.value++])
+      }
+    }
+
     return {
       singers,
       lyric_,
       lyricBar,
+      currentLyric,
     }
   },
 })
@@ -115,6 +129,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
+.flip-list-move {
+  transition: transform 0.8s ease;
+}
 .broadcast-container {
   position: fixed;
   display: grid;
@@ -140,6 +157,7 @@ export default defineComponent({
   }
   .lyric {
     user-select: none;
+
     & ul {
       list-style: none;
     }
@@ -150,7 +168,14 @@ export default defineComponent({
       li {
         text-align: center;
       }
+      .selected {
+        font-size: 19px;
+        font-weight: 900;
+        word-spacing: 2px;
+        color: yellow;
+      }
     }
+
     ul::-webkit-scrollbar {
       width: 4px;
       scrollbar-arrow-color: darkgreen;
