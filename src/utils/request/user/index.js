@@ -42,3 +42,13 @@ export const QueryPlayListDetail = async id => {
     },
   })
 }
+
+export const QuerySubArtist = async () => {
+  return await api({
+    method: 'post',
+    url: '/artist/sublist',
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
