@@ -10,15 +10,14 @@
       </div>
     </div>
     <div class="lyric flex flex-center">
-      <ul class="q-mt-xl q-mr-xl" ref="lyricBar" id="lyricBar">
-        <li v-for="item in 2" :key="item">&nbsp;</li>
+      <ul class="q-mt-xl q-mr-xl" id="lyricBar">
         <li
           class="q-ma-md"
-          :class="{ selected: item == currentLyric }"
-          v-for="(item, index) in lyric_"
+          v-for="(item, index) in lyricWithAnchor"
           :key="index"
+          :class="[item.anchor, item.anchor === activeEl ? 'active' : '']"
         >
-          {{ item }}
+          {{ item.val }}
         </li>
       </ul>
     </div>
@@ -26,9 +25,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, computed, onMounted, watch } from 'vue'
+import { defineComponent, ref, computed, onMounted, watch } from 'vue'
 import { GetLyric } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
+import { scroll } from 'quasar'
+const { setVerticalScrollPosition } = scroll
+
 export default defineComponent({
   name: 'Broadcasting',
   props: {
@@ -52,12 +54,20 @@ export default defineComponent({
   components: {},
   setup(props) {
     let lyric_ = ref()
-    let lyricBar = ref
 
-    let currentLyric = ref()
-    let backup = []
-    let index = ref(1)
+    let lyricWithAnchor = []
     let lyricMap = new Map()
+    let lyricIndexMap = new Map()
+
+    let activeEl = ref()
+    const scrollTo = el => {
+      let container = document.getElementById('lyricBar')
+      let totalHeight = container.scrollHeight
+      let index = lyricIndexMap.get(el)
+      index -= 5
+      let position = (index / lyricWithAnchor.length) * totalHeight
+      setVerticalScrollPosition(container, position, 1000)
+    }
 
     let singers = computed(() => {
       if (isUnNull(props.songDetail)) {
@@ -73,27 +83,20 @@ export default defineComponent({
     })
 
     const initLyric = () => {
-      index.value = 1
       lyricMap = new Map()
-      currentLyric.value = undefined
+      lyricIndexMap = new Map()
       lyric_.value = lyric_.value.split('\n')
+      let tempIndex = 0
       lyric_.value = lyric_.value.map(el => {
         let temp = el.split('').splice(11).join('')
         let min = el.split('').splice(2, 1).join('')
         let s = el.split('').splice(4, 2).join('')
         s = parseInt(min) * 60 + parseInt(s)
-        lyricMap.set(s, temp)
+        lyricMap.set(`t${s}`, temp)
+        lyricIndexMap.set(`t${s}`, tempIndex)
+        lyricWithAnchor.push({ anchor: `t${s}`, val: temp, index: tempIndex++ })
         return temp
       })
-      for (let i = 0; i < lyric_.value.length; i++) {
-        backup[i] = lyric_.value[i]
-      }
-      lyric_.value = lyric_.value.splice(0, 1)
-      // 通过改变值使其变化  变化时僵硬的  看看 vue 的示例  滑动改变！
-      // https://v3.cn.vuejs.org/guide/transitions-list.html#%E5%88%97%E8%A1%A8%E7%9A%84%E7%A7%BB%E5%8A%A8%E8%BF%87%E6%B8%A1
-      // for (let i = 0; i < 5; i++) {
-      //   lyric_.value.unshift('')
-      // }
     }
 
     const GetLyric_ = async id => {
@@ -114,7 +117,6 @@ export default defineComponent({
         window.localStorage.setItem(id, JSON.stringify(lyric_.value))
       } else {
         lyric_.value = JSON.parse(window.localStorage.getItem(id))
-        console.log(lyric_.value)
       }
       initLyric()
     }
@@ -122,20 +124,12 @@ export default defineComponent({
       GetLyric_(props.songId)
     })
 
-    const next = () => {
-      // if (lyric_.value.length >= 6) {
-      lyric_.value.splice(0, 1)
-      // }
-      // if (!isUnNull(backup[index.value++])) {
-      lyric_.value.push(backup[index.value++])
-      // }
-    }
     watch(
       () => props.songCurrentTime,
       time => {
-        if (lyricMap.has(time)) {
-          next()
-          currentLyric.value = lyricMap.get(time)
+        if (lyricMap.has(`t${time}`)) {
+          activeEl.value = `t${time}`
+          scrollTo(`t${time}`)
         }
       }
     )
@@ -150,7 +144,8 @@ export default defineComponent({
       singers,
       lyric_,
       lyricBar,
-      currentLyric,
+      lyricWithAnchor,
+      activeEl,
     }
   },
 })
@@ -198,7 +193,7 @@ export default defineComponent({
         text-align: center;
         opacity: 0.4;
       }
-      .selected {
+      .active {
         font-size: 19px;
         font-weight: 900;
         word-spacing: 2px;
