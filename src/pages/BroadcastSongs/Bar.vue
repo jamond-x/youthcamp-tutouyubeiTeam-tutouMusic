@@ -38,7 +38,18 @@
           rounded
         />
       </div>
-      <q-linear-progress size="sm" :value="progress" color="white" label="Change Model" />
+      <div class="row">
+        <div class="col-1">{{ currentTime_ === 'NaN:NaN' ? '' : currentTime_ }}</div>
+        <q-linear-progress
+          class="col-10 q-mt-sm"
+          size="sm"
+          :value="progress"
+          color="white"
+          label="Change Model"
+          style="height: 4px"
+        />
+        <div class="col-1">{{ songDuration_ === 'NaN:NaN' ? '' : songDuration_ }}</div>
+      </div>
       <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
     </div>
     <div class="tools row reverse items-center">
@@ -166,6 +177,7 @@ export default defineComponent({
     let volume = ref()
     let songIds = ref('')
     let currentTime = ref()
+    let songDuration = ref()
     let progress = ref(0)
     let playStatus = ref(false)
     let currentSongIndex = ref(0)
@@ -204,6 +216,7 @@ export default defineComponent({
           try {
             if (!isUnNull(audio.value.currentTime)) {
               currentTime.value = audio.value.currentTime
+              songDuration.value = audio.value.duration
               context.emit('updateCurrentTime', currentTime.value)
               progress.value = currentTime.value / audio.value.duration
               playStatus.value = !audio.value.paused
@@ -339,6 +352,27 @@ export default defineComponent({
       }
       return 2
     })
+
+    let songDuration_ = computed(() => {
+      let temp = parseInt(songDuration.value)
+      let m = Math.floor(temp / 60)
+      let s = temp % 60
+      if (m < 10) m = `0${m}`
+      if (s < 10) s = `0${s}`
+      console.log(`${m}:${s}`)
+      return `${m}:${s}`
+    })
+
+    let currentTime_ = computed(() => {
+      let temp = parseInt(currentTime.value)
+      let m = Math.floor(temp / 60)
+      let s = temp % 60
+      if (m < 10) m = `0${m}`
+      if (s < 10) s = `0${s}`
+
+      return `${m}:${s}`
+    })
+
     // const getSongDetail = async ids => {
     //   let res = await GetSongDetail({ ids })
     //   console.log(res)
@@ -397,6 +431,8 @@ export default defineComponent({
       songsListLayerStatus: ref(false),
       songsList,
       currentSongIndex,
+      songDuration_,
+      currentTime_,
       singers,
       autoplayMode_,
       autoplayModeForBtnSwitch,
