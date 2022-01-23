@@ -77,7 +77,7 @@ export default defineComponent({
     const changeProgress = anchor => {
       activeEl.value = anchor
       scrollTo(anchor)
-      context.emit('changeProgress', { time: anchor.split('').splice(1).join('') })
+      context.emit('changeProgress', anchor.split('').splice(1).join(''))
     }
 
     let singers = computed(() => {
@@ -224,6 +224,7 @@ export default defineComponent({
         opacity: 0.4;
         .play-icon {
           cursor: pointer;
+          transition: all 0.8s ease;
         }
       }
       .active {

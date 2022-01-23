@@ -161,7 +161,7 @@ export default defineComponent({
     }
 
     const handleChangeProgress = time => {
-      console.log('????')
+      console.log(time)
       forceToChangeProgressValue.value = time
     }
 
@@ -186,6 +186,7 @@ export default defineComponent({
       currentSongDetail,
       currentTime,
       playStatus,
+      forceToChangeProgressValue,
     }
   },
 })

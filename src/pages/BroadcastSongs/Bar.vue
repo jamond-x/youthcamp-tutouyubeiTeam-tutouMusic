@@ -83,7 +83,6 @@
       >
         <q-icon name="volume_up" />
       </q-knob>
-      <div>{{ forceToChangeProgress }}</div>
     </div>
   </div>
 </template>
