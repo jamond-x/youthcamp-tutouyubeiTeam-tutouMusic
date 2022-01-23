@@ -110,8 +110,6 @@ const linksList = [
 import { defineComponent, ref } from 'vue'
 import { useQuasar } from 'quasar'
 
-import { reactive } from 'vue'
-
 export default defineComponent({
   name: 'MainLayout',
 
@@ -137,13 +135,11 @@ export default defineComponent({
       const { id } = songDetail
       if (currentSongId.value != id) {
         currentSongId.value = id
-        console.log('songId改变')
       }
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
       }
       playStatus.value = true
-      console.log('开始播放！！')
     }
 
     const handlePause = songDetail => {
@@ -170,6 +166,11 @@ export default defineComponent({
     }
 
     const handleSwitchSong = songDetail => {
+      const { id } = songDetail
+      if (currentSongId.value != id) {
+        // 优化
+        currentSongId.value = id
+      }
       currentSongDetail.value = songDetail
     }
 

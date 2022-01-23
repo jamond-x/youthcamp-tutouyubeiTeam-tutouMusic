@@ -60,7 +60,7 @@ export default defineComponent({
   components: {},
   setup(props, context) {
     let lyric_ = ref()
-    let lyricWithAnchor = []
+    let lyricWithAnchor = ref([])
     let lyricMap = new Map()
     let lyricIndexMap = new Map()
     let activeEl = ref()
@@ -70,7 +70,7 @@ export default defineComponent({
       let totalHeight = container.scrollHeight
       let index = lyricIndexMap.get(el)
       index -= 5
-      let position = (index / lyricWithAnchor.length) * totalHeight
+      let position = (index / lyricWithAnchor.value.length) * totalHeight
       setVerticalScrollPosition(container, position, 1000)
     }
 
@@ -96,6 +96,7 @@ export default defineComponent({
     const initLyric = () => {
       lyricMap = new Map()
       lyricIndexMap = new Map()
+      lyricWithAnchor.value = []
       lyric_.value = lyric_.value.split('\n')
       let tempIndex = 0
       lyric_.value = lyric_.value.map(el => {
@@ -105,7 +106,12 @@ export default defineComponent({
         s = parseInt(min) * 60 + parseInt(s)
         lyricMap.set(`t${s}`, temp)
         lyricIndexMap.set(`t${s}`, tempIndex)
-        lyricWithAnchor.push({ anchor: `t${s}`, val: temp, index: tempIndex++, switchBtn: false })
+        lyricWithAnchor.value.push({
+          anchor: `t${s}`,
+          val: temp,
+          index: tempIndex++,
+          switchBtn: false,
+        })
         return temp
       })
     }
@@ -134,8 +140,16 @@ export default defineComponent({
       }
       initLyric()
     }
+
+    const beforeGetLyric = () => {
+      if (!isUnNull(props.songId)) {
+        GetLyric_(props.songId)
+      }
+      GetLyric_(props.songDetail.id)
+    }
+
     onMounted(() => {
-      GetLyric_(props.songId)
+      beforeGetLyric()
     })
 
     watch(
@@ -150,6 +164,8 @@ export default defineComponent({
     watch(
       () => props.songId,
       newVal => {
+        console.log('检测到songId 改变')
+        console.log('新值：' + newVal)
         GetLyric_(newVal)
       }
     )
@@ -183,9 +199,9 @@ export default defineComponent({
     & > div {
       grid-area: 1/2/2/3;
       & > div {
-        @include custom-font(20px, 900, 3px, inherit);
+        @include custom-font(20px, 900, inherit, inherit);
         & + div {
-          @include custom-font(14px, 100, 2px, inherit);
+          @include custom-font(14px, 100, inherit, inherit);
         }
       }
     }
