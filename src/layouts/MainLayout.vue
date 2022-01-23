@@ -38,7 +38,7 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer class="footer bg-transparent">
+    <q-footer class="footer">
       <BroadcastBar
         :forceToChangeProgress="forceToChangeProgressValue"
         @play="handlePlay"
@@ -204,6 +204,8 @@ export default defineComponent({
 
 .footer {
   z-index: 2001;
+  height: 80px;
+  background-color: #2c1919;
 }
 .broadcast-panel {
   z-index: 2000;

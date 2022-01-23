@@ -13,7 +13,7 @@
       <div class="album offset-2">{{ songsList[currentSongIndex].al.name }}</div>
     </div>
     <div class="controller column">
-      <div class="row justify-around">
+      <div class="row justify-around q-mt-xs">
         <q-btn
           @click="switchSong(autoplayModeForBtnSwitch + 1)"
           icon="fas fa-step-backward"
@@ -39,16 +39,23 @@
         />
       </div>
       <div class="row">
-        <div class="col-1">{{ currentTime_ === 'NaN:NaN' ? '' : currentTime_ }}</div>
-        <q-linear-progress
-          class="col-10 q-mt-sm"
-          size="sm"
-          :value="progress"
+        <div class="col-1 q-mt-xs">
+          {{ currentTime_ === 'NaN:NaN' ? '' : currentTime_ }}
+        </div>
+        <q-slider
+          @update:modelValue="changeProgressBySlide"
+          @mouseenter="slidePointThumb = false"
+          @mouseleave="slidePointThumb = true"
+          thumb-size="15px"
+          class="slider-progress col-10 q-px-sm"
           color="white"
-          label="Change Model"
-          style="height: 4px"
+          v-model="currentTime"
+          :min="0"
+          :max="songDuration"
         />
-        <div class="col-1">{{ songDuration_ === 'NaN:NaN' ? '' : songDuration_ }}</div>
+        <div class="col-1 q-mt-xs">
+          {{ songDuration_ === 'NaN:NaN' ? '' : songDuration_ }}
+        </div>
       </div>
       <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
     </div>
@@ -181,7 +188,6 @@ export default defineComponent({
     let songIds = ref('')
     let currentTime = ref()
     let songDuration = ref()
-    let progress = ref(0)
     let playStatus = ref(false)
     let currentSongIndex = ref(0)
     const songsList = reactive(songsList_)
@@ -221,9 +227,8 @@ export default defineComponent({
               currentTime.value = audio.value.currentTime
               songDuration.value = audio.value.duration
               context.emit('updateCurrentTime', currentTime.value)
-              progress.value = currentTime.value / audio.value.duration
               playStatus.value = !audio.value.paused
-              if (progress.value === 1) {
+              if (currentTime.value === songDuration.value) {
                 autoSwitchSong(autoplayMode.value.val)
               }
             }
@@ -279,7 +284,6 @@ export default defineComponent({
     const switchSong = direction => {
       clearTimer()
       currentTime.value = 0
-      progress.value = 0
       playStatus.value = false
       if (direction === 0) {
         if (currentSongIndex.value === songsList.length - 1) {
@@ -326,6 +330,10 @@ export default defineComponent({
       autoplayMode.value = autoplayMode.value.next
     }
 
+    const changeProgressBySlide = time => {
+      audio.value.currentTime = time
+    }
+
     watch(
       () => volume.value,
       newVal => {
@@ -338,6 +346,13 @@ export default defineComponent({
       time => {
         console.log('listened!')
         audio.value.currentTime = time
+      }
+    )
+
+    watch(
+      () => currentTime.value,
+      newVal => {
+        console.log(newVal)
       }
     )
 
@@ -439,18 +454,20 @@ export default defineComponent({
       audio,
       togglePlay,
       playStatus,
-      progress,
       volume,
       songsListLayerStatus: ref(false),
       songsList,
       currentSongIndex,
       songDuration_,
+      songDuration,
       currentTime_,
+      currentTime,
       singers,
       autoplayMode_,
       autoplayModeForBtnSwitch,
       changMode,
       switchSong,
+      changeProgressBySlide,
       columns,
       songListLayer,
     }
