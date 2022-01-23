@@ -40,9 +40,11 @@
     </q-page-container>
     <q-footer class="footer bg-transparent">
       <BroadcastBar
+        :forceToChangeProgress="forceToChangeProgressValue"
         @play="handlePlay"
         @pause="handlePause"
         @updateCurrentTime="handleUpdateCurrentTime"
+        @switchSong="handleSwitchSong"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
       />
     </q-footer>
@@ -62,6 +64,7 @@
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
         :playStatus="playStatus"
+        @changeProgress="handleChangeProgress"
       />
     </q-dialog>
   </q-layout>
@@ -124,25 +127,35 @@ export default defineComponent({
     $q.dark.set(true)
 
     let currentSongId = ref()
-    let currentSongDetail = reactive(JSON.parse(window.localStorage.getItem('songs'))[0])
+    // 测试环境
+    let currentSongDetail = ref(JSON.parse(window.localStorage.getItem('songs'))[0])
     let playStatus = ref(false)
     let currentTime = ref()
+    let forceToChangeProgressValue = ref('default')
 
-    const handlePlay = songId => {
-      if (currentSongId.value != songId) {
-        currentSongId.value = songId
+    const handlePlay = songDetail => {
+      const { id } = songDetail
+      if (currentSongId.value != id) {
+        currentSongId.value = id
         console.log('songId改变')
+      }
+      if (currentSongDetail.value != songDetail) {
+        currentSongDetail.value = songDetail
       }
       playStatus.value = true
       console.log('开始播放！！')
     }
-    const handlePause = songId => {
-      if (currentSongId.value != songId) {
+
+    const handlePause = songDetail => {
+      const { id } = songDetail
+      if (currentSongId.value != id) {
         // 优化
-        currentSongId.value = songId
+        currentSongId.value = id
+      }
+      if (currentSongDetail.value != songDetail) {
+        currentSongDetail.value = songDetail
       }
       playStatus.value = false
-
       console.log('停止播放！！')
     }
 
@@ -150,12 +163,24 @@ export default defineComponent({
       time = parseInt(time)
       currentTime.value = time
     }
+
+    const handleChangeProgress = time => {
+      console.log('????')
+      forceToChangeProgressValue.value = time
+    }
+
+    const handleSwitchSong = songDetail => {
+      currentSongDetail.value = songDetail
+    }
+
     return {
       essentialLinks: linksList,
       broadcastPageStatus: ref(false),
       handlePlay,
       handlePause,
       handleUpdateCurrentTime,
+      handleChangeProgress,
+      handleSwitchSong,
       currentSongId,
       currentSongDetail,
       currentTime,

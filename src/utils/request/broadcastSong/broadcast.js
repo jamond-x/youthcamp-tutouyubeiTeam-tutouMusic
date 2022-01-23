@@ -83,7 +83,7 @@ export const GetComment = async data => {
 export const GetSongDetail = async data => {
   return await api({
     method: 'POST',
-    url: BROADCAST.SONG_DETAIL,
+    url: `${BROADCAST.SONG_DETAIL}?timestamp=${new Date().getTime()}`,
     data,
     //id=186016
   })

@@ -83,6 +83,7 @@
       >
         <q-icon name="volume_up" />
       </q-knob>
+      <div>{{ forceToChangeProgress }}</div>
     </div>
   </div>
 </template>
@@ -112,7 +113,6 @@ let hello = {
   },
   ar: [{ id: 6452, name: 'TT君', tns: [], alias: [] }],
   id: 186016,
-
   mv: 504177,
   name: 'HELLO!',
   no: 1,
@@ -161,9 +161,13 @@ export default defineComponent({
     'updateCurrentTime',
     'updateDuration',
   ],
-  props: {},
+  props: {
+    forceToChangeProgress: {
+      type: String,
+    },
+  },
   components: {},
-  setup(_, context) {
+  setup(props, context) {
     // let $q = useQuasar()
     // let togglePlay = () => {
     //   $q.notify({
@@ -231,7 +235,7 @@ export default defineComponent({
         }, 100)
         audio.value.play()
         playStatus.value = true
-        context.emit('play', songsList[currentSongIndex.value].id)
+        context.emit('play', songsList[currentSongIndex.value])
       }
     }
 
@@ -261,12 +265,12 @@ export default defineComponent({
         }
         audio.value.play()
         playStatus.value = true
-        context.emit('play', songsList[currentSongIndex.value].id)
+        context.emit('play', songsList[currentSongIndex.value])
       } else {
         clearTimer()
         audio.value.pause()
         playStatus.value = false
-        context.emit('pause', songsList[currentSongIndex.value].id)
+        context.emit('pause', songsList[currentSongIndex.value])
       }
     }, 500)
     /**
@@ -281,22 +285,25 @@ export default defineComponent({
       if (direction === 0) {
         if (currentSongIndex.value === songsList.length - 1) {
           currentSongIndex.value = 0
-          return
+        } else {
+          currentSongIndex.value++
         }
-        currentSongIndex.value++
+        context.emit('switchSong', songsList[currentSongIndex.value])
         return
       }
       if (direction === 1) {
         if (currentSongIndex.value === 0) {
           currentSongIndex.value = songsList.length - 1
-          return
+        } else {
+          currentSongIndex.value--
         }
-        currentSongIndex.value--
+        context.emit('switchSong', songsList[currentSongIndex.value])
         return
       }
       if (direction === 2 || direction === 3) {
         let len = songsList.length
         currentSongIndex.value = Math.floor(Math.random() * (len - 1))
+        context.emit('switchSong', songsList[currentSongIndex.value])
       }
     }
 
@@ -324,6 +331,14 @@ export default defineComponent({
       () => volume.value,
       newVal => {
         audio.value.volume = (100 - newVal) / 100
+      }
+    )
+
+    watch(
+      () => props.forceToChangeProgress,
+      time => {
+        console.log('listened!')
+        audio.value.currentTime = time
       }
     )
 

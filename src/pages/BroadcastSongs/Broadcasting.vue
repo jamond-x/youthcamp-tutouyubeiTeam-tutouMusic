@@ -12,12 +12,17 @@
     <div class="lyric flex flex-center">
       <ul class="q-mt-xl q-mr-xl" id="lyricBar">
         <li
-          class="q-ma-md"
+          class="piece q-ma-md"
           v-for="(item, index) in lyricWithAnchor"
           :key="index"
           :class="[item.anchor, item.anchor === activeEl ? 'active' : '']"
+          @mouseenter="item.switchBtn = true"
+          @mouseleave="item.switchBtn = false"
         >
           {{ item.val }}
+          <span v-show="item.switchBtn" class="play-icon" @click="changeProgress(item.anchor)"
+            >&#9658;</span
+          >
         </li>
       </ul>
     </div>
@@ -26,7 +31,7 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
-import { GetLyric } from 'src/utils/request/broadcastSong/broadcast'
+import { GetLyric, GetSongDetail } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 import { scroll } from 'quasar'
 const { setVerticalScrollPosition } = scroll
@@ -51,15 +56,15 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ['changeProgress'],
   components: {},
-  setup(props) {
+  setup(props, context) {
     let lyric_ = ref()
-
     let lyricWithAnchor = []
     let lyricMap = new Map()
     let lyricIndexMap = new Map()
-
     let activeEl = ref()
+
     const scrollTo = el => {
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
@@ -67,6 +72,12 @@ export default defineComponent({
       index -= 5
       let position = (index / lyricWithAnchor.length) * totalHeight
       setVerticalScrollPosition(container, position, 1000)
+    }
+
+    const changeProgress = anchor => {
+      activeEl.value = anchor
+      scrollTo(anchor)
+      context.emit('changeProgress', { time: anchor.split('').splice(1).join('') })
     }
 
     let singers = computed(() => {
@@ -94,10 +105,14 @@ export default defineComponent({
         s = parseInt(min) * 60 + parseInt(s)
         lyricMap.set(`t${s}`, temp)
         lyricIndexMap.set(`t${s}`, tempIndex)
-        lyricWithAnchor.push({ anchor: `t${s}`, val: temp, index: tempIndex++ })
+        lyricWithAnchor.push({ anchor: `t${s}`, val: temp, index: tempIndex++, switchBtn: false })
         return temp
       })
     }
+
+    // const getSongDetail = id => {
+    //   GetSongDetail({ids})
+    // }
 
     const GetLyric_ = async id => {
       if (isUnNull(id)) {
@@ -108,7 +123,6 @@ export default defineComponent({
         const {
           lrc: { lyric },
         } = await GetLyric({ id })
-        console.log(lyric)
         if (isUnNull(lyric)) {
           console.log('获取歌词失败')
           return
@@ -143,9 +157,9 @@ export default defineComponent({
     return {
       singers,
       lyric_,
-      lyricBar,
       lyricWithAnchor,
       activeEl,
+      changeProgress,
     }
   },
 })
@@ -192,12 +206,16 @@ export default defineComponent({
       li {
         text-align: center;
         opacity: 0.4;
+        .play-icon {
+          cursor: pointer;
+        }
       }
       .active {
         font-size: 19px;
         font-weight: 900;
         word-spacing: 2px;
         opacity: 1;
+        transition: all 0.1s ease;
       }
     }
 
