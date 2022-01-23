@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr fff">
-    <q-header class="bg-transparent" bordered>
+    <q-header class="bg-black" bordered>
       <q-toolbar>
         <q-toolbar-title>
           <q-input
@@ -28,7 +28,7 @@
         </div>
       </q-toolbar>
     </q-header>
-    <q-drawer class="bg-black" :breakpoint="600" show-if-above width="230">
+    <q-drawer class="bg-black" :breakpoint="600" show-if-above :width="230">
       <q-list>
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
@@ -38,7 +38,7 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer class="bg-transparent">
+    <q-footer class="bg-transparent" style="position: fixed; button: 0">
       <BroadcastBar />
     </q-footer>
   </q-layout>
@@ -51,7 +51,7 @@ const linksList = [
   {
     title: '发现音乐',
     icon: 'fas fa-music',
-    link: 'discover',
+    link: '/discover',
   },
   {
     title: '我的主页',
