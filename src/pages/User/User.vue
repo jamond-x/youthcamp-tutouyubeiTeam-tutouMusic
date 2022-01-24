@@ -13,14 +13,15 @@
 
     <div class="content">
       <q-tabs v-model="tab" indicator-color="transparent" active-bg-color="#303030" align="left">
-        <q-tab :ripple="false" name="album" label="专辑" content-class="tab-item" />
-        <q-tab :ripple="false" name="artist" label="艺人" content-class="tab-item" />
+        <q-tab :ripple="false" name="album" label="专辑" content-class="tab-item" v-if="self" />
+        <q-tab :ripple="false" name="artist" label="艺人" content-class="tab-item" v-if="self" />
+        <q-tab :ripple="false" name="follow" label="关注" content-class="tab-item" />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="album" class="tab-panel">
           <div class="sub-albums">
             <AlbumItem
-              v-for="(item, index) in subalbums"
+              v-for="(item, index) in subAlbums"
               :key="index"
               :aid="item.id"
               :avatar="item.picUrl"
@@ -32,11 +33,23 @@
         <q-tab-panel name="artist" class="tab-panel">
           <div class="sub-artists">
             <ArtistItem
-              v-for="(item, index) in subartists"
+              v-for="(item, index) in subArtists"
               :key="index"
               :aid="item.id"
               :avatar="item.picUrl"
               :name="item.name"
+            />
+          </div>
+        </q-tab-panel>
+
+        <q-tab-panel name="follow" class="tab-panel">
+          <div class="sub-artists">
+            <ArtistItem
+              v-for="(item, index) in followList"
+              :key="index"
+              :aid="item.userId"
+              :avatar="item.avatarUrl"
+              :name="item.nickname"
             />
           </div>
         </q-tab-panel>
@@ -47,7 +60,13 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { QueryUser, QueryPlayList, QuerySubArtist, QuerySubAlbum } from 'src/utils/request/user'
+import {
+  QueryUser,
+  QueryPlayList,
+  QuerySubArtist,
+  QuerySubAlbum,
+  QueryFollowList,
+} from 'src/utils/request/user'
 import UserProfile from './UserProfile.vue'
 import UserLikeBar from './UserLikeBar.vue'
 import ArtistItem from 'src/components/User/ArtistItem.vue'
@@ -66,8 +85,10 @@ export default defineComponent({
       userdata: {},
       like: 0,
       tab: 'album',
-      subartists: [],
-      subalbums: [],
+      subArtists: [],
+      subAlbums: [],
+      followList: [],
+      self: true,
     }
   },
   methods: {
@@ -81,10 +102,13 @@ export default defineComponent({
         that.like = res.playlist[0].id
       })
       QuerySubArtist().then(res => {
-        that.subartists = res.data
+        that.subArtists = res.data
       })
       QuerySubAlbum().then(res => {
-        that.subalbums = res.data
+        that.subAlbums = res.data
+      })
+      QueryFollowList(_id).then(res => {
+        that.followList = res.follow
       })
     },
   },
