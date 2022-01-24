@@ -72,3 +72,13 @@ export const QueryFollowList = async uid => {
     },
   })
 }
+
+export const QueryFollowerList = async uid => {
+  return await api({
+    method: 'post',
+    url: '/user/followeds?uid=' + uid,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
