@@ -2,8 +2,13 @@
   <div class="comment q-mt-xl">
     <div class="location">
       <div class="column justify-center items-center">
-        <div class="top q-my-xl q-pt-xl">精彩评论</div>
-        <div class="each-comment q-my-md" v-for="(item, index) in comment" :key="index">
+        <div class="top q-my-xl q-pt-xl">
+          <span :class="{ unActiveHead: !commentMode }" @click="changeComment(true)">精彩评论</span>
+          <span :class="{ unActiveHead: commentMode }" class="q-ml-md" @click="changeComment(false)"
+            >最新评论</span
+          >
+        </div>
+        <div class="each-comment q-my-md" v-for="(item, index) in currentComment" :key="index">
           <div class="column">
             <q-avatar class="q-mt-xs">
               <img :src="item.user.avatarUrl" />
@@ -36,6 +41,7 @@
             </div>
           </div>
         </div>
+        <q-btn label="加载更多.." rounded />
       </div>
     </div>
   </div>
@@ -54,15 +60,23 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let comment = ref([])
+    let currentComment = ref([])
+    let hotComment_ = ref([])
+    let comment_ = ref([])
+    let commentMode = ref(true)
     const get = async id => {
       if (isUnNull(id)) return
-      const { hotComments } = await GetComment({ id })
+      let res = await GetComment({ id })
+      console.log(res)
+      const { hotComments, comments } = res
+
       // hotComments.forEach(el => {
       //   comment.push(el)
       // })
-      comment.value = hotComments
+      hotComment_.value = hotComments
+      comment_.value = comments
       console.log(hotComments)
+      currentComment.value = hotComments
       // const { hotComments } = JSON.parse(window.localStorage.getItem('comment'))
       // comment = hotComments
       // console.log(comment)
@@ -71,7 +85,16 @@ export default defineComponent({
 
     const like = async (...args) => {
       let res = await LikeComment(...args)
-      console.log(res)
+    }
+
+    const changeComment = mode => {
+      if (mode) {
+        commentMode.value = true
+        currentComment.value = hotComment_.value
+      } else {
+        commentMode.value = false
+        currentComment.value = comment_.value
+      }
     }
 
     watch(
@@ -83,7 +106,9 @@ export default defineComponent({
     )
 
     return {
-      comment,
+      currentComment,
+      commentMode,
+      changeComment,
       like,
     }
   },
@@ -98,8 +123,16 @@ export default defineComponent({
   grid-template-columns: 1fr 1fr 1fr;
   .location {
     grid-area: 1/2/2/3;
+    & > div {
+      margin-bottom: 300px;
+    }
     .top {
       font-size: 18px;
+      cursor: pointer;
+      .unActiveHead {
+        opacity: 0.7;
+        font-size: 15px;
+      }
     }
     .each-comment {
       width: 400px;
