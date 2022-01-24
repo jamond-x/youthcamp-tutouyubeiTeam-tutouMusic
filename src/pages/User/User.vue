@@ -60,6 +60,7 @@ export default defineComponent({
     ArtistItem,
     AlbumItem,
   },
+  props: ['uid'],
   data() {
     return {
       userdata: {},
@@ -69,21 +70,31 @@ export default defineComponent({
       subalbums: [],
     }
   },
-  methods: {},
+  methods: {
+    updateData(_id) {
+      let that = this
+      _id = _id || localStorage.getItem('userId') || '58323110'
+      QueryUser(_id).then(res => {
+        that.userdata = res.profile
+      })
+      QueryPlayList(_id).then(res => {
+        that.like = res.playlist[0].id
+      })
+      QuerySubArtist().then(res => {
+        that.subartists = res.data
+      })
+      QuerySubAlbum().then(res => {
+        that.subalbums = res.data
+      })
+    },
+  },
   mounted() {
-    let that = this
-    QueryUser(58323110).then(res => {
-      that.userdata = res.profile
-    })
-    QueryPlayList(58323110).then(res => {
-      that.like = res.playlist[0].id
-    })
-    QuerySubArtist().then(res => {
-      that.subartists = res.data
-    })
-    QuerySubAlbum().then(res => {
-      that.subalbums = res.data
-    })
+    this.updateData(this.$route.params.uid)
+  },
+  watch: {
+    uid(n, o) {
+      this.updateData(n)
+    },
   },
 })
 </script>
