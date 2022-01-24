@@ -69,7 +69,7 @@ export const GetLyric = async data => {
 export const GetComment = async data => {
   return await api({
     method: 'POST',
-    url: BROADCAST.GET_COMMENT,
+    url: `${BROADCAST.GET_COMMENT}?timestamp=${new Date().getTime()}`,
     data,
     //id=186016
   })
@@ -86,5 +86,56 @@ export const GetSongDetail = async data => {
     url: `${BROADCAST.SONG_DETAIL}?timestamp=${new Date().getTime()}`,
     data,
     //id=186016
+  })
+}
+
+export const Login = async data => {
+  return await api({
+    method: 'POST',
+    url: '/login/cellphone',
+    data,
+  })
+}
+
+export const Logout = async () => {
+  return await api({
+    method: 'POST',
+    url: '/logout',
+  })
+}
+
+export const LoginStatus = async () => {
+  return await api({
+    method: 'POST',
+    url: '/login/status',
+  })
+}
+
+export const UserDetail = async data => {
+  return await api({
+    method: 'POST',
+    url: '/user/detail',
+    data,
+  })
+}
+
+/**
+ *
+ * @param {Number} id  资源 id, 如歌曲 id,mv id
+ * @param {Number} cid  评论 id
+ * @param {Number} t 是否点赞 , 1 为点赞 ,0 为取消点赞
+ * @param {Number} type 数字 , 资源类型 0: 歌曲 1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频 6: 动态
+ * @returns
+ */
+export const LikeComment = async (id, cid, t, type) => {
+  return await api({
+    method: 'POST',
+    url: `/comment/like?timestamp=${new Date().getTime()}`,
+    data: {
+      id: `${id}`,
+      cid: `${cid}`,
+      t: `${t}`,
+      type: `${type}`,
+    },
   })
 }

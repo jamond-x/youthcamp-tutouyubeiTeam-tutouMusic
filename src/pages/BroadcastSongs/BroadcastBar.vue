@@ -105,7 +105,7 @@ import {
   Check_Music,
   Search,
 } from 'src/utils/request/broadcastSong/broadcast'
-
+// TODO: class 的思想抽出方法！
 import { isUnNull } from 'src/utils'
 
 let hello = {
@@ -344,15 +344,7 @@ export default defineComponent({
     watch(
       () => props.forceToChangeProgress,
       time => {
-        console.log('listened!')
         audio.value.currentTime = time
-      }
-    )
-
-    watch(
-      () => currentTime.value,
-      newVal => {
-        console.log(newVal)
       }
     )
 
@@ -478,7 +470,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
 .bar {
-  background-color: #2c1919;
+  // background-color: #2c1919;
   position: relative;
   width: 100%;
   height: 70px;

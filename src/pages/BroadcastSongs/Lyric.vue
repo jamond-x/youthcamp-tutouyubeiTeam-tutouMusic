@@ -26,14 +26,23 @@
         </li>
       </ul>
     </div>
+    <Comment :id="songId" />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
-import { GetLyric, GetSongDetail } from 'src/utils/request/broadcastSong/broadcast'
+import {
+  GetLyric,
+  GetSongDetail,
+  Login,
+  Logout,
+  LoginStatus,
+  UserDetail,
+} from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
-import { scroll } from 'quasar'
+import Comment from './Comment.vue'
+import { Cookies, scroll } from 'quasar'
 const { setVerticalScrollPosition } = scroll
 
 export default defineComponent({
@@ -57,14 +66,13 @@ export default defineComponent({
     },
   },
   emits: ['changeProgress'],
-  components: {},
+  components: { Comment },
   setup(props, context) {
     let lyric_ = ref()
     let lyricWithAnchor = ref([])
     let lyricMap = new Map()
     let lyricIndexMap = new Map()
     let activeEl = ref()
-
     const scrollTo = el => {
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
@@ -164,11 +172,29 @@ export default defineComponent({
     watch(
       () => props.songId,
       newVal => {
-        console.log('检测到songId 改变')
-        console.log('新值：' + newVal)
         GetLyric_(newVal)
       }
     )
+
+    const login = async (phone, password) => {
+      // let data = await Login({ phone, password })
+      // console.log(data)
+      // setTimeout(() => {
+      //   window.localStorage.setItem('user', JSON.stringify(data))
+      // }, 5000)
+      // let user = JSON.parse(window.localStorage.getItem('user'))
+      // console.log(user)
+      // const { token } = user
+      // window.localStorage.setItem('token', token)
+      // Cookies.set('token', token)
+    }
+    setTimeout(async () => {
+      // login()
+      // console.log(await LoginStatus())
+      // let userDetail = await UserDetail({ uid: 369626548 })
+      // window.localStorage.setItem('userDetail', JSON.stringify(userDetail))
+      // console.log(userDetail)
+    }, 4000)
 
     return {
       singers,
@@ -193,6 +219,7 @@ export default defineComponent({
   margin: 0;
   padding: 0;
   background-color: #2c1919;
+
   .header {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -209,7 +236,9 @@ export default defineComponent({
       grid-area: 1/3/2/4;
     }
   }
+
   .lyric {
+    @extend .scroll;
     user-select: none;
 
     & ul {
@@ -235,30 +264,9 @@ export default defineComponent({
         transition: all 0.1s ease;
       }
     }
+  }
 
-    ul::-webkit-scrollbar {
-      width: 4px;
-      scrollbar-arrow-color: darkgreen;
-    }
-    ul::-webkit-scrollbar {
-      /*滚动条整体样式*/
-      width: 4px; /*高宽分别对应横竖滚动条的尺寸*/
-      height: 4px;
-      scrollbar-arrow-color: red;
-    }
-    ul::-webkit-scrollbar-thumb {
-      /*滚动条里面小方块*/
-      border-radius: 5px;
-      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      background: rgba(0, 0, 0, 0.2);
-      scrollbar-arrow-color: red;
-    }
-    ul::-webkit-scrollbar-track {
-      /*滚动条里面轨道*/
-      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      border-radius: 0;
-      background: rgba(0, 0, 0, 0.1);
-    }
+  .comment {
   }
 }
 </style>

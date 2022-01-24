@@ -38,7 +38,7 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer class="footer">
+    <q-footer class="footer q-mb-md q-ml-md" reveal>
       <BroadcastBar
         :forceToChangeProgress="forceToChangeProgressValue"
         @play="handlePlay"
@@ -59,7 +59,7 @@
       no-shake
       class="broadcast-panel"
     >
-      <Broadcasting
+      <Lyric
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
@@ -72,8 +72,8 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
-import BroadcastBar from 'src/pages/BroadcastSongs/Bar.vue'
-import Broadcasting from 'src/pages/BroadcastSongs/Broadcasting.vue'
+import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
+import Lyric from 'src/pages/BroadcastSongs/Lyric.vue'
 const linksList = [
   {
     title: '发现音乐',
@@ -116,7 +116,7 @@ export default defineComponent({
   components: {
     EssentialLink,
     BroadcastBar,
-    Broadcasting,
+    Lyric,
   },
 
   setup() {
@@ -206,8 +206,11 @@ export default defineComponent({
   z-index: 2001;
   height: 80px;
   background-color: #2c1919;
+  border-radius: 20px;
+  width: 98%;
 }
 .broadcast-panel {
   z-index: 2000;
+  overflow: scroll;
 }
 </style>
