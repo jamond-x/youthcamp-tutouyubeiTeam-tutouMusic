@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <q-btn label="加载更多.." rounded />
+        <q-btn @click="loadMoreComment" label="加载更多.." rounded />
       </div>
     </div>
   </div>
@@ -64,6 +64,7 @@ export default defineComponent({
     let hotComment_ = ref([])
     let comment_ = ref([])
     let commentMode = ref(true)
+    let commentAmount = ref(20)
     const get = async id => {
       if (isUnNull(id)) return
       let res = await GetComment({ id })
@@ -97,6 +98,15 @@ export default defineComponent({
       }
     }
 
+    const loadMoreComment = async () => {
+      if (!commentMode.value) {
+        let { comments } = await GetComment({ id: props.id, limit: (commentAmount.value += 20) })
+        comment_.value = comments
+        currentComment.value = comment_.value
+      }
+      // TODO: 解决加载给多热门评论问题
+    }
+
     watch(
       () => props.id,
       newVal => {
@@ -109,6 +119,7 @@ export default defineComponent({
       currentComment,
       commentMode,
       changeComment,
+      loadMoreComment,
       like,
     }
   },
@@ -132,6 +143,7 @@ export default defineComponent({
       .unActiveHead {
         opacity: 0.7;
         font-size: 15px;
+        transition: all 0.2;
       }
     }
     .each-comment {
