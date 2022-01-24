@@ -44,7 +44,7 @@
 
         <q-tab-panel name="follow" class="tab-panel">
           <div class="sub-artists">
-            <ArtistItem
+            <UserItem
               v-for="(item, index) in followList"
               :key="index"
               :aid="item.userId"
@@ -71,6 +71,7 @@ import UserProfile from './UserProfile.vue'
 import UserLikeBar from './UserLikeBar.vue'
 import ArtistItem from 'src/components/User/ArtistItem.vue'
 import AlbumItem from 'src/components/User/AlbumItem.vue'
+import UserItem from 'src/components/User/UserItem.vue'
 export default defineComponent({
   name: 'User',
   components: {
@@ -78,6 +79,7 @@ export default defineComponent({
     UserLikeBar,
     ArtistItem,
     AlbumItem,
+    UserItem,
   },
   props: ['uid'],
   data() {
