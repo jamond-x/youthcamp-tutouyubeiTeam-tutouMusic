@@ -95,6 +95,8 @@ export default defineComponent({
     updateData(_id) {
       let that = this
       _id = _id || localStorage.getItem('userId') || '58323110'
+      if (_id == localStorage.getItem('userId')) this.self = true
+      else this.self = false
       QueryUser(_id).then(res => {
         that.userdata = res.profile
       })
