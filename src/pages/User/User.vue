@@ -18,8 +18,15 @@
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="album" class="tab-panel">
-          <div class="text-h6">专辑</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <div class="sub-albums">
+            <AlbumItem
+              v-for="(item, index) in subalbums"
+              :key="index"
+              :aid="item.id"
+              :avatar="item.picUrl"
+              :name="item.name"
+            />
+          </div>
         </q-tab-panel>
 
         <q-tab-panel name="artist" class="tab-panel">
@@ -40,16 +47,18 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { QueryUser, QueryPlayList, QuerySubArtist } from 'src/utils/request/user'
+import { QueryUser, QueryPlayList, QuerySubArtist, QuerySubAlbum } from 'src/utils/request/user'
 import UserProfile from './UserProfile.vue'
 import UserLikeBar from './UserLikeBar.vue'
 import ArtistItem from 'src/components/User/ArtistItem.vue'
+import AlbumItem from 'src/components/User/AlbumItem.vue'
 export default defineComponent({
   name: 'User',
   components: {
     UserProfile,
     UserLikeBar,
     ArtistItem,
+    AlbumItem,
   },
   data() {
     return {
@@ -57,6 +66,7 @@ export default defineComponent({
       like: 0,
       tab: 'album',
       subartists: [],
+      subalbums: [],
     }
   },
   methods: {},
@@ -70,6 +80,9 @@ export default defineComponent({
     })
     QuerySubArtist().then(res => {
       that.subartists = res.data
+    })
+    QuerySubAlbum().then(res => {
+      that.subalbums = res.data
     })
   },
 })
@@ -92,7 +105,8 @@ export default defineComponent({
   padding: 0;
 }
 
-.sub-artists {
+.sub-artists,
+.sub-albums {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
