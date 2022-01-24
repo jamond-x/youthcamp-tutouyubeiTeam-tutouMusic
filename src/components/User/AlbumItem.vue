@@ -34,6 +34,7 @@ export default {
   border-radius: 15px;
   margin-bottom: 0.25rem;
   z-index: 2;
+  transition: transform 0.2s;
 }
 
 .shadow {
@@ -45,9 +46,12 @@ export default {
   z-index: 1;
   background-size: cover;
   aspect-ratio: 1/1;
-  border-radius: 50%;
   opacity: 0;
   transition: opacity 0.2s;
+}
+
+.album-item:hover img {
+  transform: translateY(-0.2rem);
 }
 
 .album-item:hover .shadow {
