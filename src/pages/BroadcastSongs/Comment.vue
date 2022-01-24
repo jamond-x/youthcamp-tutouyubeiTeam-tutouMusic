@@ -13,9 +13,13 @@
             <q-avatar class="q-mt-xs">
               <img :src="item.user.avatarUrl" />
             </q-avatar>
+            <q-badge class="badge" rounded color="orange" label="v" />
           </div>
           <div class="column justify-center">
             <div class="name">{{ item.user.nickname }} :{{ item.content }}</div>
+            <div v-if="item.beReplied.length > 0" class="comment-replied q-my-sm q-py-xs q-pl-sm">
+              @{{ item.beReplied[0].user.nickname }}： {{ item.beReplied[0].content }}
+            </div>
             <div class="bar q-mt-sm">
               <div class="time">{{ item.timeStr }}</div>
               <div class="row reverse">
@@ -60,6 +64,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    // TODO: 评论是否为回复评论
+    // TODO: 认证用户图标
+    // TODO: 点击用户头像跳转至用户主页
     let currentComment = ref([])
     let hotComment_ = ref([])
     let comment_ = ref([])
@@ -83,7 +90,13 @@ export default defineComponent({
       // console.log(comment)
     }
     get(props.id)
-
+    const initCommentData = () => {
+      currentComment.value = []
+      hotComment_.value = []
+      comment_.value = []
+      commentMode.value = true
+      commentAmount.value = 20
+    }
     const like = async (...args) => {
       let res = await LikeComment(...args)
     }
@@ -110,7 +123,7 @@ export default defineComponent({
     watch(
       () => props.id,
       newVal => {
-        console.log('评论页面id改变')
+        initCommentData()
         get(newVal)
       }
     )
@@ -151,7 +164,20 @@ export default defineComponent({
       // border-radius: 20px;
       display: grid;
       grid-template-columns: 1fr 5fr;
-
+      position: relative;
+      .badge {
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        top: 5px;
+        left: 35px;
+      }
+      .comment-replied {
+        width: 320px;
+        opacity: 0.4;
+        background-color: #165156;
+        border-radius: 5px;
+      }
       .bar {
         display: grid;
         grid-template-columns: 1fr 3fr;
