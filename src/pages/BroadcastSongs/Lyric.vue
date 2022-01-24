@@ -100,7 +100,7 @@ export default defineComponent({
       temp.shift()
       return temp.join('')
     })
-
+    // TODO: 使用正则 解决解析歌词不全问题
     const initLyric = () => {
       lyricMap = new Map()
       lyricIndexMap = new Map()

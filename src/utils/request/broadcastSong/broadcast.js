@@ -8,6 +8,9 @@ const api = createApi(
   })
 )
 
+// 有的需要cookie 有的不需要 带上反而会报错？
+let { cookie } = JSON.parse(window.localStorage.getItem('user'))
+
 /**
  *@description 搜索
  * @param { Object } data{keywords: '关键词'}
@@ -107,7 +110,8 @@ export const Logout = async () => {
 export const LoginStatus = async () => {
   return await api({
     method: 'POST',
-    url: '/login/status',
+    url: `/login/status`,
+    data,
   })
 }
 
@@ -132,10 +136,10 @@ export const LikeComment = async (id, cid, t, type) => {
     method: 'POST',
     url: `/comment/like?timestamp=${new Date().getTime()}`,
     data: {
-      id: `${id}`,
-      cid: `${cid}`,
-      t: `${t}`,
-      type: `${type}`,
+      id,
+      cid,
+      t,
+      type,
     },
   })
 }

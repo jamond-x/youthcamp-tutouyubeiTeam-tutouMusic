@@ -1,9 +1,9 @@
 <template>
   <div class="bar">
-    <div class="song-detail row justify-start items-center">
+    <div v-if="isReady" class="song-detail row justify-start items-center">
       <q-img
         class="img q-ml-xl"
-        :src="songsList[currentSongIndex].al.picUrl"
+        :src="songsList[currentSongIndex].al.picUrl ? songsList[currentSongIndex].al.picUrl : ''"
         @click="$emit('toggleBroadcastPage')"
       ></q-img>
       <div class="q-ml-md">
@@ -11,6 +11,9 @@
         <div class="singer">{{ singers }}</div>
       </div>
       <div class="album offset-2">{{ songsList[currentSongIndex].al.name }}</div>
+    </div>
+    <div v-else class="flex flex-center">
+      <div>列表暂无播放歌曲~</div>
     </div>
     <div class="controller column">
       <div class="row justify-around q-mt-xs">
@@ -57,7 +60,11 @@
           {{ songDuration_ === 'NaN:NaN' ? '' : songDuration_ }}
         </div>
       </div>
-      <audio class="audio" ref="audio" :src="songsList[currentSongIndex].songUrl"></audio>
+      <audio
+        class="audio"
+        ref="audio"
+        :src="isReady ? songsList[currentSongIndex].songUrl : ''"
+      ></audio>
     </div>
     <div class="tools row reverse items-center">
       <q-card class="list-card" v-show="songsListLayerStatus">
@@ -96,7 +103,7 @@
 
 <script>
 import { defineComponent, ref, reactive, watch, computed } from 'vue'
-import { throttle } from 'quasar'
+import { throttle, Cookies } from 'quasar'
 // import { useQuasar } from 'quasar'
 
 import {
@@ -104,6 +111,7 @@ import {
   GetSongDetail,
   Check_Music,
   Search,
+  Login,
 } from 'src/utils/request/broadcastSong/broadcast'
 // TODO: class 的思想抽出方法！
 import { isUnNull } from 'src/utils'
@@ -190,6 +198,7 @@ export default defineComponent({
     let songDuration = ref()
     let playStatus = ref(false)
     let currentSongIndex = ref(0)
+    let isReady = ref(false)
     const songsList = reactive(songsList_)
     const songListLayer = reactive(songListLayer_)
     let modeListObj = [
@@ -245,6 +254,7 @@ export default defineComponent({
 
     const queryUrls = async id => {
       const { data } = await GetSongUrl({ id })
+      if (isUnNull(data)) return
       for (let obj of data) {
         for (let j of songsList) {
           if (obj.id === j.id) {
@@ -252,6 +262,7 @@ export default defineComponent({
           }
         }
       }
+      isReady.value = true
     }
 
     //TODO: 缓缓暂停、播放
@@ -407,16 +418,16 @@ export default defineComponent({
 
     // Check_Music_('347230')
     const Search_ = async keywords => {
-      // songsList.pop()
-      // const {
-      //   result: { songs },
-      // } = await Search({ keywords })
-      // console.log(songs)
-      // for (let i of songs) {
-      //   songsList.push(i)
-      // }
+      songsList.pop()
+      const {
+        result: { songs },
+      } = await Search({ keywords })
+      console.log(songs)
+      for (let i of songs) {
+        songsList.push(i)
+      }
 
-      // window.localStorage.setItem('songs', JSON.stringify(songs))
+      window.localStorage.setItem('songs2', JSON.stringify(songs))
       // console.log(songsList[currentSongIndex.value].al.picUrl)
 
       songsList.pop()
@@ -432,9 +443,10 @@ export default defineComponent({
       songIds.value = arr.join('')
       queryUrls(songIds.value)
     }
-    setTimeout(() => {
-      Search_('比伯')
-    }, 2000)
+    Search_('比伯')
+    // setTimeout(async () => {
+    //   Search_('比伯')
+    // }, 5000)
 
     // let temp = songsList.map(el => {
     //   if (!isUnNull(el.songUrl)) {
@@ -455,6 +467,7 @@ export default defineComponent({
       currentTime_,
       currentTime,
       singers,
+      isReady,
       autoplayMode_,
       autoplayModeForBtnSwitch,
       changMode,

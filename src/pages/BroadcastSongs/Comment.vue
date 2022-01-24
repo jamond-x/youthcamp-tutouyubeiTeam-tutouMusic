@@ -1,36 +1,38 @@
 <template>
   <div class="comment q-mt-xl">
-    <div class="main">
-      <div class="top q-my-xl q-pt-xl">精彩评论</div>
-      <div class="each-comment q-my-md" v-for="(item, index) in comment" :key="index">
-        <div class="column">
-          <q-avatar class="q-mt-xs">
-            <img :src="item.user.avatarUrl" />
-          </q-avatar>
-        </div>
-        <div class="column justify-center">
-          <div class="name">{{ item.user.nickname }} :{{ item.content }}</div>
-          <div class="bar q-mt-sm">
-            <div class="time">{{ item.timeStr }}</div>
-            <div class="row reverse">
-              <span class="liked-count">{{ item.likedCount }}</span>
-              <q-btn
-                v-if="!item.liked"
-                @click="like(id, item.commentId, 1, 0)"
-                size="10px"
-                rounded
-                flat
-                icon="far fa-heart"
-              />
-              <q-btn
-                v-else
-                size="10px"
-                @click="like(id, item.commentId, 0, 0)"
-                rounded
-                flat
-                color="red"
-                icon="fas fa-heart"
-              />
+    <div class="location">
+      <div class="column justify-center items-center">
+        <div class="top q-my-xl q-pt-xl">精彩评论</div>
+        <div class="each-comment q-my-md" v-for="(item, index) in comment" :key="index">
+          <div class="column">
+            <q-avatar class="q-mt-xs">
+              <img :src="item.user.avatarUrl" />
+            </q-avatar>
+          </div>
+          <div class="column justify-center">
+            <div class="name">{{ item.user.nickname }} :{{ item.content }}</div>
+            <div class="bar q-mt-sm">
+              <div class="time">{{ item.timeStr }}</div>
+              <div class="row reverse">
+                <span class="liked-count">{{ item.likedCount }}</span>
+                <q-btn
+                  v-if="!item.liked"
+                  @click="like(id, item.commentId, 1, 0)"
+                  size="10px"
+                  rounded
+                  flat
+                  icon="far fa-heart"
+                />
+                <q-btn
+                  v-else
+                  size="10px"
+                  @click="like(id, item.commentId, 0, 0)"
+                  rounded
+                  flat
+                  color="red"
+                  icon="fas fa-heart"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -41,7 +43,7 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import { GetComment, LikeComment } from 'src/utils/request/broadcastSong/broadcast'
+import { GetComment, LikeComment, LoginStatus } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 export default defineComponent({
   name: 'Comment',
@@ -68,10 +70,8 @@ export default defineComponent({
     get(props.id)
 
     const like = async (...args) => {
-      // let res = await LikeComment(...args)
-      // console.log(res)
-      console.log('目前用不了欸！！！')
-      // 估计是目前没有登录的问题！！
+      let res = await LikeComment(...args)
+      console.log(res)
     }
 
     watch(
@@ -96,7 +96,7 @@ export default defineComponent({
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  .main {
+  .location {
     grid-area: 1/2/2/3;
     .top {
       font-size: 18px;
