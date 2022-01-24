@@ -52,3 +52,13 @@ export const QuerySubArtist = async () => {
     },
   })
 }
+
+export const QuerySubAlbum = async () => {
+  return await api({
+    method: 'post',
+    url: '/album/sublist',
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
