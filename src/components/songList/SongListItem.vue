@@ -2,7 +2,7 @@
   <div class="list-item" @click="itemClick">
     <div class="img-box">
       <img :src="listItem.picUrl || listItem.coverImgUrl" />
-      <i class="el-icon-video-play" />
+      <q-icon name="play_circle" />
     </div>
     <div class="list-info">
       <p>{{ listItem.name }}</p>
@@ -48,10 +48,22 @@ export default defineComponent({
   text-align: center;
   // align-items: center;
   /* background-color: pink; */
+  .q-icon {
+    position: absolute;
+    top: 57%;
+    right: 20%;
+    font-size: 3vw;
+    color: white;
+    opacity: 0;
+    transition: opacity 1s;
+  }
   .img-box:hover {
     cursor: pointer;
-    i {
+    .q-icon {
       opacity: 1;
+    }
+    img {
+      filter: brightness(80%);
     }
   }
   img {
@@ -60,6 +72,7 @@ export default defineComponent({
     border-radius: 5px;
     /* 消除图片下的间隙 */
     vertical-align: middle;
+    transition: filter 1s;
   }
   .list-info {
     width: 100%;
@@ -83,16 +96,6 @@ export default defineComponent({
         color: gainsboro;
       }
     }
-  }
-
-  i {
-    position: absolute;
-    top: 109px;
-    right: 6px;
-    font-size: 30px;
-    color: white;
-    opacity: 0;
-    transition: opacity 1s;
   }
 }
 </style>
