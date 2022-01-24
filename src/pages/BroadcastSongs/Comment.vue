@@ -40,8 +40,9 @@
 </template>
 
 <script>
-import { defineComponent, reactive, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { GetComment, LikeComment } from 'src/utils/request/broadcastSong/broadcast'
+import { isUnNull } from 'src/utils'
 export default defineComponent({
   name: 'Comment',
   components: {},
@@ -51,12 +52,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let comment = reactive([])
+    let comment = ref([])
     const get = async id => {
+      if (isUnNull(id)) return
       const { hotComments } = await GetComment({ id })
-      hotComments.forEach(el => {
-        comment.push(el)
-      })
+      // hotComments.forEach(el => {
+      //   comment.push(el)
+      // })
+      comment.value = hotComments
       console.log(hotComments)
       // const { hotComments } = JSON.parse(window.localStorage.getItem('comment'))
       // comment = hotComments
