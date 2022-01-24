@@ -62,3 +62,13 @@ export const QuerySubAlbum = async () => {
     },
   })
 }
+
+export const QueryFollowList = async uid => {
+  return await api({
+    method: 'post',
+    url: '/user/follows?uid=' + uid,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
