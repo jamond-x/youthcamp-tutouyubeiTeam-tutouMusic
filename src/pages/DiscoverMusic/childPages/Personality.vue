@@ -3,24 +3,26 @@
     <!-- 轮播图 -->
     <q-carousel
       v-model="slide"
-      swipeable
       animated
+      transition-prev="slide-right"
+      transition-next="slide-left"
       infinite
       :autoplay="5000"
       control-color="white"
       navigation
       arrows
+      height="27vw"
       class="bg-transparent text-white rounded-borders col-12"
     >
       <q-carousel-slide
         :name="index"
         v-for="(item, index) in state.banners"
-        :key="index"
-        class="column no-wrap text-center"
+        :key="item"
+        class="row justify-center no-wrap"
       >
-        <a :href="item.url">
-          <img class="bannerImage" :src="item.imageUrl" alt="" />
-        </a>
+
+        <img class="bannerImage" :src="item.imageUrl" alt="" />
+
       </q-carousel-slide>
     </q-carousel>
 
@@ -33,7 +35,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, onMounted } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
 
 import SongList from 'components/songList/SongList'
 
@@ -54,7 +56,6 @@ export default defineComponent({
     })
 
     QueryBanner().then(res => {
-      // banners = reactive(res.banners)
       state.banners = res.banners.splice(0, 4)
       // console.log(state.banners)
     })

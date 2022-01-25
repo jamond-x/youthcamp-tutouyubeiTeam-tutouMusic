@@ -21,7 +21,10 @@ export const QueryRecommendSongList = async data => {
 // 获取精品歌单（发现页歌单中使用）
 export const QueryQualitySongList = async data => {
   return await api({
-    url: 'top/playlist/highquality'
+    url: 'top/playlist/highquality',
+    params: {
+      limit: 1
+    }
   })
 }
 
@@ -33,12 +36,16 @@ export const QuerySongListTags = async data => {
 }
 
 // 根据标签获取歌单（发现页歌单中使用）
-export const QuerySongListByTag = async data => {
+export const QuerySongListByTag = async (data, offset) => {
   return await api({
     // top/playlist/highquality?cat="华语"
-    url: 'top/playlist/highquality',
+    url: 'top/playlist/hot',
+    // url: 'top/playlist/highquality',
     params: {
-      cat: data
+      // tag: data
+      cat: data,
+      offset,
+      limit: 20
     }
   })
 }

@@ -40,8 +40,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .list-item {
   position: relative;
-  flex: 20%;
-  // width: 145px;
+  // flex: 20%;
+  width: 20%;
   height: 15vw;
   margin-bottom: 10px;
   overflow: hidden;

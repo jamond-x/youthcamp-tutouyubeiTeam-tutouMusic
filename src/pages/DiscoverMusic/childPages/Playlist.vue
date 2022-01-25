@@ -32,7 +32,18 @@
         >
       </div>
     </div>
-    <song-list :song-lists="state.songlist" />
+    <!-- <song-list :song-lists="state.songlist" /> -->
+
+    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250">
+      <transition name="show-hide">
+        <song-list :song-lists="state.songlist" />
+      </transition>
+      <template v-slot:loading>
+        <div class="row justify-center q-my-md">
+          <q-spinner-dots color="white" size="40px"></q-spinner-dots>
+        </div>
+      </template>
+    </q-infinite-scroll>
   </div>
 </template>
 
@@ -57,13 +68,18 @@ export default defineComponent({
       banner: {},
       songlist: [],
       tags: [],
+      currTag: '华语',
     })
 
     // 获取精品歌单
     QueryQualitySongList().then(res => {
       // console.log(res.playlists)
       state.banner = res.playlists[0]
-      state.songlist = res.playlists.splice(1, 30)
+    })
+
+    QuerySongListByTag(state.currTag, 0).then(res => {
+      // console.log(res.playlists)
+      state.songlist = res.playlists
     })
 
     // 获取标签
@@ -73,15 +89,27 @@ export default defineComponent({
     })
 
     function GetSongListByTag(tag) {
+      state.currTag = tag
       QuerySongListByTag(tag).then(res => {
         // console.log(res)
-        state.songlist = res.playlists.splice(1, 30)
+        state.songlist = res.playlists
+      })
+    }
+
+    function onLoad(index, done) {
+      // console.log(index)
+      QuerySongListByTag(state.currTag, index * 20).then(res => {
+        console.log(res.playlists)
+        // state.songlist = res.playlists
+        state.songlist.push(...res.playlists)
+        done()
       })
     }
 
     return {
       state,
       GetSongListByTag,
+      onLoad,
     }
   },
 })
@@ -160,5 +188,16 @@ export default defineComponent({
       color: #d0d0b6;
     }
   }
+}
+
+.show-hide-enter-active {
+    transition: all .5s ease;
+}
+.show-hide-leave-active {
+    transition: all 1s ease;
+}
+.show-hide-enter, .show-hide-leave-active {
+    transform: translate( -100%, 0);
+    opacity: 0;
 }
 </style>
