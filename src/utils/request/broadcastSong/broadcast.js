@@ -2,6 +2,7 @@ import axios from 'axios'
 import { createApi } from '..'
 import { REQUEST_BASE_URL, BROADCAST } from 'src/utils/const'
 
+let { cookie } = JSON.parse(window.localStorage.getItem('user'))
 const api = createApi(
   axios.create({
     baseURL: REQUEST_BASE_URL,
@@ -9,7 +10,6 @@ const api = createApi(
 )
 
 // 有的需要cookie 有的不需要 带上反而会报错？
-let { cookie } = JSON.parse(window.localStorage.getItem('user'))
 
 /**
  *@description 搜索
@@ -33,7 +33,7 @@ export const Search = async data => {
 export const GetSongUrl = async data => {
   return await api({
     method: 'POST',
-    url: BROADCAST.GET_URL,
+    url: `${BROADCAST.GET_URL}?timestamp=${new Date().getTime()}`,
     data,
   })
 }
@@ -75,6 +75,16 @@ export const GetComment = async data => {
     url: `${BROADCAST.GET_COMMENT}?timestamp=${new Date().getTime()}`,
     data,
     //id=186016
+  })
+}
+export const GetCommentWithCookie = async id => {
+  return await api({
+    method: 'POST',
+    url: `${BROADCAST.GET_COMMENT}?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+      cookie,
+    },
   })
 }
 
@@ -140,6 +150,7 @@ export const LikeComment = async (id, cid, t, type) => {
       cid,
       t,
       type,
+      cookie,
     },
   })
 }

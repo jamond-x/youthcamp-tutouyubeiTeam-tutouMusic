@@ -26,7 +26,7 @@
                 <span class="liked-count">{{ item.likedCount }}</span>
                 <q-btn
                   v-if="!item.liked"
-                  @click="like(id, item.commentId, 1, 0)"
+                  @click="like(id, item.commentId, 1, 0), (item.liked = true)"
                   size="10px"
                   rounded
                   flat
@@ -35,7 +35,7 @@
                 <q-btn
                   v-else
                   size="10px"
-                  @click="like(id, item.commentId, 0, 0)"
+                  @click="like(id, item.commentId, 0, 0), (item.liked = false)"
                   rounded
                   flat
                   color="red"
@@ -53,7 +53,12 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import { GetComment, LikeComment, LoginStatus } from 'src/utils/request/broadcastSong/broadcast'
+import {
+  GetComment,
+  GetCommentWithCookie,
+  LikeComment,
+  LoginStatus,
+} from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 export default defineComponent({
   name: 'Comment',
@@ -74,7 +79,9 @@ export default defineComponent({
     let commentAmount = ref(20)
     const get = async id => {
       if (isUnNull(id)) return
-      let res = await GetComment({ id })
+      // let res = await GetComment({ id })
+      let res = await GetCommentWithCookie(id)
+
       console.log(res)
       const { hotComments, comments } = res
 
@@ -98,7 +105,10 @@ export default defineComponent({
       commentAmount.value = 20
     }
     const like = async (...args) => {
-      let res = await LikeComment(...args)
+      let { code } = await LikeComment(...args)
+      if (code === 200) {
+        // 点赞成功
+      }
     }
 
     const changeComment = mode => {

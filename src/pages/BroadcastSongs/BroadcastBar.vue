@@ -252,19 +252,6 @@ export default defineComponent({
       }
     }
 
-    const queryUrls = async id => {
-      const { data } = await GetSongUrl({ id })
-      if (isUnNull(data)) return
-      for (let obj of data) {
-        for (let j of songsList) {
-          if (obj.id === j.id) {
-            j.songUrl = obj.url
-          }
-        }
-      }
-      isReady.value = true
-    }
-
     //TODO: 缓缓暂停、播放
     //TODO: 添加键盘控制播放功能
     const togglePlay = throttle(async () => {
@@ -417,6 +404,23 @@ export default defineComponent({
     // }
 
     // Check_Music_('347230')
+    const queryUrls = async id => {
+      const { data } = await GetSongUrl({
+        id,
+        cookie: JSON.parse(window.localStorage.getItem('user')),
+      })
+      console.log(data)
+      if (isUnNull(data)) return
+      for (let obj of data) {
+        for (let j of songsList) {
+          if (obj.id === j.id) {
+            j.songUrl = obj.url
+          }
+        }
+      }
+      isReady.value = true
+    }
+
     const Search_ = async keywords => {
       songsList.pop()
       const {
@@ -431,7 +435,7 @@ export default defineComponent({
       // console.log(songsList[currentSongIndex.value].al.picUrl)
 
       songsList.pop()
-      for (let i of JSON.parse(window.localStorage.getItem('songs'))) {
+      for (let i of JSON.parse(window.localStorage.getItem('songs2'))) {
         songsList.push(i)
       }
 
@@ -443,7 +447,7 @@ export default defineComponent({
       songIds.value = arr.join('')
       queryUrls(songIds.value)
     }
-    Search_('薛之谦')
+    Search_('比伯')
     // setTimeout(async () => {
     //   Search_('比伯')
     // }, 5000)
@@ -484,6 +488,7 @@ export default defineComponent({
 @import 'src/css/common.scss';
 .bar {
   // background-color: #2c1919;
+
   position: relative;
   width: 100%;
   height: 70px;
