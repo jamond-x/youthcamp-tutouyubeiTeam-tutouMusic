@@ -143,8 +143,8 @@ const columns = [
     align: 'left',
     sortable: true,
   },
-  { name: 'singer', align: 'center', label: '歌手', field: 'calories', sortable: true },
-  { name: 'album', label: '专辑', field: 'fat', sortable: true },
+  { name: 'singer', align: 'center', label: '歌手', sortable: true },
+  { name: 'album', label: '专辑', sortable: true },
 ]
 
 const songListLayer_ = [
@@ -176,6 +176,12 @@ export default defineComponent({
     'updateDuration',
   ],
   props: {
+    songListToAudio: {
+      type: Array,
+    },
+    controlPlayStatus: {
+      type: Boolean,
+    },
     forceToChangeProgress: {
       type: String,
     },
@@ -200,7 +206,7 @@ export default defineComponent({
     let currentSongIndex = ref(0)
     let isReady = ref(false)
     const songsList = reactive(songsList_)
-    const songListLayer = reactive(songListLayer_)
+    const songListLayer = ref(songListLayer_)
     let modeListObj = [
       {
         val: 'random',
@@ -346,6 +352,13 @@ export default defineComponent({
       }
     )
 
+    watch(
+      () => props.controlPlayStatus,
+      () => {
+        togglePlay()
+      }
+    )
+
     let singers = computed(() => {
       let singers = ''
       for (let artist of songsList[currentSongIndex.value].ar) {
@@ -422,23 +435,36 @@ export default defineComponent({
     }
 
     const Search_ = async keywords => {
-      songsList.pop()
-      const {
-        result: { songs },
-      } = await Search({ keywords })
-      console.log(songs)
-      for (let i of songs) {
-        songsList.push(i)
-      }
+      /**
+       * 从关键词获取歌曲数据
+       * 按理说这个歌曲数据应该是直接从其他组件传入
+       */
+      // songsList.pop()
+      // const {
+      //   result: { songs },
+      // } = await Search({ keywords })
+      // console.log(songs)
+      // for (let i of songs) {
+      //   songsList.push(i)
+      // }
 
-      window.localStorage.setItem('songs2', JSON.stringify(songs))
+      /**
+       * 这里暂时将获取的歌曲数据存入localStorage 后续开发时直接从本地读取
+       */
+      // window.localStorage.setItem('songs2', JSON.stringify(songs))
       // console.log(songsList[currentSongIndex.value].al.picUrl)
 
-      songsList.pop()
-      for (let i of JSON.parse(window.localStorage.getItem('songs2'))) {
-        songsList.push(i)
-      }
+      /**
+       * 从本地读取
+       */
+      // songsList.pop()
+      // for (let i of JSON.parse(window.localStorage.getItem('songs2'))) {
+      //   songsList.push(i)
+      // }
 
+      /**
+       * 统一获取歌曲的URL
+       */
       songsList.forEach(el => {
         songIds.value += `,${el.id}`
       })
@@ -447,16 +473,27 @@ export default defineComponent({
       songIds.value = arr.join('')
       queryUrls(songIds.value)
     }
-    Search_('李荣浩')
-    // setTimeout(async () => {
-    //   Search_('比伯')
-    // }, 5000)
+    // Search_('李荣浩')
+    // TODO: 播放列表
 
-    // let temp = songsList.map(el => {
-    //   if (!isUnNull(el.songUrl)) {
-    //     el = { name: el.name, singer: el.ar[0].name, album: el.al.name }
-    //   }
-    // }) // TODO: 播放列表
+    //songsList.pop() // 删除第一个占位元素
+    const init = () => {
+      for (let obj of props.songListToAudio) {
+        songsList.push(obj)
+      }
+
+      /**
+       * 统一获取歌曲的URL
+       */
+      songsList.forEach(el => {
+        songIds.value += `,${el.id}`
+      })
+      let arr = songIds.value.split('')
+      arr.shift()
+      songIds.value = arr.join('')
+      queryUrls(songIds.value)
+    }
+    init()
 
     return {
       audio,

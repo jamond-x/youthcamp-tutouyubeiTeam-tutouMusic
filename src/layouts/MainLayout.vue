@@ -17,7 +17,7 @@
         <q-btn icon="fas fa-bell" size="12px" rounded />
         <q-separator vertical inset class="q-mx-md" />
         <div>
-          <q-btn class="user" rounded>
+          <q-btn class="user" rounded @click="toggleAudioPlay">
             <q-avatar>
               <img
                 src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png"
@@ -40,6 +40,8 @@
     </q-page-container>
     <q-footer class="footer q-mb-md q-ml-md" reveal>
       <BroadcastBar
+        :songListToAudio="songsList"
+        :controlPlayStatus="playStatus"
         :forceToChangeProgress="forceToChangeProgressValue"
         @play="handlePlay"
         @pause="handlePause"
@@ -59,11 +61,10 @@
       no-shake
       class="broadcast-panel"
     >
-      <Lyric
+      <LyricBoard
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
-        :playStatus="playStatus"
         @changeProgress="handleChangeProgress"
       />
     </q-dialog>
@@ -73,7 +74,7 @@
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
-import Lyric from 'src/pages/BroadcastSongs/Lyric.vue'
+import LyricBoard from 'src/pages/BroadcastSongs/LyricBoard.vue'
 const linksList = [
   {
     title: '发现音乐',
@@ -116,7 +117,7 @@ export default defineComponent({
   components: {
     EssentialLink,
     BroadcastBar,
-    Lyric,
+    LyricBoard,
   },
 
   setup() {
@@ -130,6 +131,45 @@ export default defineComponent({
     let playStatus = ref(false)
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
+
+    /**
+     * @description 直接控制播放器的方法
+     * ***************************************************
+     */
+
+    /**
+     * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
+     */
+    const toggleAudioPlay = () => {
+      playStatus.value = !playStatus.value
+    }
+
+    /**
+     * @description 立即播放某首歌曲
+     * @param {} songDetail  或者  id   ?
+     */
+    const immediatelyBroadcast = songDetail => {}
+
+    /**
+     * 添加一首歌曲到播放列表
+     * id: 歌曲id
+     * order： 添加方式   true：添加值播放列表最前方（即下一首播放）  false: 添加至列表最后
+     */
+    const addSongToPlaylist = (id, order) => {}
+
+    /**
+     * 更新整个播放列表  应用场景为播放某歌单所有歌曲
+     */
+    const newPlaylist = () => {}
+
+    /**
+     * 切换歌曲    不对  这里应该不需要   直接按按钮就好
+     * direction：  true 下一首   false 上一首
+     */
+    const switchSong = direction => {}
+    /**
+     *  *************************************************
+     */
 
     const handlePlay = songDetail => {
       const { id } = songDetail
@@ -176,12 +216,14 @@ export default defineComponent({
 
     return {
       essentialLinks: linksList,
+      songsList: JSON.parse(window.localStorage.getItem('songs')),
       broadcastPageStatus: ref(false),
       handlePlay,
       handlePause,
       handleUpdateCurrentTime,
       handleChangeProgress,
       handleSwitchSong,
+      toggleAudioPlay,
       currentSongId,
       currentSongDetail,
       currentTime,

@@ -42,11 +42,11 @@ import {
 } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 import Comment from './Comment.vue'
-import { Cookies, scroll } from 'quasar'
+import { scroll } from 'quasar'
 const { setVerticalScrollPosition } = scroll
 
 export default defineComponent({
-  name: 'Broadcasting',
+  name: 'Lyric',
   props: {
     playStatus: {
       type: Boolean,
@@ -77,7 +77,7 @@ export default defineComponent({
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
       let index = lyricIndexMap.get(el)
-      index -= 8
+      index -= 6
       let position = (index / lyricWithAnchor.value.length) * totalHeight
       setVerticalScrollPosition(container, position, 1000)
     }
