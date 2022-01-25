@@ -66,23 +66,41 @@ export const GetLyric = async data => {
 
 /**
  *@description 获取歌曲评论
- * @param { Object } data{id: '186016'} 歌曲id
+ * @param { String } id: '186016' 歌曲id
+ * @param { String } limit: 评论数量
  * @returns
  */
-export const GetComment = async data => {
-  return await api({
-    method: 'POST',
-    url: `${BROADCAST.GET_COMMENT}?timestamp=${new Date().getTime()}`,
-    data,
-    //id=186016
-  })
-}
-export const GetCommentWithCookie = async id => {
+export const GetComment = async (id, limit) => {
   return await api({
     method: 'POST',
     url: `${BROADCAST.GET_COMMENT}?timestamp=${new Date().getTime()}`,
     data: {
       id,
+      cookie,
+      limit,
+    },
+  })
+}
+
+/**
+ *
+ * @param {String} t  1 发送, 2 回复
+ * @param {String} type 0: 歌曲  1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频
+ * @param {String} id 对应资源 id
+ * @param {String} content  要发送的内容
+ * @param {String} commentId  回复的评论 id (回复评论时必填)
+ * @returns
+ */
+export const SendComment = async (t, type, id, content, commentId) => {
+  return await api({
+    method: 'POST',
+    url: `/comment?timestamp=${new Date().getTime()}`,
+    data: {
+      t,
+      type,
+      id,
+      content,
+      commentId,
       cookie,
     },
   })

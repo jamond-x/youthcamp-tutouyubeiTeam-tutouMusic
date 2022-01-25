@@ -447,7 +447,7 @@ export default defineComponent({
       songIds.value = arr.join('')
       queryUrls(songIds.value)
     }
-    Search_('比伯')
+    Search_('李荣浩')
     // setTimeout(async () => {
     //   Search_('比伯')
     // }, 5000)

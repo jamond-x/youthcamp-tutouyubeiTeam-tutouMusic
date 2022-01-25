@@ -77,7 +77,7 @@ export default defineComponent({
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
       let index = lyricIndexMap.get(el)
-      index -= 5
+      index -= 8
       let position = (index / lyricWithAnchor.value.length) * totalHeight
       setVerticalScrollPosition(container, position, 1000)
     }

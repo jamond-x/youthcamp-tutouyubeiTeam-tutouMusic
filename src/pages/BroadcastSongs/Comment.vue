@@ -4,9 +4,43 @@
       <div class="column justify-center items-center">
         <div class="top q-my-xl q-pt-xl">
           <span :class="{ unActiveHead: !commentMode }" @click="changeComment(true)">精彩评论</span>
-          <span :class="{ unActiveHead: commentMode }" class="q-ml-md" @click="changeComment(false)"
-            >最新评论</span
+          <span
+            :class="{ unActiveHead: commentMode }"
+            class="q-ml-sm"
+            @click="changeComment(false)"
           >
+            最新评论
+          </span>
+          <div>
+            <q-btn class="pen" icon="fas fa-pen" flat rounded size="10px" />
+            <q-popup-edit
+              v-model="label"
+              @save="sendComment_"
+              class="bg-brown-7 text-white"
+              color="white"
+              buttons
+              v-slot="scope"
+              label-set="发送"
+              label-cancel="取消"
+              title="编辑评论"
+              max-width="500px"
+            >
+              <q-input
+                dark
+                type="textarea"
+                color="white"
+                v-model="scope.value"
+                dense
+                autofocus
+                counter
+                @keyup.enter="scope.set"
+              >
+                <template v-slot:append>
+                  <q-icon name="edit" />
+                </template>
+              </q-input>
+            </q-popup-edit>
+          </div>
         </div>
         <div class="each-comment q-my-md" v-for="(item, index) in currentComment" :key="index">
           <div class="column">
@@ -53,12 +87,7 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import {
-  GetComment,
-  GetCommentWithCookie,
-  LikeComment,
-  LoginStatus,
-} from 'src/utils/request/broadcastSong/broadcast'
+import { GetComment, LikeComment, SendComment } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 export default defineComponent({
   name: 'Comment',
@@ -80,7 +109,7 @@ export default defineComponent({
     const get = async id => {
       if (isUnNull(id)) return
       // let res = await GetComment({ id })
-      let res = await GetCommentWithCookie(id)
+      let res = await GetComment(id)
 
       console.log(res)
       const { hotComments, comments } = res
@@ -123,11 +152,24 @@ export default defineComponent({
 
     const loadMoreComment = async () => {
       if (!commentMode.value) {
-        let { comments } = await GetComment({ id: props.id, limit: (commentAmount.value += 20) })
+        let { comments } = await GetComment(props.id, (commentAmount.value += 20))
         comment_.value = comments
         currentComment.value = comment_.value
       }
       // TODO: 解决加载给多热门评论问题
+    }
+
+    const sendComment_ = async comment => {
+      let res = await SendComment(1, 0, props.id, comment)
+      if (res.code === 200) {
+        const { comment } = res
+        comment.beReplied = []
+        comment.timeStr = '刚刚'
+        comment.liked = false
+        comment.likedCount = 0
+        comment_.value.unshift(comment)
+      }
+      // TODO:  处理失败
     }
 
     watch(
@@ -144,6 +186,7 @@ export default defineComponent({
       changeComment,
       loadMoreComment,
       like,
+      sendComment_,
     }
   },
 })
@@ -163,6 +206,12 @@ export default defineComponent({
     .top {
       font-size: 18px;
       cursor: pointer;
+      position: relative;
+      .pen {
+        position: absolute;
+        top: 48px;
+        right: -120px;
+      }
       .unActiveHead {
         opacity: 0.7;
         font-size: 15px;
