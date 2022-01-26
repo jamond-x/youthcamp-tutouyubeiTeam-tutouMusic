@@ -14,7 +14,6 @@
           <div>
             <q-btn class="pen" icon="fas fa-pen" flat rounded size="10px" />
             <q-popup-edit
-              v-model="label"
               @save="sendComment_"
               class="bg-brown-7 text-white"
               color="white"
@@ -74,6 +73,14 @@
                   flat
                   color="red"
                   icon="fas fa-heart"
+                />
+                <q-btn
+                  class="comment-replay"
+                  @click="replayComment, (popupEdit = true)"
+                  icon="far fa-comment"
+                  size="10px"
+                  rounded
+                  flat
                 />
               </div>
             </div>
@@ -172,6 +179,10 @@ export default defineComponent({
       // TODO:  处理失败
     }
 
+    const replayComment = () => {
+      console.log('work')
+    }
+
     watch(
       () => props.id,
       newVal => {
@@ -183,10 +194,12 @@ export default defineComponent({
     return {
       currentComment,
       commentMode,
+      popupEdit: ref(false),
       changeComment,
       loadMoreComment,
       like,
       sendComment_,
+      replayComment,
     }
   },
 })
@@ -243,6 +256,9 @@ export default defineComponent({
         .time {
           opacity: 0.7;
           height: 10px;
+        }
+        .comment-replay {
+          margin-right: -15px;
         }
         .liked-count {
           margin-top: 2px;

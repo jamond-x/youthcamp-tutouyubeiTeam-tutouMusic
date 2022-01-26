@@ -132,11 +132,7 @@ export default defineComponent({
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
 
-    /**
-     * @description 直接控制播放器的方法
-     * ***************************************************
-     */
-
+    //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
      */
@@ -167,9 +163,7 @@ export default defineComponent({
      * direction：  true 下一首   false 上一首
      */
     const switchSong = direction => {}
-    /**
-     *  *************************************************
-     */
+    //*  *************************************************
 
     const handlePlay = songDetail => {
       const { id } = songDetail
