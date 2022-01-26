@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr fff">
-    <q-header class="bg-transparent" bordered>
+    <q-header class="bg-black" bordered>
       <q-toolbar>
         <q-toolbar-title>
           <q-input
@@ -79,7 +79,7 @@ const linksList = [
   {
     title: '发现音乐',
     icon: 'fas fa-music',
-    link: 'discover',
+    link: '/discover',
   },
   {
     title: '我的主页',

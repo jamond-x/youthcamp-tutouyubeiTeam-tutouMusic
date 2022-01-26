@@ -1,18 +1,26 @@
 <template>
-  <q-page class="font-GEO flex flex-center"><h2>DISCOVER PAGE</h2> </q-page>
+  <q-page>
+    <!-- <h2>DISCOVER PAGE</h2> -->
+    <top-bar />
+    <router-view>
+    </router-view>
+  </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
+import TopBar from 'components/topbar/TopBar'
 export default defineComponent({
   name: 'Discover',
-  components: {},
+  components: { TopBar },
   setup() {
-    return {}
+    return {
+    }
   },
 })
 </script>
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
+
 </style>
