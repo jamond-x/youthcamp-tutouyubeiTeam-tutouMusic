@@ -19,3 +19,19 @@ export const QueryArtists = async data => {
     //id: '347230'
   })
 }
+
+export const LikeMusicList = async data => {
+  return await api({
+    method: 'POST',
+    url: LOGIN_URLS.LIKE_MUSIC_LIST,
+    data,
+  })
+}
+
+export const SongDetail = async data => {
+  return await api({
+    method: 'POST',
+    data,
+    url: LOGIN_URLS.SONG_DETAIL,
+  })
+}

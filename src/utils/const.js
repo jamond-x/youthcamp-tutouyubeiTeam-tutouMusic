@@ -35,3 +35,27 @@ export const BROADCAST = {
   GET_COMMENT: '/comment/music',
   SONG_DETAIL: '/song/detail',
 }
+
+export const LOGIN_URLS = {
+  PHONE_LOGIN: '/login/cellphone',
+  LIKE_MUSIC_LIST: '/likelist/',
+  SONG_DETAIL: '/song/detail',
+
+  REFRESH_LOGIN: '/login/refresh',
+  // /captcha/sent?phone=13xxx
+  SEND_PHONE_CODE: '/captcha/sent',
+  // /captcha/verify?phone=13xxx&captcha=1597
+  CHECK_PHONE_CODE: '/captcha/verify',
+  // /register/cellphone?phone=13xxx&password=xxxxx&captcha=1234&nickname=binary1345
+  REGISTER: '/register/cellphone',
+  // /cellphone/existence/check?phone=13xxx
+  CHECK_PHONE: '/cellphone/existence/check',
+  LOGOUT: '/logout',
+  // 获取用户歌单
+  // /user/playlist?uid=32953014
+  GET_LIKE_LIST_ID: '/user/playlist',
+  // limit=10&offset=0等价于limit=10，你会得到第1-10首歌曲
+  // 你传入limit=10&offset=1，你会得到第11-20首歌曲
+  // /playlist/track/all?id=24381616&limit=10&offset=1
+  GET_LIKE_LIST_LIST: '/playlist/track/all',
+}
