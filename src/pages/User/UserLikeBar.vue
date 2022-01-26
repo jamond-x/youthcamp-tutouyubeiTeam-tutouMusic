@@ -9,7 +9,7 @@
 
         <q-card-actions align="right" class="user-like-bottom">
           <q-btn flat>播放</q-btn>
-          <q-btn flat>查看</q-btn>
+          <q-btn flat>查</q-btn>
         </q-card-actions>
       </q-card>
     </div>
