@@ -12,6 +12,11 @@ const routes = [
         component: () => import('pages/DiscoverMusic/Discover.vue'),
       },
       {
+        path: '/user/:uid',
+        props: true,
+        component: () => import('pages/User/User.vue'),
+      },
+      {
         path: '/user',
         component: () => import('pages/User/User.vue'),
       },
