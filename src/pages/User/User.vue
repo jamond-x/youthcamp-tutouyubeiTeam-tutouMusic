@@ -16,6 +16,7 @@
         <q-tab :ripple="false" name="album" label="专辑" content-class="tab-item" v-if="self" />
         <q-tab :ripple="false" name="artist" label="艺人" content-class="tab-item" v-if="self" />
         <q-tab :ripple="false" name="follow" label="关注" content-class="tab-item" />
+        <q-tab :ripple="false" name="follower" label="粉丝" content-class="tab-item" />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="album" class="tab-panel">
@@ -53,6 +54,18 @@
             />
           </div>
         </q-tab-panel>
+
+        <q-tab-panel name="follower" class="tab-panel">
+          <div class="sub-artists">
+            <UserItem
+              v-for="(item, index) in followerList"
+              :key="index"
+              :aid="item.userId"
+              :avatar="item.avatarUrl"
+              :name="item.nickname"
+            />
+          </div>
+        </q-tab-panel>
       </q-tab-panels>
     </div>
   </q-page>
@@ -66,6 +79,7 @@ import {
   QuerySubArtist,
   QuerySubAlbum,
   QueryFollowList,
+  QueryFollowerList,
 } from 'src/utils/request/user'
 import UserProfile from './UserProfile.vue'
 import UserLikeBar from './UserLikeBar.vue'
@@ -90,6 +104,7 @@ export default defineComponent({
       subArtists: [],
       subAlbums: [],
       followList: [],
+      followerList: [],
       self: true,
     }
   },
@@ -118,6 +133,9 @@ export default defineComponent({
       })
       QueryFollowList(_id).then(res => {
         that.followList = res.follow
+      })
+      QueryFollowerList(_id).then(res => {
+        that.followerList = res.followeds
       })
     },
   },
