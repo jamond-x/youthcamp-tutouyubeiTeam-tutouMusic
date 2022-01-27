@@ -2,7 +2,9 @@
   <div class="broadcast-container">
     <div class="header">
       <div class="column items-center">
-        <div class="q-mt-md">{{ songDetail.name }}</div>
+        <div class="q-mt-md">
+          {{ isUnNull(songDetail.name) ? '播放器中没有歌曲哦~' : songDetail.name }}
+        </div>
         <div>{{ singers }}</div>
       </div>
       <div class="row reverse items-center">

@@ -42,6 +42,7 @@
       <BroadcastBar
         :songListToAudio="songsList"
         :controlPlayStatus="playStatus"
+        :playMode="playMode"
         :forceToChangeProgress="forceToChangeProgressValue"
         @play="handlePlay"
         @pause="handlePause"
@@ -108,7 +109,7 @@ const linksList = [
   },
 ]
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, reactive, nextTick } from 'vue'
 import { useQuasar } from 'quasar'
 
 export default defineComponent({
@@ -124,14 +125,15 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
     $q.dark.set(true)
-
+    let songsList = ref([])
     let currentSongId = ref()
     // 测试环境
-    let currentSongDetail = ref(JSON.parse(window.localStorage.getItem('songs'))[0])
+    // let currentSongDetail = ref(JSON.parse(window.localStorage.getItem('songs'))[0])
+    let currentSongDetail = ref()
     let playStatus = ref(false)
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
-
+    let playMode = ref(4)
     //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
@@ -142,10 +144,28 @@ export default defineComponent({
 
     /**
      * @description 立即播放某首歌曲
-     * @param {} songDetail  或者  id   ?
+     * @param {} id
      */
-    const immediatelyBroadcast = songDetail => {}
+    const immediatelyBroadcast = id => {
+      playMode.value = 0
+      nextTick(() => {
+        songsList.value.unshift(id)
+      })
+      // debugger
+    }
+    setTimeout(() => {
+      // let { id } = JSON.parse(window.localStorage.getItem('songs2'))[1]
+      // immediatelyBroadcast('1293886117,31654343')
+      immediatelyBroadcast('1293886117')
+    }, 2000)
+    setTimeout(() => {
+      immediatelyBroadcast('27955653')
+    }, 10000)
 
+    // setTimeout(() => {
+    //   console.log('添加！')
+    //   immediatelyBroadcast(1830419924)
+    // }, 10000)
     /**
      * 添加一首歌曲到播放列表
      * id: 歌曲id
@@ -173,6 +193,7 @@ export default defineComponent({
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
       }
+      console.log(songDetail)
       playStatus.value = true
     }
 
@@ -210,8 +231,8 @@ export default defineComponent({
 
     return {
       essentialLinks: linksList,
-      songsList: JSON.parse(window.localStorage.getItem('songs')),
       broadcastPageStatus: ref(false),
+      songsList,
       handlePlay,
       handlePause,
       handleUpdateCurrentTime,
@@ -222,6 +243,7 @@ export default defineComponent({
       currentSongDetail,
       currentTime,
       playStatus,
+      playMode,
       forceToChangeProgressValue,
     }
   },

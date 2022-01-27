@@ -185,6 +185,10 @@ export default defineComponent({
     forceToChangeProgress: {
       type: String,
     },
+    playMode: {
+      //  其他组件指定的播放模式   立即播放、下一首播放
+      type: Number,
+    },
   },
   components: {},
   setup(props, context) {
@@ -418,11 +422,7 @@ export default defineComponent({
 
     // Check_Music_('347230')
     const queryUrls = async id => {
-      const { data } = await GetSongUrl({
-        id,
-        cookie: JSON.parse(window.localStorage.getItem('user')),
-      })
-      console.log(data)
+      const { data } = await GetSongUrl({ id })
       if (isUnNull(data)) return
       for (let obj of data) {
         for (let j of songsList) {
@@ -477,11 +477,49 @@ export default defineComponent({
     // TODO: 播放列表
 
     //songsList.pop() // 删除第一个占位元素
-    const init = () => {
-      for (let obj of props.songListToAudio) {
-        songsList.push(obj)
-      }
+    /**
+     *
+     * @param {string} mode   0: 立即播放列表新歌  2: 下一首播放  3: 添加至播放列表末尾   4:  列表
+     */
+    let time = 0
+    const init = async mode => {
+      if (isUnNull(props.songListToAudio)) return
 
+      let ids = ''
+
+      console.log(mode)
+      console.log(mode === 4)
+      if (mode === 0) {
+        ids = props.songListToAudio[0]
+        // let res = await GetSongDetail(ids)
+        let res = await GetSongDetail({ ids })
+        const { songs } = res
+        // if (isUnNull(songs)) return
+        console.log(songs)
+        for (let obj of songs) {
+          songsList.unshift(obj)
+        }
+      }
+      if (mode === 4) {
+        for (let id of props.songListToAudio) {
+          ids += id
+        }
+        console.log(ids)
+        let res = await GetSongDetail(ids)
+        // let { songs } = await GetSongDetail(ids)
+        let { songs } = res
+        // if (isUnNull(songs)) return
+        console.log(songs)
+        songsList.length = 0 //   看看这里有没有问题
+        for (let obj of songs) {
+          songsList.push(obj)
+        }
+      }
+      isReady.value = true
+      currentSongIndex.value = 0
+      // songsList.pop()
+
+      // debugger
       /**
        * 统一获取歌曲的URL
        */
@@ -491,10 +529,24 @@ export default defineComponent({
       let arr = songIds.value.split('')
       arr.shift()
       songIds.value = arr.join('')
-      queryUrls(songIds.value)
+      await queryUrls(songIds.value)
+      audio.value.play()
+      playStatus.value = true
+      context.emit('play', songsList[currentSongIndex.value])
     }
-    init()
-
+    // init()
+    watch(
+      () => props.songListToAudio,
+      newVal => {
+        console.log('检测到songListToAudio变化！')
+        console.log(props.playMode)
+        console.log(newVal)
+        init(props.playMode)
+      },
+      {
+        deep: true,
+      }
+    )
     return {
       audio,
       togglePlay,
