@@ -13,25 +13,25 @@ const routes = [
         children: [
           {
             path: '/',
-            redirect: 'personality'
+            redirect: 'personality',
           },
           {
             path: 'personality',
-            component: () => import('pages/DiscoverMusic/childPages/Personality.vue')
+            component: () => import('pages/DiscoverMusic/childPages/Personality.vue'),
           },
           {
             path: 'playlist',
-            component: () => import('pages/DiscoverMusic/childPages/Playlist.vue')
+            component: () => import('pages/DiscoverMusic/childPages/Playlist.vue'),
           },
           {
             path: 'rank',
-            component: () => import('pages/DiscoverMusic/childPages/Rank.vue')
+            component: () => import('pages/DiscoverMusic/childPages/Rank.vue'),
           },
           {
             path: 'singer',
-            component: () => import('pages/DiscoverMusic/childPages/Singer.vue')
+            component: () => import('pages/DiscoverMusic/childPages/Singer.vue'),
           },
-        ]
+        ],
       },
       {
         path: '/user/:uid',
