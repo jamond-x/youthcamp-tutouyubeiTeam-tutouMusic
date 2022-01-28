@@ -484,11 +484,7 @@ export default defineComponent({
     let time = 0
     const init = async mode => {
       if (isUnNull(props.songListToAudio)) return
-
       let ids = ''
-
-      console.log(mode)
-      console.log(mode === 4)
       if (mode === 0) {
         ids = props.songListToAudio[0]
         // let res = await GetSongDetail(ids)
@@ -502,15 +498,17 @@ export default defineComponent({
       }
       if (mode === 4) {
         for (let id of props.songListToAudio) {
-          ids += id
+          ids += `,${id}`
         }
+        ids = ids.split('').splice(1).join('')
         console.log(ids)
-        let res = await GetSongDetail(ids)
+        let res = await GetSongDetail({ ids })
+        console.log(res)
         // let { songs } = await GetSongDetail(ids)
         let { songs } = res
         // if (isUnNull(songs)) return
         console.log(songs)
-        songsList.length = 0 //   看看这里有没有问题
+        songsList.length = 0
         for (let obj of songs) {
           songsList.push(obj)
         }
@@ -530,9 +528,15 @@ export default defineComponent({
       arr.shift()
       songIds.value = arr.join('')
       await queryUrls(songIds.value)
-      audio.value.play()
-      playStatus.value = true
-      context.emit('play', songsList[currentSongIndex.value])
+      // audio.value.play()
+      // playStatus.value = true
+      // context.emit('play', songsList[currentSongIndex.value])
+      if (audio.value.paused) {
+        togglePlay()
+      } else {
+        togglePlay()
+        togglePlay()
+      }
     }
     // init()
     watch(

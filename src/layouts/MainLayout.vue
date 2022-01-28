@@ -151,38 +151,33 @@ export default defineComponent({
       nextTick(() => {
         songsList.value.unshift(id)
       })
-      // debugger
     }
     setTimeout(() => {
-      // let { id } = JSON.parse(window.localStorage.getItem('songs2'))[1]
-      // immediatelyBroadcast('1293886117,31654343')
       immediatelyBroadcast('1293886117')
     }, 2000)
-    setTimeout(() => {
-      immediatelyBroadcast('27955653')
-    }, 10000)
-
-    // setTimeout(() => {
-    //   console.log('添加！')
-    //   immediatelyBroadcast(1830419924)
-    // }, 10000)
     /**
      * 添加一首歌曲到播放列表
      * id: 歌曲id
      * order： 添加方式   true：添加值播放列表最前方（即下一首播放）  false: 添加至列表最后
-     */
+     */ // TODO:
     const addSongToPlaylist = (id, order) => {}
 
     /**
      * 更新整个播放列表  应用场景为播放某歌单所有歌曲
+     * list :  string[]
+     * ['132111561','165615','4848648']
      */
-    const newPlaylist = () => {}
+    const newPlaylist = list => {
+      playMode.value = 4
+      nextTick(() => {
+        songsList.value = list
+      })
+    }
 
-    /**
-     * 切换歌曲    不对  这里应该不需要   直接按按钮就好
-     * direction：  true 下一首   false 上一首
-     */
-    const switchSong = direction => {}
+    setTimeout(() => {
+      newPlaylist(['1856265847', '1329942991', '1293886117', '32507038'])
+    }, 2000)
+
     //*  *************************************************
 
     const handlePlay = songDetail => {
@@ -239,6 +234,8 @@ export default defineComponent({
       handleChangeProgress,
       handleSwitchSong,
       toggleAudioPlay,
+      immediatelyBroadcast,
+      newPlaylist,
       currentSongId,
       currentSongDetail,
       currentTime,
