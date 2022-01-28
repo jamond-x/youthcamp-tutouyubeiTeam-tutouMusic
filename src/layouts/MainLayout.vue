@@ -17,7 +17,7 @@
         <q-btn icon="fas fa-bell" size="12px" rounded />
         <q-separator vertical inset class="q-mx-md" />
         <div>
-          <q-btn class="user" rounded @click="toggleAudioPlay">
+          <q-btn class="user" rounded>
             <q-avatar>
               <img
                 src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png"
@@ -126,7 +126,7 @@ export default defineComponent({
     const $q = useQuasar()
     $q.dark.set(true)
     let songsList = ref([])
-    let currentSongId = ref()
+    let currentSongId = ref('')
     // 测试环境
     // let currentSongDetail = ref(JSON.parse(window.localStorage.getItem('songs'))[0])
     let currentSongDetail = ref()
@@ -175,15 +175,16 @@ export default defineComponent({
     }
 
     setTimeout(() => {
-      newPlaylist(['1856265847', '1329942991', '1293886117', '32507038'])
-    }, 2000)
+      newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
+    }, 10000)
 
     //*  *************************************************
 
     const handlePlay = songDetail => {
       const { id } = songDetail
-      if (currentSongId.value != id) {
-        currentSongId.value = id
+      let idStr = id.toString()
+      if (currentSongId.value != idStr) {
+        currentSongId.value = idStr
       }
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
@@ -194,9 +195,10 @@ export default defineComponent({
 
     const handlePause = songDetail => {
       const { id } = songDetail
-      if (currentSongId.value != id) {
+      let idStr = id.toString()
+      if (currentSongId.value != idStr) {
         // 优化
-        currentSongId.value = id
+        currentSongId.value = idStr
       }
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
@@ -217,9 +219,10 @@ export default defineComponent({
 
     const handleSwitchSong = songDetail => {
       const { id } = songDetail
-      if (currentSongId.value != id) {
+      let idStr = id.toString()
+      if (currentSongId.value != idStr) {
         // 优化
-        currentSongId.value = id
+        currentSongId.value = idStr
       }
       currentSongDetail.value = songDetail
     }

@@ -5,6 +5,7 @@ import { REQUEST_BASE_URL, BROADCAST } from 'src/utils/const'
 import { Cookies } from 'quasar'
 
 //  这里会获取下cookie
+
 let cookie = Cookies.get('user')
 
 // if (!cookie) {

@@ -55,7 +55,7 @@ export default defineComponent({
       required: true,
     },
     songId: {
-      type: Number,
+      type: String,
       required: true,
     },
     songDetail: {
@@ -134,20 +134,28 @@ export default defineComponent({
       if (isUnNull(id)) {
         console.log('播放列表为空')
       }
-      // window.localStorage.setItem('lyric', JSON.stringify(await GetLyric({ id })))
-      if (isUnNull(JSON.parse(window.localStorage.getItem(id)))) {
-        const {
-          lrc: { lyric },
-        } = await GetLyric({ id })
-        if (isUnNull(lyric)) {
-          console.log('获取歌词失败')
-          return
-        }
-        lyric_.value = lyric
-        window.localStorage.setItem(id, JSON.stringify(lyric_.value))
-      } else {
-        lyric_.value = JSON.parse(window.localStorage.getItem(id))
+      // if (isUnNull(JSON.parse(window.localStorage.getItem(id)))) {
+      //   const {
+      //     lrc: { lyric },
+      //   } = await GetLyric({ id })
+      //   if (isUnNull(lyric)) {
+      //     console.log('获取歌词失败')
+      //     return
+      //   }
+      //   lyric_.value = lyric
+      //   window.localStorage.setItem(id, JSON.stringify(lyric_.value))
+      // } else {
+      //   lyric_.value = JSON.parse(window.localStorage.getItem(id))
+      // }
+
+      const {
+        lrc: { lyric },
+      } = await GetLyric({ id })
+      if (isUnNull(lyric)) {
+        console.log('获取歌词失败')
+        return
       }
+      lyric_.value = lyric
       initLyric()
     }
 
@@ -205,6 +213,7 @@ export default defineComponent({
       lyricWithAnchor,
       activeEl,
       changeProgress,
+      isUnNull,
     }
   },
 })
