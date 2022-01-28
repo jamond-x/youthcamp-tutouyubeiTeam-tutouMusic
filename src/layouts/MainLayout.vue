@@ -189,7 +189,6 @@ export default defineComponent({
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
       }
-      console.log(songDetail)
       playStatus.value = true
     }
 
@@ -213,7 +212,6 @@ export default defineComponent({
     }
 
     const handleChangeProgress = time => {
-      console.log(time)
       forceToChangeProgressValue.value = time
     }
 

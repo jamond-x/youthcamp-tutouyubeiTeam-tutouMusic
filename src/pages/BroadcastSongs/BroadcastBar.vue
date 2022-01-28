@@ -408,19 +408,6 @@ export default defineComponent({
       return `${m}:${s}`
     })
 
-    // const getSongDetail = async ids => {
-    //   let res = await GetSongDetail({ ids })
-    //   console.log(res)
-    //   // window.localStorage.setItem('songInfo', JSON.stringify(res.songs))
-    //   return res
-    // }
-    // getSongDetail('186016')
-
-    // const Check_Music_ = async id => {
-    //   console.log(await Check_Music({ id }))
-    // }
-
-    // Check_Music_('347230')
     const queryUrls = async id => {
       const { data } = await GetSongUrl({ id })
       if (isUnNull(data)) return
@@ -491,7 +478,6 @@ export default defineComponent({
         let res = await GetSongDetail({ ids })
         const { songs } = res
         // if (isUnNull(songs)) return
-        console.log(songs)
         for (let obj of songs) {
           songsList.unshift(obj)
         }
@@ -501,13 +487,8 @@ export default defineComponent({
           ids += `,${id}`
         }
         ids = ids.split('').splice(1).join('')
-        console.log(ids)
         let res = await GetSongDetail({ ids })
-        console.log(res)
-        // let { songs } = await GetSongDetail(ids)
         let { songs } = res
-        // if (isUnNull(songs)) return
-        console.log(songs)
         songsList.length = 0
         for (let obj of songs) {
           songsList.push(obj)
@@ -517,7 +498,6 @@ export default defineComponent({
       currentSongIndex.value = 0
       // songsList.pop()
 
-      // debugger
       /**
        * 统一获取歌曲的URL
        */
@@ -528,9 +508,6 @@ export default defineComponent({
       arr.shift()
       songIds.value = arr.join('')
       await queryUrls(songIds.value)
-      // audio.value.play()
-      // playStatus.value = true
-      // context.emit('play', songsList[currentSongIndex.value])
       if (audio.value.paused) {
         togglePlay()
       } else {

@@ -117,10 +117,7 @@ export default defineComponent({
       if (isUnNull(id)) return
       // let res = await GetComment({ id })
       let res = await GetComment(id)
-
-      console.log(res)
       const { hotComments, comments } = res
-
       // hotComments.forEach(el => {
       //   comment.push(el)
       // })

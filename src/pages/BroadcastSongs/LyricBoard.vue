@@ -186,27 +186,6 @@ export default defineComponent({
       }
     )
 
-    const login = async (phone, password) => {
-      // let data = await Login({ phone, password })
-      // console.log(data)
-      // setTimeout(() => {
-      //   window.localStorage.setItem('user_hueng', JSON.stringify(data))
-      // }, 1000)
-      // let user = JSON.parse(window.localStorage.getItem('user'))
-      // console.log(user)
-      // const { token } = user
-      // window.localStorage.setItem('token', token)
-      // Cookies.set('token', token)
-      // window.localStorage.setItem('cookie', data.cookie)
-    }
-    // setTimeout(async () => {
-    // login(18728633002, )
-    // console.log(await LoginStatus())
-    // let userDetail = await UserDetail({ uid: 369626548 })
-    // window.localStorage.setItem('userDetail', JSON.stringify(userDetail))
-    // console.log(userDetail)
-    // }, 4000)
-
     return {
       singers,
       lyric_,
