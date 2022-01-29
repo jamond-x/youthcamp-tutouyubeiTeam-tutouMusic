@@ -134,6 +134,7 @@ export default defineComponent({
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
     let playMode = ref(1)
+
     //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
@@ -156,7 +157,7 @@ export default defineComponent({
      * 添加一首歌曲到播放列表
      * id: 歌曲id
      * order： 添加方式   true：即下一首播放  false: 添加至播放列表最后
-     */ // TODO:
+     */
     const addSongToPlaylist = (id, order) => {
       if (order) {
         playMode.value = 2
@@ -185,6 +186,7 @@ export default defineComponent({
       })
     }
 
+    // 调用示例
     setTimeout(() => {
       immediatelyBroadcast('1293886117')
     }, 2000)
