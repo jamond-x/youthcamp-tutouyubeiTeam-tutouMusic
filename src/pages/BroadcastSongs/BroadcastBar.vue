@@ -463,26 +463,29 @@ export default defineComponent({
     // Search_('李荣浩')
     // TODO: 播放列表
 
+    const handleNextSong = () => {}
+
     //songsList.pop() // 删除第一个占位元素
     /**
      *
      * @param {string} mode   0: 立即播放列表新歌  2: 下一首播放  3: 添加至播放列表末尾   4:  列表
      */
-    let time = 0
     const init = async mode => {
       if (isUnNull(props.songListToAudio)) return
       let ids = ''
       if (mode === 0) {
         ids = props.songListToAudio[0]
-        // let res = await GetSongDetail(ids)
+        // 直接解构会报错！？？
         let res = await GetSongDetail({ ids })
         const { songs } = res
         // if (isUnNull(songs)) return
         for (let obj of songs) {
           songsList.unshift(obj)
         }
+        songIds.value = ''
+        songIds.value = songsList[0].id.toString()
       }
-      if (mode === 4) {
+      if (mode === 1) {
         for (let id of props.songListToAudio) {
           ids += `,${id}`
         }
@@ -493,7 +496,38 @@ export default defineComponent({
         for (let obj of songs) {
           songsList.push(obj)
         }
+        songIds.value = ''
+        songsList.forEach((el, index) => {
+          if (index === 0) {
+            songIds.value += `${el.id}`
+          } else {
+            songIds.value += `,${el.id}`
+          }
+        })
       }
+      if (mode === 2) {
+        ids = props.songListToAudio[1]
+        let res = await GetSongDetail({ ids })
+        const { songs } = res
+        // if (isUnNull(songs)) return
+        for (let obj of songs) {
+          songsList.splice(1, 0, obj)
+        }
+        songIds.value = ''
+        songIds.value = songsList[1].id.toString()
+      }
+      if (mode === 3) {
+        ids = props.songListToAudio[props.songListToAudio.length - 1]
+        let res = await GetSongDetail({ ids })
+        const { songs } = res
+        // if (isUnNull(songs)) return
+        for (let obj of songs) {
+          songsList.push(obj)
+        }
+        songIds.value = ''
+        songIds.value = songsList[songsList.length - 1].id.toString()
+      }
+
       isReady.value = true
       currentSongIndex.value = 0
       // songsList.pop()
@@ -501,13 +535,10 @@ export default defineComponent({
       /**
        * 统一获取歌曲的URL
        */
-      songsList.forEach(el => {
-        songIds.value += `,${el.id}`
-      })
-      let arr = songIds.value.split('')
-      arr.shift()
-      songIds.value = arr.join('')
       await queryUrls(songIds.value)
+      if (mode === 2 || mode === 3) {
+        return
+      }
       if (audio.value.paused) {
         togglePlay()
       } else {
@@ -519,9 +550,6 @@ export default defineComponent({
     watch(
       () => props.songListToAudio,
       newVal => {
-        console.log('检测到songListToAudio变化！')
-        console.log(props.playMode)
-        console.log(newVal)
         init(props.playMode)
       },
       {

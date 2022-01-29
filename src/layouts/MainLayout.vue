@@ -133,7 +133,7 @@ export default defineComponent({
     let playStatus = ref(false)
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
-    let playMode = ref(4)
+    let playMode = ref(1)
     //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
@@ -144,7 +144,7 @@ export default defineComponent({
 
     /**
      * @description 立即播放某首歌曲
-     * @param {} id
+     * @param {String} id: 播放歌曲的id
      */
     const immediatelyBroadcast = id => {
       playMode.value = 0
@@ -152,15 +152,26 @@ export default defineComponent({
         songsList.value.unshift(id)
       })
     }
-    setTimeout(() => {
-      immediatelyBroadcast('1293886117')
-    }, 2000)
     /**
      * 添加一首歌曲到播放列表
      * id: 歌曲id
-     * order： 添加方式   true：添加值播放列表最前方（即下一首播放）  false: 添加至列表最后
+     * order： 添加方式   true：即下一首播放  false: 添加至播放列表最后
      */ // TODO:
-    const addSongToPlaylist = (id, order) => {}
+    const addSongToPlaylist = (id, order) => {
+      if (order) {
+        playMode.value = 2
+        nextTick(() => {
+          songsList.value.splice(1, 0, id)
+        })
+        return
+      }
+      if (!order) {
+        playMode.value = 3
+        nextTick(() => {
+          songsList.value.push(id)
+        })
+      }
+    }
 
     /**
      * 更新整个播放列表  应用场景为播放某歌单所有歌曲
@@ -168,16 +179,21 @@ export default defineComponent({
      * ['132111561','165615','4848648']
      */
     const newPlaylist = list => {
-      playMode.value = 4
+      playMode.value = 1
       nextTick(() => {
         songsList.value = list
       })
     }
 
     setTimeout(() => {
+      immediatelyBroadcast('1293886117')
+    }, 2000)
+    setTimeout(() => {
       newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
     }, 10000)
-
+    setTimeout(() => {
+      addSongToPlaylist('25787222', true)
+    }, 15000)
     //*  *************************************************
 
     const handlePlay = songDetail => {
@@ -237,6 +253,7 @@ export default defineComponent({
       toggleAudioPlay,
       immediatelyBroadcast,
       newPlaylist,
+      addSongToPlaylist,
       currentSongId,
       currentSongDetail,
       currentTime,
