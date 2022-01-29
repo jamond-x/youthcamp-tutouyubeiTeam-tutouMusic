@@ -2,7 +2,9 @@
   <div class="broadcast-container">
     <div class="header">
       <div class="column items-center">
-        <div class="q-mt-md">{{ songDetail.name }}</div>
+        <div class="q-mt-md">
+          {{ isUnNull(songDetail.name) ? '播放器中没有歌曲哦~' : songDetail.name }}
+        </div>
         <div>{{ singers }}</div>
       </div>
       <div class="row reverse items-center">
@@ -53,7 +55,7 @@ export default defineComponent({
       required: true,
     },
     songId: {
-      type: Number,
+      type: String,
       required: true,
     },
     songDetail: {
@@ -132,20 +134,28 @@ export default defineComponent({
       if (isUnNull(id)) {
         console.log('播放列表为空')
       }
-      // window.localStorage.setItem('lyric', JSON.stringify(await GetLyric({ id })))
-      if (isUnNull(JSON.parse(window.localStorage.getItem(id)))) {
-        const {
-          lrc: { lyric },
-        } = await GetLyric({ id })
-        if (isUnNull(lyric)) {
-          console.log('获取歌词失败')
-          return
-        }
-        lyric_.value = lyric
-        window.localStorage.setItem(id, JSON.stringify(lyric_.value))
-      } else {
-        lyric_.value = JSON.parse(window.localStorage.getItem(id))
+      // if (isUnNull(JSON.parse(window.localStorage.getItem(id)))) {
+      //   const {
+      //     lrc: { lyric },
+      //   } = await GetLyric({ id })
+      //   if (isUnNull(lyric)) {
+      //     console.log('获取歌词失败')
+      //     return
+      //   }
+      //   lyric_.value = lyric
+      //   window.localStorage.setItem(id, JSON.stringify(lyric_.value))
+      // } else {
+      //   lyric_.value = JSON.parse(window.localStorage.getItem(id))
+      // }
+
+      const {
+        lrc: { lyric },
+      } = await GetLyric({ id })
+      if (isUnNull(lyric)) {
+        console.log('获取歌词失败')
+        return
       }
+      lyric_.value = lyric
       initLyric()
     }
 
@@ -176,33 +186,13 @@ export default defineComponent({
       }
     )
 
-    const login = async (phone, password) => {
-      // let data = await Login({ phone, password })
-      // console.log(data)
-      // setTimeout(() => {
-      //   window.localStorage.setItem('user_hueng', JSON.stringify(data))
-      // }, 1000)
-      // let user = JSON.parse(window.localStorage.getItem('user'))
-      // console.log(user)
-      // const { token } = user
-      // window.localStorage.setItem('token', token)
-      // Cookies.set('token', token)
-      // window.localStorage.setItem('cookie', data.cookie)
-    }
-    // setTimeout(async () => {
-    // login(18728633002, )
-    // console.log(await LoginStatus())
-    // let userDetail = await UserDetail({ uid: 369626548 })
-    // window.localStorage.setItem('userDetail', JSON.stringify(userDetail))
-    // console.log(userDetail)
-    // }, 4000)
-
     return {
       singers,
       lyric_,
       lyricWithAnchor,
       activeEl,
       changeProgress,
+      isUnNull,
     }
   },
 })

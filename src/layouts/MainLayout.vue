@@ -17,7 +17,7 @@
         <q-btn icon="fas fa-bell" size="12px" rounded />
         <q-separator vertical inset class="q-mx-md" />
         <div>
-          <q-btn class="user" rounded @click="toggleAudioPlay">
+          <q-btn class="user" rounded>
             <q-avatar>
               <img
                 src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png"
@@ -42,6 +42,7 @@
       <BroadcastBar
         :songListToAudio="songsList"
         :controlPlayStatus="playStatus"
+        :playMode="playMode"
         :forceToChangeProgress="forceToChangeProgressValue"
         @play="handlePlay"
         @pause="handlePause"
@@ -108,7 +109,7 @@ const linksList = [
   },
 ]
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, reactive, nextTick } from 'vue'
 import { useQuasar } from 'quasar'
 
 export default defineComponent({
@@ -124,13 +125,15 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
     $q.dark.set(true)
-
-    let currentSongId = ref()
+    let songsList = ref([])
+    let currentSongId = ref('')
     // 测试环境
-    let currentSongDetail = ref(JSON.parse(window.localStorage.getItem('songs'))[0])
+    // let currentSongDetail = ref(JSON.parse(window.localStorage.getItem('songs'))[0])
+    let currentSongDetail = ref()
     let playStatus = ref(false)
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
+    let playMode = ref(1)
 
     //****************************************************
     /**
@@ -142,33 +145,64 @@ export default defineComponent({
 
     /**
      * @description 立即播放某首歌曲
-     * @param {} songDetail  或者  id   ?
+     * @param {String} id: 播放歌曲的id
      */
-    const immediatelyBroadcast = songDetail => {}
-
+    const immediatelyBroadcast = id => {
+      playMode.value = 0
+      nextTick(() => {
+        songsList.value.unshift(id)
+      })
+    }
     /**
      * 添加一首歌曲到播放列表
      * id: 歌曲id
-     * order： 添加方式   true：添加值播放列表最前方（即下一首播放）  false: 添加至列表最后
+     * order： 添加方式   true：即下一首播放  false: 添加至播放列表最后
      */
-    const addSongToPlaylist = (id, order) => {}
+    const addSongToPlaylist = (id, order) => {
+      if (order) {
+        playMode.value = 2
+        nextTick(() => {
+          songsList.value.splice(1, 0, id)
+        })
+        return
+      }
+      if (!order) {
+        playMode.value = 3
+        nextTick(() => {
+          songsList.value.push(id)
+        })
+      }
+    }
 
     /**
      * 更新整个播放列表  应用场景为播放某歌单所有歌曲
+     * list :  string[]
+     * ['132111561','165615','4848648']
      */
-    const newPlaylist = () => {}
+    const newPlaylist = list => {
+      playMode.value = 1
+      nextTick(() => {
+        songsList.value = list
+      })
+    }
 
-    /**
-     * 切换歌曲    不对  这里应该不需要   直接按按钮就好
-     * direction：  true 下一首   false 上一首
-     */
-    const switchSong = direction => {}
+    // 调用示例
+    setTimeout(() => {
+      immediatelyBroadcast('1293886117')
+    }, 2000)
+    setTimeout(() => {
+      newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
+    }, 10000)
+    setTimeout(() => {
+      addSongToPlaylist('25787222', true)
+    }, 15000)
     //*  *************************************************
 
     const handlePlay = songDetail => {
       const { id } = songDetail
-      if (currentSongId.value != id) {
-        currentSongId.value = id
+      let idStr = id.toString()
+      if (currentSongId.value != idStr) {
+        currentSongId.value = idStr
       }
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
@@ -178,9 +212,10 @@ export default defineComponent({
 
     const handlePause = songDetail => {
       const { id } = songDetail
-      if (currentSongId.value != id) {
+      let idStr = id.toString()
+      if (currentSongId.value != idStr) {
         // 优化
-        currentSongId.value = id
+        currentSongId.value = idStr
       }
       if (currentSongDetail.value != songDetail) {
         currentSongDetail.value = songDetail
@@ -195,33 +230,37 @@ export default defineComponent({
     }
 
     const handleChangeProgress = time => {
-      console.log(time)
       forceToChangeProgressValue.value = time
     }
 
     const handleSwitchSong = songDetail => {
       const { id } = songDetail
-      if (currentSongId.value != id) {
+      let idStr = id.toString()
+      if (currentSongId.value != idStr) {
         // 优化
-        currentSongId.value = id
+        currentSongId.value = idStr
       }
       currentSongDetail.value = songDetail
     }
 
     return {
       essentialLinks: linksList,
-      songsList: JSON.parse(window.localStorage.getItem('songs')),
       broadcastPageStatus: ref(false),
+      songsList,
       handlePlay,
       handlePause,
       handleUpdateCurrentTime,
       handleChangeProgress,
       handleSwitchSong,
       toggleAudioPlay,
+      immediatelyBroadcast,
+      newPlaylist,
+      addSongToPlaylist,
       currentSongId,
       currentSongDetail,
       currentTime,
       playStatus,
+      playMode,
       forceToChangeProgressValue,
     }
   },

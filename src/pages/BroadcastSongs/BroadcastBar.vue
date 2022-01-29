@@ -185,6 +185,10 @@ export default defineComponent({
     forceToChangeProgress: {
       type: String,
     },
+    playMode: {
+      //  其他组件指定的播放模式   立即播放、下一首播放
+      type: Number,
+    },
   },
   components: {},
   setup(props, context) {
@@ -404,25 +408,8 @@ export default defineComponent({
       return `${m}:${s}`
     })
 
-    // const getSongDetail = async ids => {
-    //   let res = await GetSongDetail({ ids })
-    //   console.log(res)
-    //   // window.localStorage.setItem('songInfo', JSON.stringify(res.songs))
-    //   return res
-    // }
-    // getSongDetail('186016')
-
-    // const Check_Music_ = async id => {
-    //   console.log(await Check_Music({ id }))
-    // }
-
-    // Check_Music_('347230')
     const queryUrls = async id => {
-      const { data } = await GetSongUrl({
-        id,
-        cookie: JSON.parse(window.localStorage.getItem('user')),
-      })
-      console.log(data)
+      const { data } = await GetSongUrl({ id })
       if (isUnNull(data)) return
       for (let obj of data) {
         for (let j of songsList) {
@@ -476,25 +463,99 @@ export default defineComponent({
     // Search_('李荣浩')
     // TODO: 播放列表
 
+    const handleNextSong = () => {}
+
     //songsList.pop() // 删除第一个占位元素
-    const init = () => {
-      for (let obj of props.songListToAudio) {
-        songsList.push(obj)
+    /**
+     *
+     * @param {string} mode   0: 立即播放列表新歌  2: 下一首播放  3: 添加至播放列表末尾   4:  列表
+     */
+    const init = async mode => {
+      if (isUnNull(props.songListToAudio)) return
+      let ids = ''
+      if (mode === 0) {
+        ids = props.songListToAudio[0]
+        // 直接解构会报错！？？
+        let res = await GetSongDetail({ ids })
+        const { songs } = res
+        // if (isUnNull(songs)) return
+        for (let obj of songs) {
+          songsList.unshift(obj)
+        }
+        songIds.value = ''
+        songIds.value = songsList[0].id.toString()
       }
+      if (mode === 1) {
+        for (let id of props.songListToAudio) {
+          ids += `,${id}`
+        }
+        ids = ids.split('').splice(1).join('')
+        let res = await GetSongDetail({ ids })
+        let { songs } = res
+        songsList.length = 0
+        for (let obj of songs) {
+          songsList.push(obj)
+        }
+        songIds.value = ''
+        songsList.forEach((el, index) => {
+          if (index === 0) {
+            songIds.value += `${el.id}`
+          } else {
+            songIds.value += `,${el.id}`
+          }
+        })
+      }
+      if (mode === 2) {
+        ids = props.songListToAudio[1]
+        let res = await GetSongDetail({ ids })
+        const { songs } = res
+        // if (isUnNull(songs)) return
+        for (let obj of songs) {
+          songsList.splice(1, 0, obj)
+        }
+        songIds.value = ''
+        songIds.value = songsList[1].id.toString()
+      }
+      if (mode === 3) {
+        ids = props.songListToAudio[props.songListToAudio.length - 1]
+        let res = await GetSongDetail({ ids })
+        const { songs } = res
+        // if (isUnNull(songs)) return
+        for (let obj of songs) {
+          songsList.push(obj)
+        }
+        songIds.value = ''
+        songIds.value = songsList[songsList.length - 1].id.toString()
+      }
+
+      isReady.value = true
+      currentSongIndex.value = 0
+      // songsList.pop()
 
       /**
        * 统一获取歌曲的URL
        */
-      songsList.forEach(el => {
-        songIds.value += `,${el.id}`
-      })
-      let arr = songIds.value.split('')
-      arr.shift()
-      songIds.value = arr.join('')
-      queryUrls(songIds.value)
+      await queryUrls(songIds.value)
+      if (mode === 2 || mode === 3) {
+        return
+      }
+      if (audio.value.paused) {
+        togglePlay()
+      } else {
+        togglePlay()
+        togglePlay()
+      }
     }
-    init()
-
+    // init()
+    watch(
+      () => props.songListToAudio,
+      newVal => {
+        init(props.playMode)
+      },
+      {
+        deep: true,
+      }
+    )
     return {
       audio,
       togglePlay,
