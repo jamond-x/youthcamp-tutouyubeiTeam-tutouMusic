@@ -43,9 +43,11 @@
         </div>
         <div class="each-comment q-my-md" v-for="(item, index) in currentComment" :key="index">
           <div class="column">
-            <q-avatar class="q-mt-xs">
-              <img :src="item.user.avatarUrl" />
-            </q-avatar>
+            <router-link :to="`/user/${item.user.userId}`">
+              <q-avatar class="user-avatar q-mt-xs" v-close-popup>
+                <img :src="item.user.avatarUrl" />
+              </q-avatar>
+            </router-link>
             <q-badge class="badge" rounded color="orange" label="v" />
           </div>
           <div class="column justify-center">
@@ -234,6 +236,9 @@ export default defineComponent({
       display: grid;
       grid-template-columns: 1fr 5fr;
       position: relative;
+      .user-avatar {
+        cursor: pointer;
+      }
       .badge {
         width: 15px;
         height: 15px;

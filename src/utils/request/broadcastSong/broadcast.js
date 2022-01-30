@@ -19,8 +19,6 @@ const api = createApi(
   })
 )
 
-// 有的需要cookie 有的不需要 带上反而会报错？
-
 /**
  *@description 搜索
  * @param { Object } data{keywords: '关键词'}

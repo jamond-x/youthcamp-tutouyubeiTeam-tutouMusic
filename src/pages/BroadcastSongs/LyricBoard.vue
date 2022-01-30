@@ -50,10 +50,6 @@ const { setVerticalScrollPosition } = scroll
 export default defineComponent({
   name: 'Lyric',
   props: {
-    playStatus: {
-      type: Boolean,
-      required: true,
-    },
     songId: {
       type: String,
       required: true,
@@ -126,28 +122,10 @@ export default defineComponent({
       })
     }
 
-    // const getSongDetail = id => {
-    //   GetSongDetail({ids})
-    // }
-
     const GetLyric_ = async id => {
       if (isUnNull(id)) {
         console.log('播放列表为空')
       }
-      // if (isUnNull(JSON.parse(window.localStorage.getItem(id)))) {
-      //   const {
-      //     lrc: { lyric },
-      //   } = await GetLyric({ id })
-      //   if (isUnNull(lyric)) {
-      //     console.log('获取歌词失败')
-      //     return
-      //   }
-      //   lyric_.value = lyric
-      //   window.localStorage.setItem(id, JSON.stringify(lyric_.value))
-      // } else {
-      //   lyric_.value = JSON.parse(window.localStorage.getItem(id))
-      // }
-
       const {
         lrc: { lyric },
       } = await GetLyric({ id })
