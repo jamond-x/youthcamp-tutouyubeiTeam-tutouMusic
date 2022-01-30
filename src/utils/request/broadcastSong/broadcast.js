@@ -103,7 +103,7 @@ export const GetComment = async (id, limit) => {
  * @param {String} commentId  回复的评论 id (回复评论时必填)
  * @returns
  */
-export const SendComment = async (t, type, id, content, commentId) => {
+export const SendComment = async (t, type, id, content, commentId, replyCommentId) => {
   return await api({
     method: 'POST',
     url: `/comment?timestamp=${new Date().getTime()}`,
@@ -113,6 +113,7 @@ export const SendComment = async (t, type, id, content, commentId) => {
       id,
       content,
       commentId,
+      replyCommentId,
       cookie,
     },
   })

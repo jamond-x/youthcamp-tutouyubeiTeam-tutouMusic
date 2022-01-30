@@ -12,7 +12,14 @@
             最新评论
           </span>
           <div>
-            <q-btn class="pen" icon="fas fa-pen" flat rounded size="10px" />
+            <q-btn
+              class="pen"
+              icon="fas fa-pen"
+              flat
+              rounded
+              size="10px"
+              @click="replyCommentType = 1"
+            />
             <q-popup-edit
               @save="sendComment_"
               class="bg-brown-7 text-white"
@@ -76,14 +83,42 @@
                   color="red"
                   icon="fas fa-heart"
                 />
-                <q-btn
-                  class="comment-replay"
-                  @click="replayComment, (popupEdit = true)"
-                  icon="far fa-comment"
-                  size="10px"
-                  rounded
-                  flat
-                />
+                <div>
+                  <q-btn
+                    class="comment-replay"
+                    @click=";(replyCommentType = 2), (replyCommentId = item.commentId)"
+                    icon="far fa-comment"
+                    size="10px"
+                    rounded
+                    flat
+                  />
+                  <q-popup-edit
+                    @save="sendComment_"
+                    class="bg-brown-7 text-white"
+                    color="white"
+                    buttons
+                    v-slot="scope"
+                    label-set="发送"
+                    label-cancel="取消"
+                    title="编辑评论"
+                    max-width="500px"
+                  >
+                    <q-input
+                      dark
+                      type="textarea"
+                      color="white"
+                      v-model="scope.value"
+                      dense
+                      autofocus
+                      counter
+                      @keyup.enter="scope.set"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="edit" />
+                      </template>
+                    </q-input>
+                  </q-popup-edit>
+                </div>
               </div>
             </div>
           </div>
@@ -107,14 +142,14 @@ export default defineComponent({
     },
   },
   setup(props) {
-    // TODO: 评论是否为回复评论
     // TODO: 认证用户图标
-    // TODO: 点击用户头像跳转至用户主页
     let currentComment = ref([])
     let hotComment_ = ref([])
     let comment_ = ref([])
     let commentMode = ref(true)
     let commentAmount = ref(20)
+    let replyCommentType = ref(1) // 1: 发送   2: 回复
+    let replyCommentId = ref('')
     const get = async id => {
       if (isUnNull(id)) return
       // let res = await GetComment({ id })
@@ -164,9 +199,15 @@ export default defineComponent({
       }
       // TODO: 解决加载给多热门评论问题
     }
-
+    //TODO:回复评论
     const sendComment_ = async comment => {
-      let res = await SendComment(1, 0, props.id, comment)
+      let res = await SendComment(
+        replyCommentType.value,
+        0,
+        props.id,
+        comment,
+        replyCommentId.value
+      )
       if (res.code === 200) {
         const { comment } = res
         comment.beReplied = []
@@ -193,7 +234,8 @@ export default defineComponent({
     return {
       currentComment,
       commentMode,
-      popupEdit: ref(false),
+      replyCommentType,
+      replyCommentId,
       changeComment,
       loadMoreComment,
       like,
