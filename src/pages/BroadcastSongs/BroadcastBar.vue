@@ -10,7 +10,7 @@
         <div class="song-name">{{ songsList[currentSongIndex].name }}</div>
         <div class="singer">{{ singers }}</div>
       </div>
-      <div class="album offset-2">{{ songsList[currentSongIndex].al.name }}</div>
+      <!-- <div class="album">{{ songsList[currentSongIndex].al.name }}</div> -->
     </div>
     <div v-else class="flex flex-center">
       <div>列表暂无播放歌曲~</div>
@@ -103,8 +103,8 @@
 
 <script>
 import { defineComponent, ref, reactive, watch, computed } from 'vue'
-import { throttle, Cookies } from 'quasar'
-// import { useQuasar } from 'quasar'
+import { throttle } from 'quasar'
+import { useQuasar } from 'quasar'
 
 import {
   GetSongUrl,
@@ -113,7 +113,6 @@ import {
   Search,
   Login,
 } from 'src/utils/request/broadcastSong/broadcast'
-// TODO: class 的思想抽出方法！
 import { isUnNull } from 'src/utils'
 
 let hello = {
@@ -192,15 +191,6 @@ export default defineComponent({
   },
   components: {},
   setup(props, context) {
-    // let $q = useQuasar()
-    // let togglePlay = () => {
-    //   $q.notify({
-    //     spinner: true,
-    //     message: '歌曲加载中...',
-    //     timeout: 2000,
-    //   })
-    // }
-    //TODO: $q is not a function
     const audio = ref()
     let volume = ref(1)
     let songIds = ref('')
@@ -211,6 +201,8 @@ export default defineComponent({
     let isReady = ref(false)
     const songsList = reactive(songsList_)
     const songListLayer = ref(songListLayer_)
+    let $q = useQuasar()
+
     let modeListObj = [
       {
         val: 'random',
@@ -228,7 +220,6 @@ export default defineComponent({
     modeListObj[2].next = modeListObj[0]
     let autoplayMode = ref(modeListObj[0])
 
-    // TODO: 手动清除定时器？
     let intervalTimer
 
     let clearTimer = () => {
@@ -263,12 +254,15 @@ export default defineComponent({
     }
 
     //TODO: 缓缓暂停、播放
-    //TODO: 添加键盘控制播放功能
     const togglePlay = throttle(async () => {
       if (audio.value.paused) {
         if (isUnNull(intervalTimer)) {
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
-            alert('该歌曲没有版权')
+            $q.notify({
+              message: '该歌曲没有版权或资源链接无效',
+              timeout: 2000,
+              position: 'top',
+            })
             autoSwitchSong(autoplayMode.value.val)
             return
           }
@@ -584,6 +578,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
 .bar {
   // background-color: #2c1919;
 
@@ -595,8 +596,10 @@ export default defineComponent({
   .song-detail {
     .pointer {
       cursor: pointer;
-      max-width: 170px;
+      // max-width: 220px;
       user-select: none;
+      white-space: nowrap;
+      overflow: scroll;
     }
     .img {
       width: 50px;

@@ -187,15 +187,15 @@ export default defineComponent({
     }
 
     // 调用示例
-    setTimeout(() => {
-      immediatelyBroadcast('1293886117')
-    }, 2000)
+    // setTimeout(() => {
+    //   immediatelyBroadcast('1293886117')
+    // }, 2000)
     setTimeout(() => {
       newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
-    }, 10000)
-    setTimeout(() => {
-      addSongToPlaylist('25787222', true)
-    }, 15000)
+    }, 1000)
+    // setTimeout(() => {
+    //   addSongToPlaylist('25787222', true)
+    // }, 15000)
     //*  *************************************************
 
     const handlePlay = songDetail => {

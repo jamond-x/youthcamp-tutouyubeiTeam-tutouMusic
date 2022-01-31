@@ -12,7 +12,16 @@
       </div>
     </div>
     <div class="lyric flex flex-center">
-      <ul class="q-mt-xl q-mr-xl" id="lyricBar">
+      <ul
+        v-if="isUnNull(lyricWithAnchor) || lyricWithAnchor.length === 0"
+        class="q-mt-xl q-mr-xl"
+        id="lyricBar"
+      >
+        <li class="piece q-ma-md" v-for="item in 13" :key="item">
+          <q-skeleton type="rect" />
+        </li>
+      </ul>
+      <ul v-else class="q-mt-xl q-mr-xl" id="lyricBar">
         <li
           class="piece q-ma-md"
           v-for="(item, index) in lyricWithAnchor"
@@ -102,7 +111,6 @@ export default defineComponent({
     const initLyric = () => {
       lyricMap = new Map()
       lyricIndexMap = new Map()
-      lyricWithAnchor.value = []
       lyric_.value = lyric_.value.split('\n')
       let tempIndex = 0
       lyric_.value = lyric_.value.map(el => {
@@ -161,6 +169,7 @@ export default defineComponent({
       () => props.songId,
       newVal => {
         GetLyric_(newVal)
+        lyricWithAnchor.value = []
       }
     )
 
