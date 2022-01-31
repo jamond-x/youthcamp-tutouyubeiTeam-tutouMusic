@@ -184,3 +184,18 @@ export const LikeComment = async (id, cid, t, type) => {
     },
   })
 }
+
+/**
+ * 获取相似歌曲
+ * @param {String} id
+ * @returns
+ */
+export const SimilarSongs = async id => {
+  return api({
+    method: 'POST',
+    url: `/simi/song?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+    },
+  })
+}

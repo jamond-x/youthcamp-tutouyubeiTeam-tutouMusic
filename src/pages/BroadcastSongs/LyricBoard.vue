@@ -10,6 +10,33 @@
       <div class="row reverse items-center">
         <q-btn class="q-mr-xl" icon="fas fa-angle-down" v-close-popup flat round />
       </div>
+      <div class="fm text-black q-px-sm">私人FM</div>
+    </div>
+    <div class="left-side">
+      <div>
+        <q-btn
+          @click="getSimilarSongs, (similarSongBar = !similarSongBar)"
+          icon="fas fa-align-right"
+          flat
+          :label="similarSongBar ? '相 似 歌 曲' : ''"
+        />
+      </div>
+      <div v-if="similarSongBar" class="similar-swiper q-mt-md">
+        <swiper mousewheel :speed="500" :effect="'cards'" loop>
+          <swiper-slide
+            style="position: relative; cursor: pointer"
+            v-for="(item, index) in similarSongs"
+            :key="index"
+            @click="$emit('changeSong', `${item.id}`)"
+          >
+            <q-img class="img" :src="item.album.picUrl">
+              <div class="bar absolute-bottom text-subtitle1 text-center">
+                {{ item.name }}
+              </div>
+            </q-img>
+          </swiper-slide>
+        </swiper>
+      </div>
     </div>
     <div class="lyric flex flex-center">
       <ul
@@ -45,6 +72,7 @@
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
 import {
   GetLyric,
+  SimilarSongs,
   GetSongDetail,
   Login,
   Logout,
@@ -55,6 +83,13 @@ import { isUnNull } from 'src/utils'
 import Comment from './Comment.vue'
 import { scroll } from 'quasar'
 const { setVerticalScrollPosition } = scroll
+
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import SwiperCore, { Mousewheel, FreeMode, EffectCards } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/free-mode'
+import 'swiper/css/effect-cards'
+SwiperCore.use([FreeMode, Mousewheel, EffectCards])
 
 export default defineComponent({
   name: 'Lyric',
@@ -72,14 +107,15 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['changeProgress'],
-  components: { Comment },
+  emits: ['changeProgress', 'changeSong'],
+  components: { Comment, Swiper, SwiperSlide },
   setup(props, context) {
     let lyric_ = ref()
     let lyricWithAnchor = ref([])
     let lyricMap = new Map()
     let lyricIndexMap = new Map()
     let activeEl = ref()
+    let similarSongs = ref([])
     const scrollTo = el => {
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
@@ -130,6 +166,11 @@ export default defineComponent({
       })
     }
 
+    const getSimilarSongs = async () => {
+      let { songs } = await SimilarSongs(props.songId)
+      similarSongs.value = songs
+    }
+    getSimilarSongs()
     const GetLyric_ = async id => {
       if (isUnNull(id)) {
         console.log('播放列表为空')
@@ -168,8 +209,8 @@ export default defineComponent({
     watch(
       () => props.songId,
       newVal => {
-        GetLyric_(newVal)
         lyricWithAnchor.value = []
+        GetLyric_(newVal)
       }
     )
 
@@ -178,6 +219,8 @@ export default defineComponent({
       lyric_,
       lyricWithAnchor,
       activeEl,
+      similarSongs,
+      similarSongBar: ref(false),
       changeProgress,
       isUnNull,
     }
@@ -213,8 +256,33 @@ export default defineComponent({
     & > div + div {
       grid-area: 1/3/2/4;
     }
+    .fm {
+      position: absolute;
+      @include custom-font(1.2rem, 900, 1px, inherit);
+      left: 3.5rem;
+      top: 1.7rem;
+      background-color: white;
+      border-radius: 6px;
+    }
   }
 
+  .left-side {
+    position: absolute;
+    left: 3rem;
+    top: 30%;
+
+    .similar-swiper {
+      width: 200px;
+      height: 200px;
+
+      .img {
+        border-radius: 20px;
+        .bar {
+          @include custom-font(17px, 600, 1px, inherit);
+        }
+      }
+    }
+  }
   .lyric {
     @extend .scroll;
     user-select: none;
@@ -242,9 +310,6 @@ export default defineComponent({
         transition: all 0.1s ease;
       }
     }
-  }
-
-  .comment {
   }
 }
 </style>

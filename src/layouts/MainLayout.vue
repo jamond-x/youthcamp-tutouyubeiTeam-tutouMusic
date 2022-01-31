@@ -66,6 +66,7 @@
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
+        @changeSong="immediatelyBroadcast"
         @changeProgress="handleChangeProgress"
       />
     </q-dialog>
