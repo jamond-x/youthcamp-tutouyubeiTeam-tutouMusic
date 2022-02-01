@@ -39,3 +39,7 @@
     background: rgba(0, 0, 0, 0.1);
   }
 }
+
+.font-weight-sm {
+  @include custom-font(17px, 900, 1px, inherit);
+}

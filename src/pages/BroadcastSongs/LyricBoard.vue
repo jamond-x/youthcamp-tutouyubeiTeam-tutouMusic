@@ -1,5 +1,5 @@
 <template>
-  <div class="broadcast-container">
+  <div class="broadcast-container scroll">
     <div class="header">
       <div class="column items-center">
         <div class="q-mt-md">
@@ -10,7 +10,10 @@
       <div class="row reverse items-center">
         <q-btn class="q-mr-xl" icon="fas fa-angle-down" v-close-popup flat round />
       </div>
-      <div class="fm text-black q-px-sm">私人FM</div>
+      <div class="fm">
+        <div class="font text-black q-px-sm">私人FM</div>
+        <q-toggle v-model="FMMode" icon="fas fa-blog" size="50px" color="red" />
+      </div>
     </div>
     <div class="left-side">
       <div>
@@ -18,7 +21,8 @@
           @click="getSimilarSongs, (similarSongBar = !similarSongBar)"
           icon="fas fa-align-right"
           flat
-          :label="similarSongBar ? '相 似 歌 曲' : ''"
+          class="font-weight-sm"
+          :label="similarSongBar ? '相似歌曲' : ''"
         />
       </div>
       <div v-if="similarSongBar" class="similar-songs q-mt-md q-ml-xl">
@@ -50,7 +54,8 @@
           @click="getSimilarPlaylist, (similarPlaylistsBar = !similarPlaylistsBar)"
           icon="fas fa-align-right"
           flat
-          :label="similarSongBar ? '相 似 歌 单' : ''"
+          class="font-weight-sm"
+          :label="similarPlaylistsBar ? '相似歌单' : ''"
         />
       </div>
       <div v-if="similarPlaylistsBar" class="similar-playlists q-mt-md q-mr-xl">
@@ -111,22 +116,18 @@
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
-
 import {
   GetLyric,
   SimilarSongs,
   SimilarPlaylists,
-  GetSongDetail,
+  PersonalFM,
   Login,
   Logout,
-  LoginStatus,
-  UserDetail,
 } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 import Comment from './Comment.vue'
 import { scroll } from 'quasar'
 const { setVerticalScrollPosition } = scroll
-
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import SwiperCore, { Mousewheel, FreeMode, EffectCards, EffectCube } from 'swiper'
 import 'swiper/css'
@@ -151,7 +152,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['changeProgress', 'changeSong'],
+  emits: ['changeProgress', 'changeSong', 'changePlaylist'],
   components: { Comment, Swiper, SwiperSlide },
   setup(props, context) {
     let $q = useQuasar()
@@ -163,6 +164,9 @@ export default defineComponent({
     let similarSongs = ref([])
     let similarPlaylists = ref([])
     let swiperInstance = ref()
+    let FMMode = ref(false)
+    let similarSongBar = ref(true)
+    let similarPlaylistsBar = ref(true)
     const scrollTo = el => {
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
@@ -230,6 +234,19 @@ export default defineComponent({
     const getSimilarPlaylist = async () => {
       let { playlists } = await SimilarPlaylists(props.songId)
       similarPlaylists.value = playlists
+      if (playlists.length === 0) {
+        similarPlaylistsBar.value = false
+      }
+    }
+
+    const FM = async () => {
+      let { data } = await PersonalFM()
+      context.emit(
+        'changePlaylist',
+        data.map(el => {
+          return el.id.toString()
+        })
+      )
     }
 
     getSimilarPlaylist()
@@ -286,6 +303,14 @@ export default defineComponent({
         getSimilarPlaylist()
       }
     )
+    watch(
+      () => FMMode.value,
+      newVal => {
+        if (newVal) {
+          FM()
+        }
+      }
+    )
 
     return {
       singers,
@@ -294,9 +319,10 @@ export default defineComponent({
       activeEl,
       similarSongs,
       similarPlaylists,
-      similarSongBar: ref(true),
-      similarPlaylistsBar: ref(true),
+      similarSongBar,
+      similarPlaylistsBar,
       swiperInstance,
+      FMMode,
       getSimilarPlaylist,
       getSimilarSongs,
       getInstance,
@@ -340,8 +366,10 @@ export default defineComponent({
       @include custom-font(1.2rem, 900, 1px, inherit);
       left: 3.5rem;
       top: 1.7rem;
-      background-color: white;
-      border-radius: 6px;
+      .font {
+        background-color: white;
+        border-radius: 6px;
+      }
     }
   }
 

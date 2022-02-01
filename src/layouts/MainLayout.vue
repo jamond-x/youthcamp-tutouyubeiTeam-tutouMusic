@@ -60,13 +60,14 @@
       full-width
       full-height
       no-shake
-      class="broadcast-panel"
+      class="broadcast-panel scroll"
     >
       <LyricBoard
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
         @changeSong="immediatelyBroadcast"
+        @changePlaylist="newPlaylist"
         @changeProgress="handleChangeProgress"
       />
     </q-dialog>

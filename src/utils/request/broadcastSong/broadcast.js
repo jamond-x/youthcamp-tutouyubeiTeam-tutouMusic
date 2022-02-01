@@ -214,3 +214,17 @@ export const SimilarPlaylists = async id => {
     },
   })
 }
+
+/**
+ * FM
+ * @returns
+ */
+export const PersonalFM = () => {
+  return api({
+    method: 'POST',
+    url: `/personal_fm?timestamp=${new Date().getTime()}`,
+    data: {
+      cookie,
+    },
+  })
+}
