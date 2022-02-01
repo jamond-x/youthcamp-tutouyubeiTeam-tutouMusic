@@ -95,6 +95,31 @@ export const GetComment = async (id, limit) => {
 }
 
 /**
+ *@description 获取歌曲热门评论
+ * @param { String } id: '186016' 歌曲id
+ * @param { Number } type: 0: 歌曲
+    1: mv
+    2: 歌单
+    3: 专辑
+    4: 电台
+    5: 视频
+ * @param { String } limit: 评论数量
+ * @returns
+ */
+export const GetHotComment = async (id, type, limit) => {
+  return await api({
+    method: 'POST',
+    url: `/comment/hot?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+      type,
+      limit,
+      cookie,
+    },
+  })
+}
+
+/**
  *
  * @param {String} t  1 发送, 2 回复
  * @param {String} type 0: 歌曲  1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频

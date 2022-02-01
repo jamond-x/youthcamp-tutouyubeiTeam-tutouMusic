@@ -11,7 +11,7 @@
         <q-btn class="q-mr-xl" icon="fas fa-angle-down" v-close-popup flat round />
       </div>
       <div class="fm">
-        <div class="font text-black q-px-sm">私人FM</div>
+        <div class="font text-black q-px-sm q-ml-sm">私人FM</div>
         <q-toggle v-model="FMMode" icon="fas fa-blog" size="50px" color="red" />
       </div>
     </div>
@@ -245,17 +245,14 @@ export default defineComponent({
       let ids = data.map(el => {
         return el.id.toString()
       })
-      debugger
       if (FMList.value.length === 0) {
         FMList.value = ids
         context.emit('changePlaylist', ids)
-        debugger
       } else {
         ids.forEach(el => {
           FMList.value.push(el)
           context.emit('addSongToList', el)
         })
-        debugger
       }
     }
 

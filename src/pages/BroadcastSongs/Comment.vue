@@ -142,7 +142,12 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import { GetComment, LikeComment, SendComment } from 'src/utils/request/broadcastSong/broadcast'
+import {
+  GetComment,
+  GetHotComment,
+  LikeComment,
+  SendComment,
+} from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 import { useQuasar } from 'quasar'
 
@@ -161,6 +166,7 @@ export default defineComponent({
     let comment_ = ref([])
     let commentMode = ref(true)
     let commentAmount = ref(20)
+    let hotCommentAmount = ref(15)
     let replyCommentType = ref(1) // 1: 发送   2: 回复
     let replyCommentId = ref('')
     let $q = useQuasar()
@@ -203,13 +209,11 @@ export default defineComponent({
         let { comments } = await GetComment(props.id, (commentAmount.value += 20))
         comment_.value = comments
         currentComment.value = comment_.value
+        return
       }
-      // TODO: 解决加载给多热门评论问题
-      $q.notify({
-        message: '暂时只能加载更多最新评论',
-        color: 'purple',
-        position: 'top',
-      })
+      let { hotComments } = await GetHotComment(props.id, 0, (hotCommentAmount.value += 15))
+      hotComment_.value = hotComments
+      currentComment.value = hotComment_.value
     }
     const sendComment_ = async comment => {
       let res = await SendComment(
