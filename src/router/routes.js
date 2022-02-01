@@ -5,15 +5,16 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('pages/Index.vue'),
+        // component: () => import('pages/Index.vue'),
+        redirect: '/discover'
       },
       {
         path: '/discover',
         component: () => import('pages/DiscoverMusic/Discover.vue'),
         children: [
           {
-            path: '/',
-            redirect: 'personality',
+            path: '',
+            redirect: '/discover/personality',
           },
           {
             path: 'personality',
