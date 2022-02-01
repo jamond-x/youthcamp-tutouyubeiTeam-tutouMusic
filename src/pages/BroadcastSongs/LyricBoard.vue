@@ -203,14 +203,18 @@ export default defineComponent({
       }, 5000)
     }
     //TODO: 歌词加上翻译
-    // TODO: 使用正则 解决解析歌词不全问题
     const initLyric = () => {
       lyricMap = new Map()
       lyricIndexMap = new Map()
       lyric_.value = lyric_.value.split('\n')
       let tempIndex = 0
       lyric_.value = lyric_.value.map(el => {
-        let temp = el.split('').splice(11).join('')
+        let temp
+        if (el.charAt(10) === ']') {
+          temp = el.split('').splice(11).join('')
+        } else {
+          temp = el.split('').splice(10).join('')
+        }
         let min = el.split('').splice(2, 1).join('')
         let s = el.split('').splice(4, 2).join('')
         s = parseInt(min) * 60 + parseInt(s)
