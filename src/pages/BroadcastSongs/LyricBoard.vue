@@ -1,5 +1,5 @@
 <template>
-  <div class="broadcast-container scroll">
+  <div class="broadcast-container">
     <div class="header">
       <div class="column items-center">
         <div class="q-mt-md">
@@ -152,7 +152,7 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['changeProgress', 'changeSong', 'changePlaylist'],
+  emits: ['changeProgress', 'changeSong', 'changePlaylist', 'addSongToList'],
   components: { Comment, Swiper, SwiperSlide },
   setup(props, context) {
     let $q = useQuasar()
@@ -165,6 +165,7 @@ export default defineComponent({
     let similarPlaylists = ref([])
     let swiperInstance = ref()
     let FMMode = ref(false)
+    let FMList = ref([])
     let similarSongBar = ref(true)
     let similarPlaylistsBar = ref(true)
     const scrollTo = el => {
@@ -201,7 +202,7 @@ export default defineComponent({
         swiperInstance.value.setTranslate(-50)
       }, 5000)
     }
-
+    //TODO: 歌词加上翻译
     // TODO: 使用正则 解决解析歌词不全问题
     const initLyric = () => {
       lyricMap = new Map()
@@ -241,12 +242,21 @@ export default defineComponent({
 
     const FM = async () => {
       let { data } = await PersonalFM()
-      context.emit(
-        'changePlaylist',
-        data.map(el => {
-          return el.id.toString()
+      let ids = data.map(el => {
+        return el.id.toString()
+      })
+      debugger
+      if (FMList.value.length === 0) {
+        FMList.value = ids
+        context.emit('changePlaylist', ids)
+        debugger
+      } else {
+        ids.forEach(el => {
+          FMList.value.push(el)
+          context.emit('addSongToList', el)
         })
-      )
+        debugger
+      }
     }
 
     getSimilarPlaylist()
@@ -301,6 +311,9 @@ export default defineComponent({
         GetLyric_(newVal)
         getSimilarSongs()
         getSimilarPlaylist()
+        if (newVal === FMList.value[FMList.value.length - 1]) {
+          FM()
+        }
       }
     )
     watch(
@@ -335,9 +348,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
-.flip-list-move {
-  transition: transform 0.8s ease;
-}
 .broadcast-container {
   position: fixed;
   display: grid;
@@ -409,7 +419,6 @@ export default defineComponent({
   .lyric {
     @extend .scroll;
     user-select: none;
-
     & ul {
       list-style: none;
     }

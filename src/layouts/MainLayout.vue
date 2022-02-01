@@ -68,6 +68,7 @@
         :songCurrentTime="currentTime"
         @changeSong="immediatelyBroadcast"
         @changePlaylist="newPlaylist"
+        @addSongToList="pushToList"
         @changeProgress="handleChangeProgress"
       />
     </q-dialog>
@@ -200,6 +201,10 @@ export default defineComponent({
     // }, 15000)
     //*  *************************************************
 
+    const pushToList = param => {
+      addSongToPlaylist(param, false)
+    }
+
     const handlePlay = songDetail => {
       const { id } = songDetail
       let idStr = id.toString()
@@ -258,6 +263,7 @@ export default defineComponent({
       immediatelyBroadcast,
       newPlaylist,
       addSongToPlaylist,
+      pushToList,
       currentSongId,
       currentSongDetail,
       currentTime,
