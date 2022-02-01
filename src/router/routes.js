@@ -11,32 +11,7 @@ const routes = [
       {
         path: '/discover',
         component: () => import('pages/DiscoverMusic/Discover.vue'),
-        children: [
-          {
-            path: '',
-            redirect: '/discover/personality',
-          },
-          {
-            path: 'personality',
-            component: () => import('pages/DiscoverMusic/childPages/Personality.vue'),
-          },
-          {
-            path: 'playlist',
-            component: () => import('pages/DiscoverMusic/childPages/Playlist.vue'),
-          },
-          {
-            path: 'rank',
-            component: () => import('pages/DiscoverMusic/childPages/Rank.vue'),
-          },
-          {
-            path: 'singer',
-            component: () => import('pages/DiscoverMusic/childPages/Singer.vue'),
-          },
-          {
-            path: 'mv',
-            component: () => import('pages/DiscoverMusic/childPages/Mv.vue'),
-          },
-        ],
+
       },
       {
         path: '/user/:uid',
