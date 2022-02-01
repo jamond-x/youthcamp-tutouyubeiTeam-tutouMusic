@@ -199,3 +199,18 @@ export const SimilarSongs = async id => {
     },
   })
 }
+
+/**
+ * 获取相似歌单
+ * @param {String} id
+ * @returns
+ */
+export const SimilarPlaylists = async id => {
+  return api({
+    method: 'POST',
+    url: `/simi/playlist?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+    },
+  })
+}

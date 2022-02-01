@@ -21,8 +21,14 @@
           :label="similarSongBar ? '相 似 歌 曲' : ''"
         />
       </div>
-      <div v-if="similarSongBar" class="similar-swiper q-mt-md">
-        <swiper mousewheel :speed="500" :effect="'cards'" loop>
+      <div v-if="similarSongBar" class="similar-songs q-mt-md q-ml-xl">
+        <swiper
+          mousewheel
+          :speed="500"
+          :effect="'cards'"
+          :cards-effect="{ slideShadows: false }"
+          loop
+        >
           <swiper-slide
             style="position: relative; cursor: pointer"
             v-for="(item, index) in similarSongs"
@@ -30,6 +36,40 @@
             @click="$emit('changeSong', `${item.id}`)"
           >
             <q-img class="img" :src="item.album.picUrl">
+              <div class="bar absolute-bottom text-subtitle1 text-center">
+                {{ item.name }}
+              </div>
+            </q-img>
+          </swiper-slide>
+        </swiper>
+      </div>
+    </div>
+    <div class="right-side">
+      <div class="row reverse">
+        <q-btn
+          @click="getSimilarPlaylist, (similarPlaylistsBar = !similarPlaylistsBar)"
+          icon="fas fa-align-right"
+          flat
+          :label="similarSongBar ? '相 似 歌 单' : ''"
+        />
+      </div>
+      <div v-if="similarPlaylistsBar" class="similar-playlists q-mt-md q-mr-xl">
+        <swiper
+          mousewheel
+          free-mode
+          :speed="500"
+          :effect="'cube'"
+          :cube-effect="{ shadow: true, slideShadows: false, shadowScale: 0.8, shadowOffset: 50 }"
+          loop
+          :update-on-images-ready="true"
+          @init="getInstance"
+        >
+          <swiper-slide
+            style="position: relative; cursor: pointer"
+            v-for="(item, index) in similarPlaylists"
+            :key="index"
+          >
+            <q-img class="img" :src="item.coverImgUrl">
               <div class="bar absolute-bottom text-subtitle1 text-center">
                 {{ item.name }}
               </div>
@@ -70,9 +110,12 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
+import { useQuasar } from 'quasar'
+
 import {
   GetLyric,
   SimilarSongs,
+  SimilarPlaylists,
   GetSongDetail,
   Login,
   Logout,
@@ -85,11 +128,12 @@ import { scroll } from 'quasar'
 const { setVerticalScrollPosition } = scroll
 
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import SwiperCore, { Mousewheel, FreeMode, EffectCards } from 'swiper'
+import SwiperCore, { Mousewheel, FreeMode, EffectCards, EffectCube } from 'swiper'
 import 'swiper/css'
 import 'swiper/css/free-mode'
 import 'swiper/css/effect-cards'
-SwiperCore.use([FreeMode, Mousewheel, EffectCards])
+import 'swiper/css/effect-cube'
+SwiperCore.use([FreeMode, Mousewheel, EffectCards, EffectCube])
 
 export default defineComponent({
   name: 'Lyric',
@@ -110,12 +154,15 @@ export default defineComponent({
   emits: ['changeProgress', 'changeSong'],
   components: { Comment, Swiper, SwiperSlide },
   setup(props, context) {
+    let $q = useQuasar()
     let lyric_ = ref()
     let lyricWithAnchor = ref([])
     let lyricMap = new Map()
     let lyricIndexMap = new Map()
     let activeEl = ref()
     let similarSongs = ref([])
+    let similarPlaylists = ref([])
+    let swiperInstance = ref()
     const scrollTo = el => {
       let container = document.getElementById('lyricBar')
       let totalHeight = container.scrollHeight
@@ -143,6 +190,14 @@ export default defineComponent({
       temp.shift()
       return temp.join('')
     })
+
+    const getInstance = instance => {
+      swiperInstance.value = instance
+      setTimeout(() => {
+        swiperInstance.value.setTranslate(-50)
+      }, 5000)
+    }
+
     // TODO: 使用正则 解决解析歌词不全问题
     const initLyric = () => {
       lyricMap = new Map()
@@ -171,15 +226,31 @@ export default defineComponent({
       similarSongs.value = songs
     }
     getSimilarSongs()
+
+    const getSimilarPlaylist = async () => {
+      let { playlists } = await SimilarPlaylists(props.songId)
+      similarPlaylists.value = playlists
+    }
+
+    getSimilarPlaylist()
     const GetLyric_ = async id => {
       if (isUnNull(id)) {
-        console.log('播放列表为空')
+        $q.notify({
+          message: '播放列表为空',
+          timeout: 2000,
+          position: 'top',
+        })
       }
       const {
         lrc: { lyric },
       } = await GetLyric({ id })
       if (isUnNull(lyric)) {
-        console.log('获取歌词失败')
+        $q.notify({
+          message: '获取歌词失败',
+          timeout: 2000,
+          position: 'top',
+          color: 'red',
+        })
         return
       }
       lyric_.value = lyric
@@ -211,6 +282,8 @@ export default defineComponent({
       newVal => {
         lyricWithAnchor.value = []
         GetLyric_(newVal)
+        getSimilarSongs()
+        getSimilarPlaylist()
       }
     )
 
@@ -220,7 +293,13 @@ export default defineComponent({
       lyricWithAnchor,
       activeEl,
       similarSongs,
-      similarSongBar: ref(false),
+      similarPlaylists,
+      similarSongBar: ref(true),
+      similarPlaylistsBar: ref(true),
+      swiperInstance,
+      getSimilarPlaylist,
+      getSimilarSongs,
+      getInstance,
       changeProgress,
       isUnNull,
     }
@@ -271,7 +350,23 @@ export default defineComponent({
     left: 3rem;
     top: 30%;
 
-    .similar-swiper {
+    .similar-songs {
+      width: 200px;
+      height: 200px;
+
+      .img {
+        border-radius: 20px;
+        .bar {
+          @include custom-font(17px, 600, 1px, inherit);
+        }
+      }
+    }
+  }
+  .right-side {
+    position: absolute;
+    right: 3rem;
+    top: 30%;
+    .similar-playlists {
       width: 200px;
       height: 200px;
 

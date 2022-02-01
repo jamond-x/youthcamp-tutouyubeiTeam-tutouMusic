@@ -105,7 +105,6 @@
 import { defineComponent, ref, reactive, watch, computed } from 'vue'
 import { throttle } from 'quasar'
 import { useQuasar } from 'quasar'
-
 import {
   GetSongUrl,
   GetSongDetail,
