@@ -7,7 +7,7 @@
       transition-prev="slide-right"
       transition-next="slide-left"
       infinite
-      :autoplay="5000"
+      :autoplay="4900"
       control-color="white"
       navigation
       arrows
