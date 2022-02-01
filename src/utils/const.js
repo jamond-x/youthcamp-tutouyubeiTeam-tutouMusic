@@ -36,6 +36,10 @@ export const BROADCAST = {
   SONG_DETAIL: '/song/detail',
 }
 
+export const DISCOVER = {
+  MV: '/mv/all'
+}
+
 export const LOGIN_URLS = {
   PHONE_LOGIN: '/login/cellphone',
   LIKE_MUSIC_LIST: '/likelist/',

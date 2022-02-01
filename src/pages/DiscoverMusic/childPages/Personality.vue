@@ -39,8 +39,8 @@ import { defineComponent, ref, reactive } from 'vue'
 
 import SongList from 'components/songList/SongList'
 
-import { QueryBanner } from '../../../utils/request/image/image.js'
-import { QueryRecommendSongList } from '../../../utils/request/songList/songList'
+import { QueryBanner } from 'src/utils/request/image/image.js'
+import { QueryRecommendSongList } from 'src/utils/request/songList/songList'
 
 export default defineComponent({
   name: 'Personality',

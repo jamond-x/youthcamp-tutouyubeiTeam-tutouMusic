@@ -32,6 +32,10 @@ const routes = [
             path: 'singer',
             component: () => import('pages/DiscoverMusic/childPages/Singer.vue'),
           },
+          {
+            path: 'mv',
+            component: () => import('pages/DiscoverMusic/childPages/Mv.vue'),
+          },
         ],
       },
       {

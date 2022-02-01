@@ -1,6 +1,5 @@
 <template>
   <q-page>
-    <!-- <h2>DISCOVER PAGE</h2> -->
     <top-bar />
     <router-view>
     </router-view>
