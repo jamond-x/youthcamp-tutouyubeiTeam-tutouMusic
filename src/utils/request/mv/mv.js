@@ -8,7 +8,7 @@ const api = createApi(
   })
 )
 
-export const QueryMv = async (area, type, order, offset) => {
+export const QueryMv = async (area, type, order, offset, limit = 20) => {
   return await api({
     url: DISCOVER.MV,
     params: {
@@ -16,7 +16,7 @@ export const QueryMv = async (area, type, order, offset) => {
       type,
       order,
       offset,
-      limit: 20
+      limit
     }
   })
 }

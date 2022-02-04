@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250">
+    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250" scroll-target="body">
       <transition name="show-hide">
         <song-list :song-lists="state.songlist" />
       </transition>
@@ -45,7 +45,7 @@
     </q-infinite-scroll>
     
     <!-- 返回顶部按钮 -->
-    <back-to-top bottom="100px" right="50px" visibleoffset="300">
+    <back-to-top bottom="100px" right="50px" visibleoffset="600">
       <q-btn round color="primary" icon="navigation" size="lg" />
     </back-to-top>
   </div>

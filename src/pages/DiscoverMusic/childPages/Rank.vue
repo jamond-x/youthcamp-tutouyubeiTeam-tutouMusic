@@ -102,7 +102,7 @@ export default defineComponent({
     background-color: #121212;
     margin-top: 30px;
     border-radius: 20px;
-    box-shadow: 6px 6px 8px #ffffff, -6px -6px 8px #ffffff;
+    // box-shadow: 6px 6px 8px #ffffff, -6px -6px 8px #ffffff;
     text-align: center;
     margin-bottom: 40px;
     .title {

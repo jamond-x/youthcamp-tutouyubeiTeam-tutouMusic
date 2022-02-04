@@ -61,7 +61,7 @@ export default defineComponent({
     })
 
     QueryRecommendSongList().then(res => {
-      console.log(res.result)
+      // console.log(res.result)
       state.songlist = res.result.splice(0, 10)
     })
 

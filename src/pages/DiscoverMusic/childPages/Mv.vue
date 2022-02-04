@@ -21,7 +21,7 @@
       />
     </div>
 
-    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250">
+    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250" scroll-target="body">
       <transition name="show-hide">
         <mv-list :mv-lists="state.mvList" />
       </transition>
@@ -33,7 +33,7 @@
     </q-infinite-scroll>
 
     <!-- 返回顶部按钮 -->
-    <back-to-top bottom="100px" right="50px" visibleoffset="300">
+    <back-to-top bottom="100px" right="50px" visibleoffset="600">
       <q-btn round color="primary" icon="navigation" size="lg" />
     </back-to-top>
   </div>
@@ -52,7 +52,7 @@ export default defineComponent({
   name: 'Mv',
   components: {
     MvList,
-    BackToTop
+    BackToTop,
   },
   setup() {
     const state = reactive({
@@ -69,8 +69,6 @@ export default defineComponent({
       order: '',
       index: 0,
     })
-
-    let doneFunction = null
 
     const areaData = [
       { label: '地区', value: '' },
@@ -99,37 +97,56 @@ export default defineComponent({
       console.log(value)
       choose.area = value
       choose.index = 0
+      QueryMV()
     }
 
     function typeClick(value) {
       console.log(value)
       choose.type = value
       choose.index = 0
+      QueryMV()
     }
 
     function sortClick(value) {
       console.log(value)
       choose.order = value
       choose.index = 0
+      QueryMV()
     }
 
     // 事件监听，当地区，类型，排序发生改变时调用
-    watchEffect(() => {
-      // 20是每页的数值，已在请求函数里写死了
-      let offset = choose.index * 20
-      QueryMv(choose.area, choose.type, choose.order, offset).then(res => {
-        if (!offset) {
+    // watchEffect(() => {
+    //   // 20是每页的数值，已在请求函数里写死了
+    //   let offset = choose.index * 20
+    //   QueryMv(choose.area, choose.type, choose.order, offset).then(res => {
+    //     if (!offset) {
+    //       state.mvList = res.data
+    //     } else {
+    //       state.mvList.push(...res.data)
+    //     }
+    //   })
+    // })
+
+    function QueryMV() {
+      QueryMv(choose.area, choose.type, choose.order, choose.index * 20).then(res => {
+        if (!choose.index) {
           state.mvList = res.data
         } else {
           state.mvList.push(...res.data)
         }
       })
-    })
+    }
 
     function onLoad(index, done) {
       choose.index = index - 1
-      setTimeout(done, 500)
-      // done()
+      QueryMv(choose.area, choose.type, choose.order, choose.index * 20).then(res => {
+        if (!choose.index) {
+          state.mvList = res.data
+        } else {
+          state.mvList.push(...res.data)
+        }
+        done()
+      })
     }
 
     return {
@@ -143,13 +160,13 @@ export default defineComponent({
       areaClick,
       typeClick,
       sortClick,
-      onLoad,
+      onLoad
     }
   },
 })
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .container {
   padding: 0 20px;
   .select {
