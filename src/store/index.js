@@ -1,5 +1,6 @@
 import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
+import { LoginByPhone, Logout } from 'src/utils/request/login/login'
 
 // import example from './module-example'
 
@@ -12,7 +13,6 @@ import { createStore } from 'vuex'
  * with the Store instance.
  */
 
-
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
@@ -23,8 +23,12 @@ export default store(function (/* { ssrContext } */) {
     // for dev mode and --debug builds only
     strict: process.env.DEBUGGING,
     state: {
-      userInfo: {},
-      loginFlag: false,
+      userInfo: {
+        nickname: '秃头预备',
+        avatarUrl:
+          'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png',
+      },
+      loginFlag: 0,
     },
     mutations: {
       setUser(state, payload) {
@@ -34,11 +38,20 @@ export default store(function (/* { ssrContext } */) {
     },
     actions: {
       async phoneLogin(content, payload) {
-        let res = await LoginPhone(payload)
-        if (res.code === 200) {
-          let { loginType, profile } = res
-          content.commit('setUser', { loginType, profile })
+        let res = await LoginByPhone(payload)
+        let { loginType, profile } = res
+        content.commit('setUser', { loginType, profile })
+        return res
+      },
+      async goLogout(content, payload) {
+        let res = await Logout()
+        let profile = {
+          nickname: '秃头预备',
+          avatarUrl:
+            'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png',
         }
+        let loginType = 0
+        content.commit('setUser', { loginType, profile })
         return res
       },
     },
