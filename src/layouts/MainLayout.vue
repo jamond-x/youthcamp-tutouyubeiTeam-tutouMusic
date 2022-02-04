@@ -8,6 +8,8 @@
             label="Search songs singers ..."
             borderless
             :input-style="{ fontSize: '16px' }"
+            v-model="searchKeyword"
+            @keyup.enter="handleSearch"
           >
             <template v-slot:prepend>
               <q-icon name="fas fa-search" size="18px" />
@@ -111,6 +113,7 @@ const linksList = [
 
 import { defineComponent, ref, reactive, nextTick } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -134,6 +137,8 @@ export default defineComponent({
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
     let playMode = ref(1)
+    let searchKeyword = ref()
+    let $router = useRouter()
 
     //****************************************************
     /**
@@ -243,6 +248,10 @@ export default defineComponent({
       currentSongDetail.value = songDetail
     }
 
+    const handleSearch = () => {
+      $router.push('/search/' + searchKeyword.value)
+    }
+
     return {
       essentialLinks: linksList,
       broadcastPageStatus: ref(false),
@@ -262,6 +271,8 @@ export default defineComponent({
       playStatus,
       playMode,
       forceToChangeProgressValue,
+      searchKeyword,
+      handleSearch,
     }
   },
 })
