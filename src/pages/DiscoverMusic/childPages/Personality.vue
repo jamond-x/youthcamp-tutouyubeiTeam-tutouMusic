@@ -7,7 +7,7 @@
       transition-prev="slide-right"
       transition-next="slide-left"
       infinite
-      :autoplay="5000"
+      :autoplay="4900"
       control-color="white"
       navigation
       arrows
@@ -39,8 +39,8 @@ import { defineComponent, ref, reactive } from 'vue'
 
 import SongList from 'components/songList/SongList'
 
-import { QueryBanner } from '../../../utils/request/image/image.js'
-import { QueryRecommendSongList } from '../../../utils/request/songList/songList'
+import { QueryBanner } from 'src/utils/request/image/image.js'
+import { QueryRecommendSongList } from 'src/utils/request/songList/songList'
 
 export default defineComponent({
   name: 'Personality',
@@ -61,7 +61,7 @@ export default defineComponent({
     })
 
     QueryRecommendSongList().then(res => {
-      console.log(res.result)
+      // console.log(res.result)
       state.songlist = res.result.splice(0, 10)
     })
 
