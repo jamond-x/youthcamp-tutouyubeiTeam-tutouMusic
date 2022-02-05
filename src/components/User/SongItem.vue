@@ -21,8 +21,7 @@ export default {
   methods: {},
   created() {
     if (this.cover == 'default') {
-      this.trueCover =
-        'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+      this.trueCover = 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png'
       QuerySong(this.id).then(res => {
         this.trueCover = res.songs[0].al.picUrl
       })
