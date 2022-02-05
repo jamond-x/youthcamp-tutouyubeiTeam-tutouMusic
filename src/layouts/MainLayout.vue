@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr fff">
-    <q-header class="bg-black" bordered>
+    <q-header bordered :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
       <q-toolbar>
         <q-toolbar-title>
           <q-input
@@ -16,7 +16,7 @@
             </template>
           </q-input>
         </q-toolbar-title>
-        <q-btn icon="fas fa-bell" size="12px" rounded />
+        <q-btn :icon="mode" @click="modeToggle" size="12px" round ripple />
         <q-separator vertical inset class="q-mx-md" />
         <div>
           <q-btn-dropdown>
@@ -26,7 +26,7 @@
               </q-avatar>
               <span class="q-ml-md">{{ username }}</span>
             </template>
-            <div class="row no-wrap q-pa-lg">
+            <div class="row no-wrap q-pa-lg z-top">
               <div class="column">
                 <div class="text-h6 q-mb-md">设置</div>
                 <q-toggle v-model="option1" label="没想好" />
@@ -71,17 +71,24 @@
         </div>
       </q-toolbar>
     </q-header>
-    <q-drawer class="bg-black" :breakpoint="600" show-if-above :width="230">
+    <q-drawer
+      :breakpoint="600"
+      show-if-above
+      :width="230"
+      bordered
+      class="shadow-3"
+      :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
+    >
       <q-list>
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
       </q-list>
     </q-drawer>
-    <q-page-container>
+    <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
       <router-view />
     </q-page-container>
-    <q-footer class="footer q-mb-md q-ml-md" reveal>
+    <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal>
       <BroadcastBar
         :songListToAudio="songsList"
         :controlPlayStatus="playStatus"
@@ -174,7 +181,7 @@ export default defineComponent({
     const store = useStore()
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
-    $q.dark.set(true)
+    // $q.dark.set(true)
     let songsList = ref([])
     let currentSongId = ref('')
     // 测试环境
@@ -186,6 +193,7 @@ export default defineComponent({
     let playMode = ref(1)
     let searchKeyword = ref()
     let $router = useRouter()
+    let mode = ref('light_mode')
 
     let option1 = ref(true)
     let avatarUrl = computed(() => {
@@ -313,6 +321,16 @@ export default defineComponent({
     const handleSearch = () => {
       $router.push('/search/' + searchKeyword.value)
     }
+    // 日夜间模式切换
+    function modeToggle() {
+      $q.dark.toggle()
+      // console.log($q.dark.mode)
+      if (mode.value === 'light_mode') {
+        mode.value = 'dark_mode'
+      } else {
+        mode.value = 'light_mode'
+      }
+    }
 
     const handleLogin = () => {
       console.log('点击登录', showLogin.value)
@@ -361,6 +379,8 @@ export default defineComponent({
       forceToChangeProgressValue,
       searchKeyword,
       handleSearch,
+      modeToggle,
+      mode,
       option1,
       avatarUrl,
       username,
@@ -388,9 +408,9 @@ export default defineComponent({
 .footer {
   z-index: 2001;
   height: 80px;
-  background-color: #2c1919;
-  border-radius: 20px;
-  width: 98%;
+  // background-color: #2c1919;
+  // border-radius: 20px;
+  // width: 98%;
 }
 .broadcast-panel {
   z-index: 2000;

@@ -67,9 +67,9 @@ export default defineComponent({
     }
   }
   img {
-    width: 12vw;
-    height: 12vw;
-    border-radius: 5px;
+    width: 13vw;
+    height: 13vw;
+    border-radius: 8px;
     /* 消除图片下的间隙 */
     vertical-align: middle;
     transition: filter 1s;
@@ -77,7 +77,8 @@ export default defineComponent({
   .list-info {
     width: 100%;
     height: 45px;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 700;
     padding-top: 10px;
     box-sizing: border-box;
     p {
@@ -85,7 +86,7 @@ export default defineComponent({
       /* margin-bottom: 3px; */
       width: 100%;
       display: -webkit-box;
-      color: white;
+      // color: white;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       /* 文本溢出 */

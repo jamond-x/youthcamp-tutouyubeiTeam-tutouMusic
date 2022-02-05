@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-tabs v-model="tab" no-caps class="text-white shadow-2 z-top bg-black" align="left">
+    <q-tabs v-model="tab" no-caps :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]" align="left">
       <q-tab name="personality" label="个性推荐" :ripple="false"></q-tab>
       <q-tab name="playlist" label="歌单" :ripple="false"></q-tab>
       <q-tab name="rank" label="排行榜" :ripple="false"></q-tab>
@@ -8,7 +8,7 @@
       <q-tab name="mv" label="MV" :ripple="false"></q-tab>
     </q-tabs>
 
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" animated :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]">
       <q-tab-panel name="personality" class="tab-panel">
         <personality />
       </q-tab-panel>
@@ -66,10 +66,10 @@ export default defineComponent({
 .q-tabs {
   position: sticky;
   top: 57px;
+  z-index: 1;
 }
 
   .tab-panel {
-    background: #121212;
     padding: 0;
   }
 </style>
