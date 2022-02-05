@@ -14,58 +14,12 @@
         <div class="col-10">
           <div class="content">
             <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
-            />
-            <SongItem
-              id="123"
-              cover="https://p2.music.126.net/tt8xwK-ASC2iqXNUXYKoDQ==/109951163606377163.jpg"
-              title="年少有为"
-              singer="李荣浩"
+              v-for="song in songs"
+              :key="song.id"
+              :id="song.id"
+              cover="default"
+              :title="song.name"
+              :singer="song.artists[0].name"
             />
           </div>
         </div>
@@ -80,29 +34,11 @@
         </div>
         <div class="content q-pt-md">
           <ArtistItem
-            avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-            name="火西肆"
-            aid="123"
-          />
-          <ArtistItem
-            avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-            name="火西肆"
-            aid="123"
-          />
-          <ArtistItem
-            avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-            name="火西肆"
-            aid="123"
-          />
-          <ArtistItem
-            avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-            name="火西肆"
-            aid="123"
-          />
-          <ArtistItem
-            avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-            name="火西肆"
-            aid="123"
+            v-for="artist in artists"
+            :key="artist.id"
+            :avatar="artist.img1v1Url"
+            :name="artist.name"
+            :aid="artist.id"
           />
         </div>
       </div>
@@ -119,29 +55,11 @@
         <div class="col-10">
           <div class="content">
             <AlbumItem
-              avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-              name="火西肆"
-              aid="123"
-            />
-            <AlbumItem
-              avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-              name="火西肆"
-              aid="123"
-            />
-            <AlbumItem
-              avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-              name="火西肆"
-              aid="123"
-            />
-            <AlbumItem
-              avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-              name="火西肆"
-              aid="123"
-            />
-            <AlbumItem
-              avatar="https://p2.music.126.net/77ttigyv96047MlQx4HzSw==/109951165986578673.jpg"
-              name="火西肆"
-              aid="123"
+              v-for="al in albums"
+              :key="al.id"
+              :avatar="al.picUrl"
+              :name="al.name"
+              :aid="al.id"
             />
           </div>
         </div>
@@ -154,6 +72,7 @@
 import SongItem from 'src/components/User/SongItem.vue'
 import ArtistItem from 'src/components/User/ArtistItem.vue'
 import AlbumItem from 'src/components/User/AlbumItem.vue'
+import { QuerySearch } from 'src/utils/request/search'
 export default {
   name: 'Search',
   props: ['keywords'],
@@ -163,9 +82,32 @@ export default {
     AlbumItem,
   },
   data() {
-    return {}
+    return {
+      songs: [],
+      albums: [],
+      artists: [],
+    }
   },
-  methods: {},
+  methods: {
+    search() {
+      let that = this
+      QuerySearch(this.keywords).then(res => {
+        res.result.songs = res.result.songs.slice(0, 9)
+        that.songs = res.result.songs
+      })
+      QuerySearch(this.keywords, 10).then(res => {
+        res.result.albums = res.result.albums.slice(0, 5)
+        that.albums = res.result.albums
+      })
+      QuerySearch(this.keywords, 100).then(res => {
+        res.result.artists = res.result.artists.slice(0, 5)
+        that.artists = res.result.artists
+      })
+    },
+  },
+  mounted() {
+    this.search()
+  },
 }
 </script>
 
