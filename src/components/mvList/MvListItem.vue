@@ -42,7 +42,7 @@ export default defineComponent({
   position: relative;
   // flex: 20%;
   width: 25%;
-  height: 15vw;
+  height: 13vw;
   margin-bottom: 10px;
   overflow: hidden;
   text-align: center;
@@ -77,7 +77,7 @@ export default defineComponent({
   }
   .list-info {
     width: 100%;
-    height: 45px;
+    height: 35px;
     font-size: 14px;
     padding-top: 10px;
     box-sizing: border-box;
@@ -86,7 +86,7 @@ export default defineComponent({
       /* margin-bottom: 3px; */
       width: 100%;
       display: -webkit-box;
-      color: white;
+      /* color: white; */
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       /* 文本溢出 */
