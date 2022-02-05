@@ -1,7 +1,10 @@
 <template>
   <div class="search">
     <div class="text-h3 text-weight-light text-italic">{{ keywords }}</div>
-    <div class="text-h5 q-pt-md">看看我们找到了什么？</div>
+    <div class="text-h5 q-pt-md">
+      看看我们找到了什么？
+      <span class="text-subtitle2" v-if="keywords == 'undefined'">bug or feature?</span>
+    </div>
 
     <div class="songs q-pt-xl">
       <div class="row">
