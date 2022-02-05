@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-4">
-      <q-card class="bg-light-blue-2 text-light-blue-10 user-like">
+      <q-card class="bg-light-blue-2 text-light-blue-10 user-like" flat>
         <q-card-section>
           <div class="text-h3">喜欢</div>
           <div>{{ playListData.trackIds.length }}首歌曲</div>

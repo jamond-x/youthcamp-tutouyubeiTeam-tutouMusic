@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr fff" >
-    <q-header bordered :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]">
+  <q-layout view="lHh Lpr fff">
+    <q-header bordered :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
       <q-toolbar>
         <q-toolbar-title>
           <q-input
@@ -8,6 +8,8 @@
             label="Search songs singers ..."
             borderless
             :input-style="{ fontSize: '16px' }"
+            v-model="searchKeyword"
+            @keyup.enter="handleSearch"
           >
             <template v-slot:prepend>
               <q-icon name="fas fa-search" size="18px" />
@@ -69,17 +71,24 @@
         </div>
       </q-toolbar>
     </q-header>
-    <q-drawer :breakpoint="600" show-if-above :width="230" bordered class="shadow-3" :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]">
+    <q-drawer
+      :breakpoint="600"
+      show-if-above
+      :width="230"
+      bordered
+      class="shadow-3"
+      :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
+    >
       <q-list>
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
       </q-list>
     </q-drawer>
-    <q-page-container :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]">
+    <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
       <router-view />
     </q-page-container>
-    <q-footer class="footer shadow-7" :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]" reveal >
+    <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal>
       <BroadcastBar
         :songListToAudio="songsList"
         :controlPlayStatus="playStatus"
@@ -154,7 +163,8 @@ const linksList = [
 ]
 
 import { defineComponent, ref, reactive, nextTick, provide, computed, watch } from 'vue'
-import { Cookies, useQuasar } from 'quasar'
+import { useQuasar, Cookies } from 'quasar'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -181,6 +191,8 @@ export default defineComponent({
     let currentTime = ref()
     let forceToChangeProgressValue = ref('default')
     let playMode = ref(1)
+    let searchKeyword = ref()
+    let $router = useRouter()
     let mode = ref('light_mode')
 
     let option1 = ref(true)
@@ -306,6 +318,9 @@ export default defineComponent({
       currentSongDetail.value = songDetail
     }
 
+    const handleSearch = () => {
+      $router.push('/search/' + searchKeyword.value)
+    }
     // 日夜间模式切换
     function modeToggle() {
       $q.dark.toggle()
@@ -319,9 +334,7 @@ export default defineComponent({
 
     const handleLogin = () => {
       console.log('点击登录', showLogin.value)
-      showLogin.value = true
     }
-
     const handleLogout = async () => {
       let res = await store.dispatch('goLogout')
       console.log('点击登出', res)
@@ -349,10 +362,8 @@ export default defineComponent({
 
     return {
       essentialLinks: linksList,
-      broadcastPageStatus: ref(false),
       songsList,
       handlePlay,
-      handlePause,
       handleUpdateCurrentTime,
       handleChangeProgress,
       handleSwitchSong,
@@ -366,6 +377,8 @@ export default defineComponent({
       playStatus,
       playMode,
       forceToChangeProgressValue,
+      searchKeyword,
+      handleSearch,
       modeToggle,
       mode,
       option1,
@@ -403,5 +416,4 @@ export default defineComponent({
   z-index: 2000;
   overflow: scroll;
 }
-
 </style>

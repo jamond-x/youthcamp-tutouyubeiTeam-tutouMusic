@@ -6,7 +6,7 @@ const routes = [
       {
         path: '',
         // component: () => import('pages/Index.vue'),
-        redirect: '/discover'
+        redirect: '/discover',
       },
       {
         path: '/discover',
@@ -21,6 +21,16 @@ const routes = [
       {
         path: '/user',
         component: () => import('pages/User/User.vue'),
+      },
+      {
+        path: '/search/:keywords',
+        props: true,
+        component: () => import('pages/Search/Search.vue'),
+      },
+      {
+        path: '/search/:keywords/:type',
+        props: true,
+        component: () => import('pages/Search/SearchDetail.vue'),
       },
       {
         path: '/playlist',
