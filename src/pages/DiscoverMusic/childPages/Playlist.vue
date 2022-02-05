@@ -39,7 +39,7 @@
       </transition>
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
-          <q-spinner-dots color="white" size="40px"></q-spinner-dots>
+          <q-spinner-dots size="40px"></q-spinner-dots>
         </div>
       </template>
     </q-infinite-scroll>

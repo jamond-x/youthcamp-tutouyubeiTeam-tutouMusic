@@ -8,11 +8,12 @@
       transition-next="slide-left"
       infinite
       :autoplay="4900"
-      control-color="white"
+      control-color="grey-6"
       navigation
       arrows
       height="27vw"
-      class="bg-transparent text-white rounded-borders col-12"
+      class="rounded-borders col-12"
+      :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]"
     >
       <q-carousel-slide
         :name="index"
@@ -57,12 +58,11 @@ export default defineComponent({
 
     QueryBanner().then(res => {
       state.banners = res.banners.splice(0, 4)
-      // console.log(state.banners)
     })
 
     QueryRecommendSongList().then(res => {
       // console.log(res.result)
-      state.songlist = res.result.splice(0, 10)
+      state.songlist = res.result
     })
 
     return {
@@ -81,8 +81,8 @@ export default defineComponent({
 .title {
   font-weight: bold;
   font-size: 20px;
-  margin-top: 10px;
-  margin-left: 10px;
+  // margin-top: .1vh;
+  margin-left: 1.5vw;
   margin-bottom: 10px;
   .q-icon {
     margin-left: -4px;

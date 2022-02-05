@@ -14,6 +14,16 @@
   font-family: GEO;
 }
 
+.body--light {
+  background: #fafafa !important;
+  color: black;
+}
+
+.body--dark {
+  background: black;
+  color: #fafafa;
+}
+
 .scroll {
   ul::-webkit-scrollbar {
     width: 4px;
