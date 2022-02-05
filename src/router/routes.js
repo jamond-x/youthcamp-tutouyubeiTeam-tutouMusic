@@ -49,6 +49,11 @@ const routes = [
         component: () => import('pages/Search/Search.vue'),
       },
       {
+        path: '/search/:keywords/:type',
+        props: true,
+        component: () => import('pages/Search/SearchDetail.vue'),
+      },
+      {
         path: '/playlist',
         component: () => import('pages/Playlist/Playlist.vue'),
       },

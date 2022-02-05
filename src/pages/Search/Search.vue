@@ -8,7 +8,7 @@
         <div class="col">
           <div>
             <div class="text-h4 text-weight-bold">单曲</div>
-            <div class="text-subtitle q-pt-xs">更多</div>
+            <div class="text-subtitle q-pt-xs more" @click="jump('song')">更多</div>
           </div>
         </div>
         <div class="col-10">
@@ -30,7 +30,7 @@
       <div class="row">
         <div>
           <div class="text-h4 text-weight-bold">艺人</div>
-          <div class="text-subtitle q-pt-xs">更多</div>
+          <div class="text-subtitle q-pt-xs more" @click="jump('artist')">更多</div>
         </div>
         <div class="content q-pt-md">
           <ArtistItem
@@ -49,7 +49,7 @@
         <div class="col">
           <div>
             <div class="text-h4 text-weight-bold">专辑</div>
-            <div class="text-subtitle q-pt-xs">更多</div>
+            <div class="text-subtitle q-pt-xs more" @click="jump('album')">更多</div>
           </div>
         </div>
         <div class="col-10">
@@ -104,6 +104,9 @@ export default {
         that.artists = res.result.artists
       })
     },
+    jump(to) {
+      this.$router.push('/search/' + this.keywords + '/' + to)
+    },
   },
   mounted() {
     this.search()
@@ -120,6 +123,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+  }
+
+  .more {
+    cursor: pointer;
   }
 }
 </style>
