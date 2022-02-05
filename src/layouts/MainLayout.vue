@@ -24,7 +24,7 @@
               </q-avatar>
               <span class="q-ml-md">{{ username }}</span>
             </template>
-            <div class="row no-wrap q-pa-lg">
+            <div class="row no-wrap q-pa-lg z-top">
               <div class="column">
                 <div class="text-h6 q-mb-md">设置</div>
                 <q-toggle v-model="option1" label="没想好" />
@@ -309,7 +309,7 @@ export default defineComponent({
     // 日夜间模式切换
     function modeToggle() {
       $q.dark.toggle()
-      console.log($q.dark.mode)
+      // console.log($q.dark.mode)
       if (mode.value === 'light_mode') {
         mode.value = 'dark_mode'
       } else {
