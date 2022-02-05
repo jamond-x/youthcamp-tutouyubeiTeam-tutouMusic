@@ -167,6 +167,10 @@ export default defineComponent({
   padding: 0;
 }
 
+.body--light .tab-panel {
+  background: #fafafa;
+}
+
 .sub-artists,
 .sub-albums {
   display: flex;

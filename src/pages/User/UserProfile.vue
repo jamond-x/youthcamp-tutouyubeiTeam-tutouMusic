@@ -46,7 +46,7 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.tag {
-  padding: 8px 15px;
+.body--light .user-profile-content {
+  color: white;
 }
 </style>
