@@ -41,7 +41,6 @@ export const DISCOVER = {
 }
 
 export const LOGIN_URLS = {
-  PHONE_LOGIN: '/login/cellphone',
   LIKE_MUSIC_LIST: '/likelist/',
   SONG_DETAIL: '/song/detail',
 
