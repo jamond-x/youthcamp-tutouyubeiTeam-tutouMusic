@@ -115,4 +115,8 @@ export default {
 .song-list-item:hover {
   background-color: $grey-9;
 }
+
+.body--light .song-list-item:hover {
+  background-color: $grey-3;
+}
 </style>
