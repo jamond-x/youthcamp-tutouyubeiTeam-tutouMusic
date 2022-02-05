@@ -15,13 +15,12 @@ export default {
   props: ['id', 'cover', 'title', 'singer'],
   data() {
     return {
-      trueCover: '',
+      trueCover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
     }
   },
   methods: {},
   created() {
     if (this.cover == 'default') {
-      this.trueCover = 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png'
       QuerySong(this.id).then(res => {
         this.trueCover = res.songs[0].al.picUrl
       })
