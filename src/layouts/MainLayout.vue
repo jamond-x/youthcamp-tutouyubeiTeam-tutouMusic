@@ -19,14 +19,55 @@
         <q-btn icon="fas fa-bell" size="12px" rounded />
         <q-separator vertical inset class="q-mx-md" />
         <div>
-          <q-btn class="user" rounded>
-            <q-avatar>
-              <img
-                src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png"
-              />
-            </q-avatar>
-            <span class="q-ml-md">秃头预备</span>
-          </q-btn>
+          <q-btn-dropdown>
+            <template v-slot:label>
+              <q-avatar>
+                <img :src="avatarUrl" />
+              </q-avatar>
+              <span class="q-ml-md">{{ username }}</span>
+            </template>
+            <div class="row no-wrap q-pa-lg">
+              <div class="column">
+                <div class="text-h6 q-mb-md">设置</div>
+                <q-toggle v-model="option1" label="没想好" />
+                <q-btn
+                  v-if="loginFlag"
+                  :loading="refreshing"
+                  @click="handleRefreshLogin"
+                  label="刷新登录状态"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn>
+              </div>
+              <q-separator vertical inset class="q-mx-lg" />
+              <div class="column items-center">
+                <q-avatar size="64px">
+                  <img :src="avatarUrl" />
+                </q-avatar>
+                <div class="text-subtitle1 q-mt-md q-mb-xs">{{ username }}</div>
+                <q-btn
+                  @click="handleLogout"
+                  v-if="loginFlag"
+                  color="purple"
+                  label="登出"
+                  push
+                  size="md"
+                  v-close-popup
+                />
+                <q-btn
+                  @click="handleLogin"
+                  v-else
+                  color="purple"
+                  label="登录"
+                  push
+                  size="md"
+                  v-close-popup
+                />
+              </div>
+            </div>
+          </q-btn-dropdown>
         </div>
       </q-toolbar>
     </q-header>
@@ -72,12 +113,15 @@
       />
     </q-dialog>
   </q-layout>
+  <q-dialog v-model="showLogin" persistent><AuthPanel /></q-dialog>
 </template>
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
 import LyricBoard from 'src/pages/BroadcastSongs/LyricBoard.vue'
+import AuthPanel from 'src/pages/AuthPanel/AuthPanel.vue'
+import { RefreshLogin } from 'src/utils/request/login/login'
 const linksList = [
   {
     title: '发现音乐',
@@ -111,9 +155,10 @@ const linksList = [
   },
 ]
 
-import { defineComponent, ref, reactive, nextTick } from 'vue'
-import { useQuasar } from 'quasar'
+import { defineComponent, ref, reactive, nextTick, provide, computed, watch } from 'vue'
+import { useQuasar, Cookies } from 'quasar'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -122,9 +167,11 @@ export default defineComponent({
     EssentialLink,
     BroadcastBar,
     LyricBoard,
+    AuthPanel,
   },
 
   setup() {
+    const store = useStore()
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
     $q.dark.set(true)
@@ -140,6 +187,21 @@ export default defineComponent({
     let searchKeyword = ref()
     let $router = useRouter()
 
+    let option1 = ref(true)
+    let avatarUrl = computed(() => {
+      return store.state.userInfo.avatarUrl
+    })
+    let username = computed(() => {
+      return store.state.userInfo.nickname
+    })
+    let loginFlag = computed(() => {
+      return store.state.loginFlag
+    })
+    let showLogin = ref(false)
+    let refreshing = ref(false)
+    watch([loginFlag, username], () => {
+      console.log('登录状态变化')
+    })
     //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
@@ -252,12 +314,38 @@ export default defineComponent({
       $router.push('/search/' + searchKeyword.value)
     }
 
+    const handleLogin = () => {
+      console.log('点击登录', showLogin.value)
+    }
+    const handleLogout = async () => {
+      let res = await store.dispatch('goLogout')
+      console.log('点击登出', res)
+      window.sessionStorage.removeItem('userInfo')
+      window.sessionStorage.removeItem('loginFlag')
+      window.sessionStorage.removeItem('uid')
+    }
+
+    const handleRefreshLogin = () => {
+      refreshing.value = true
+      RefreshLogin().then(res => {
+        console.log('刷新登录状态', res)
+        setTimeout(() => {
+          refreshing.value = false
+        }, 1000)
+      })
+    }
+
+    const toggleLoginShow = () => {
+      showLogin.value = !showLogin.value
+    }
+
+    provide('showLogin', showLogin)
+    provide('toggleLoginShow', toggleLoginShow)
+
     return {
       essentialLinks: linksList,
-      broadcastPageStatus: ref(false),
       songsList,
       handlePlay,
-      handlePause,
       handleUpdateCurrentTime,
       handleChangeProgress,
       handleSwitchSong,
@@ -273,6 +361,15 @@ export default defineComponent({
       forceToChangeProgressValue,
       searchKeyword,
       handleSearch,
+      option1,
+      avatarUrl,
+      username,
+      loginFlag,
+      showLogin,
+      refreshing,
+      handleLogin,
+      handleLogout,
+      handleRefreshLogin,
     }
   },
 })

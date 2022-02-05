@@ -1,11 +1,11 @@
 <template>
   <q-card class="cardWrapper column items-center">
-    <q-btn @click="closeDialog" class="closeBtn" size="md" icon="fas fa-times" />
+    <q-btn @click="toggleLoginShow" class="closeBtn" size="md" icon="fas fa-times" />
     <q-card-section>
       <div>欢迎登录</div>
     </q-card-section>
     <q-form @submit="onSubmit">
-      <q-card-section class="InputWrapper row justify-between">
+      <q-card-section class="row justify-between">
         <q-select class="col-4" dense outlined v-model="prefix" :options="prefixOptions" />
         <q-input
           class="col-8"
@@ -13,10 +13,12 @@
           outlined
           v-model="phoneNum"
           placeholder="手机号"
-          :rules="[val => (val && val.length > 0) || '请输入手机号']"
+          :rules="[
+            val => (val && val.length > 0 && /^1[35789]\d{9}$/.test(val)) || '请输入正确手机号',
+          ]"
         />
       </q-card-section>
-      <q-card-section class="InputWrapper">
+      <q-card-section>
         <q-input
           dense
           outlined
@@ -38,11 +40,7 @@
         </q-input>
       </q-card-section>
       <q-card-section class="row justify-between InputWrapper">
-        <div class="leftBox column justify-around">
-          <q-btn flat @click="goResetPwd" label="设置密码" />
-          <q-checkbox label="自动登录" v-model="autoLogin" />
-        </div>
-        <div class="rightBox column">
+        <div class="rightBox column InputWrapper">
           <q-btn
             :loading="isLoading"
             type="submit"
@@ -50,7 +48,6 @@
             label="登录"
             class="btn q-mb-md"
           />
-          <q-btn @click="goRegister" color="purple" label="注册" class="btn" />
         </div>
       </q-card-section>
     </q-form>
@@ -59,64 +56,82 @@
         <q-card-section>
           <div class="text-h6">登录成功</div>
         </q-card-section>
-        <q-card-section class="q-pt-none"> 欢迎回来 {{ userName }}! </q-card-section>
+        <q-card-section class="q-pt-none"> 欢迎回来 {{ username }}! </q-card-section>
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" @click="goBack" />
+          <q-btn flat label="OK" @click="toggleLoginShow" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
   </q-card>
 </template>
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref, computed, watch, inject } from 'vue'
+import { useStore } from 'vuex'
 export default defineComponent({
   name: 'Login',
   props: {
-    type: String,
+    type: {
+      type: String,
+      default: 'Login',
+    },
   },
   methods: {
-    goRegister: function () {
-      this.$emit('changeType', 'register')
-    },
-    goResetPwd: function () {
-      this.$emit('changeType', 'resetPwd')
-    },
-    closeDialog: function () {
-      this.$emit('closeDialog')
+    setUserStorage: function (res) {
+      let { loginType, profile } = res
+      let { userId: uid } = profile
+      window.sessionStorage.setItem('userInfo', JSON.stringify(profile))
+      window.sessionStorage.setItem('loginFlag', loginType)
+      window.sessionStorage.setItem('uid', uid)
     },
     onSubmit: async function () {
       let data = { phone: this.phoneNum, password: this.password }
       this.isLoading = true
       let res = await this.$store.dispatch('phoneLogin', data)
+      console.log(res)
       setInterval(() => {
         this.isLoading = false
       }, 500)
-      if (res.code === 200) {
-        console.log(this.$store.state)
-        this.userName = this.$store.state.userInfo.nickname
-        this.secondDialog = true
-        let { loginType, profile } = res
-        let { userId: uid } = profile
-        window.sessionStorage.setItem('userInfo', JSON.stringify(profile))
-        window.sessionStorage.setItem('loginFlag', loginType)
-        window.sessionStorage.setItem('uid', uid)
-      }
-    },
-    checkPhone() {
-      return /^1[35789]\d{9}$/.test(this.phoneNum)
+      console.log(this.$store.state)
+      this.secondDialog = true
+      // 设置sessionStorage便于其他组件使用（万一不用vuex）
+      this.setUserStorage(res)
     },
   },
-  data() {
+  setup(props, { emit }) {
+    const store = useStore()
+    const phoneNum = ref('')
+    const password = ref('')
+    const prefixOptions = ref(['+86 CN'])
+    const prefix = ref('+86 CN')
+    const autoLogin = ref(false)
+    const isPwd = ref(true)
+    const isLoading = ref(false)
+    const secondDialog = ref(false)
+    const username = computed(() => {
+      return store.state.userInfo.nickname
+    })
+    const loginFlag = computed(() => {
+      return store.state.loginFlag
+    })
+    const updateType = param => {
+      emit('update:type', param)
+    }
+    const toggleLoginShow = inject('toggleLoginShow')
+    watch(loginFlag, () => {
+      console.log('loginFlag变化了 ', loginFlag.value)
+    })
     return {
-      phoneNum: '',
-      password: '',
-      prefixOptions: ['+86 CN', '+999', '+123', '+44', '+2'],
-      prefix: '+86 CN',
-      autoLogin: false,
-      isPwd: true,
-      isLoading: false,
-      secondDialog: false,
-      userName: '',
+      phoneNum,
+      password,
+      prefixOptions,
+      prefix,
+      autoLogin,
+      isPwd,
+      isLoading,
+      secondDialog,
+      username,
+      toggleLoginShow,
+      updateType,
     }
   },
 })
@@ -125,7 +140,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
 .InputWrapper {
-  width: 370px;
+  min-width: 370px;
 }
 .closeBtn {
   position: absolute;

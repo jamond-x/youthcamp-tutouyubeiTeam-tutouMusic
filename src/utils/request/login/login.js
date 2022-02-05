@@ -1,7 +1,6 @@
-
 import axios from 'axios'
 import { createApi } from '../index'
-import { REQUEST_BASE_URL, EXAMPLE_URLS, LOGIN_URLS } from 'src/utils/const'
+import { REQUEST_BASE_URL } from 'src/utils/const'
 axios.defaults.withCredentials = true
 const api = createApi(
   axios.create({
@@ -9,10 +8,48 @@ const api = createApi(
   })
 )
 
-export const LoginPhone = async data => {
+export const LoginByPhone = async data => {
   return await api({
     method: 'POST',
-    url: LOGIN_URLS.PHONE_LOGIN,
+    url: '/login/cellphone',
+    data,
+  })
+}
+
+export const RefreshLogin = async () => {
+  return await api({
+    method: 'POST',
+    url: '/login/refresh',
+  })
+}
+
+export const Logout = async () => {
+  return await api({
+    method: 'POST',
+    url: '/logout',
+  })
+}
+
+export const SendCaptcha = async data => {
+  return await api({
+    method: 'POST',
+    url: '/captcha/sent',
+    data,
+  })
+}
+
+export const checkCaptcha = async data => {
+  return await api({
+    method: 'POST',
+    url: '/captcha/verify',
+    data,
+  })
+}
+
+export const RegisterByPhone = async data => {
+  return await api({
+    method: 'POST',
+    url: '/register/cellphone',
     data,
   })
 }
