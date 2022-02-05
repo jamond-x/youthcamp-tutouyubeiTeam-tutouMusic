@@ -10,10 +10,18 @@ const api = createApi(
 
 const ccookie = localStorage.getItem('cookie') || ''
 
-export const QuerySearch = async (keyword, type = 1) => {
+export const QuerySearch = async (keyword, type = 1, offset = 0) => {
   return await api({
     method: 'GET',
-    url: '/search?keywords=' + keyword + '&type=' + type,
+    url:
+      '/search?keywords=' +
+      keyword +
+      '&type=' +
+      type +
+      '&offset=' +
+      offset +
+      '&ts=' +
+      new Date().getTime(),
     data: {
       cookie: ccookie,
     },

@@ -5,36 +5,60 @@
 
     <div class="content q-pt-xl">
       <div v-if="type === 'artist'">
-        <ArtistItem
-          v-for="item in results.artists"
-          :avatar="item.img1v1Url"
-          :name="item.name"
-          :aid="item.id"
-          :key="item.id"
-        />
+        <q-infinite-scroll @load="update" :offset="250">
+          <ArtistItem
+            v-for="item in artists"
+            :avatar="item.img1v1Url"
+            :name="item.name"
+            :aid="item.id"
+            :key="item.id"
+          />
+
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </div>
 
       <div v-if="type === 'album'">
-        <AlbumItem
-          v-for="item in results.albums"
-          :avatar="item.picUrl"
-          :name="item.name"
-          :aid="item.id"
-          :key="item.id"
-        />
+        <q-infinite-scroll @load="update" :offset="250">
+          <AlbumItem
+            v-for="item in albums"
+            :avatar="item.picUrl"
+            :name="item.name"
+            :aid="item.id"
+            :key="item.id"
+          />
+
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </div>
 
       <div v-if="type === 'song'">
-        <SongListItem
-          v-for="item in results.songs"
-          cover="default"
-          :title="item.name"
-          :id="item.id"
-          :singer="item.artists[0].name"
-          :key="item.id"
-          :duration="item.duration"
-          :album="item.album.name"
-        />
+        <q-infinite-scroll @load="update" :offset="250">
+          <SongListItem
+            v-for="item in songs"
+            cover="default"
+            :title="item.name"
+            :id="item.id"
+            :singer="item.artists[0].name"
+            :key="item.id"
+            :duration="item.duration"
+            :album="item.album.name"
+          />
+
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </div>
     </div>
   </div>
@@ -56,27 +80,39 @@ export default {
   data() {
     return {
       title: '',
-      results: {},
-      page: 0,
+      songs: [],
+      albums: [],
+      artists: [],
     }
+  },
+  methods: {
+    update(index = 0, done) {
+      let that = this
+      let offset = (index - 1) * 30
+      let finished = false
+      if (this.type === 'artist') {
+        QuerySearch(this.keywords, 100, offset).then(res => {
+          that.artists = that.artists.concat(res.result.artists)
+          if (res.result.artists.length < 30) finished = true
+          if (typeof done === 'function') done(finished)
+        })
+      } else if (this.type === 'album') {
+        QuerySearch(this.keywords, 10, offset).then(res => {
+          that.albums = that.albums.concat(res.result.albums)
+          if (res.result.albums.length < 30) finished = true
+          if (typeof done === 'function') done(finished)
+        })
+      } else {
+        QuerySearch(this.keywords, 1, offset).then(res => {
+          that.songs = that.songs.concat(res.result.songs)
+          if (res.result.songs.length < 30) finished = true
+          if (typeof done === 'function') done()
+        })
+      }
+    },
   },
   created() {
     this.title = this.type === 'song' ? '歌曲' : this.type === 'album' ? '专辑' : '歌手'
-    let that = this
-    if (this.type === 'artist') {
-      QuerySearch(this.keywords, 100).then(res => {
-        that.results = res.result
-      })
-    } else if (this.type === 'album') {
-      QuerySearch(this.keywords, 10).then(res => {
-        that.results = res.result
-      })
-    } else {
-      QuerySearch(this.keywords).then(res => {
-        that.results = res.result
-        console.log(res)
-      })
-    }
   },
 }
 </script>
