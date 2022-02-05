@@ -111,6 +111,11 @@ export default {
   mounted() {
     this.search()
   },
+  watch: {
+    keywords(n, o) {
+      this.search()
+    },
+  },
 }
 </script>
 
