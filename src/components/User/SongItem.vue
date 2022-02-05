@@ -1,6 +1,6 @@
 <template>
   <div class="song-item">
-    <img :src="cover" alt="title" />
+    <img :src="trueCover" alt="title" />
     <div class="song-item-content">
       <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
       <div class="text-subtitle2">{{ singer }}</div>
@@ -9,14 +9,27 @@
 </template>
 
 <script>
+import { QuerySong } from 'src/utils/request/search'
 export default {
   name: 'SongItem',
   props: ['id', 'cover', 'title', 'singer'],
   data() {
-    return {}
+    return {
+      trueCover: '',
+    }
   },
   methods: {},
-  created() {},
+  created() {
+    if (this.cover == 'default') {
+      this.trueCover =
+        'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+      QuerySong(this.id).then(res => {
+        this.trueCover = res.songs[0].al.picUrl
+      })
+    } else {
+      this.trueCover = this.cover
+    }
+  },
 }
 </script>
 
