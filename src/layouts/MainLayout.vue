@@ -99,6 +99,7 @@
         @pause="handlePause"
         @updateCurrentTime="handleUpdateCurrentTime"
         @switchSong="handleSwitchSong"
+        @priorBSSong="handelPriorBSSong"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
       />
     </q-footer>
@@ -329,6 +330,10 @@ export default defineComponent({
       currentSongDetail.value = songDetail
     }
 
+    const handelPriorBSSong = songDetail => {
+      // TODO: 播放列表点击播放
+    }
+
     const handleSearch = () => {
       $router.push('/search/' + searchKeyword.value)
     }
@@ -384,6 +389,7 @@ export default defineComponent({
       newPlaylist,
       addSongToPlaylist,
       pushToList,
+      handelPriorBSSong,
       currentSongId,
       currentSongDetail,
       currentTime,
@@ -412,6 +418,14 @@ export default defineComponent({
 
 <style lang="scss">
 @import 'src/css/common.scss';
+
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
 
 .user {
   @include custom-font(inherit, 600, 1px, inherit);

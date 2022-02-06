@@ -349,6 +349,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
+
 .broadcast-container {
   position: fixed;
   display: grid;

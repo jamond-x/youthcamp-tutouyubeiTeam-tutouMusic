@@ -50,7 +50,7 @@
           @mouseleave="slidePointThumb = true"
           thumb-size="15px"
           class="slider-progress col-10 q-px-sm"
-          :color="[$q.dark.isActive ? 'white' : 'black']"
+          :color="sliderColor"
           v-model="currentTime"
           :min="0"
           :max="songDuration"
@@ -67,14 +67,30 @@
     </div>
     <div class="tools row reverse items-center">
       <q-card class="list-card" v-show="songsListLayerStatus">
-        <q-table
-          title="播放列表"
-          :columns="columns"
-          :rows="songListLayer"
-          row-key="name"
-          dark
-          color="amber"
-        />
+        <q-markup-table separator="horizontal" flat bordered>
+          <div class="font-weight-sm q-ml-xl q-mt-lg q-mb-sm">播放列表</div>
+          <tbody>
+            <div v-if="!isUnNull(songsList)">
+              <tr
+                v-for="(item, index) in songsList"
+                :key="index"
+                class="cursor__pointer"
+                @click="$emit('priorBSSong', item)"
+              >
+                <td class="text-center">{{ item.name }}</td>
+                <td class="text-center">
+                  {{ item.ar.length === 1 ? item.ar[0].name : `${item.ar[0].name}...` }}
+                </td>
+                <td class="text-center">{{ item.al.name }}</td>
+              </tr>
+            </div>
+            <div v-else>
+              <tr v-for="item in 5" :key="item">
+                <q-skeleton type="QSlider" />
+              </tr>
+            </div>
+          </tbody>
+        </q-markup-table>
       </q-card>
       <q-btn
         @click="songsListLayerStatus = !songsListLayerStatus"
@@ -90,8 +106,8 @@
         v-model="volume"
         size="30px"
         :thickness="0.3"
-        :color="[$q.dark.isActive ? 'teal' : 'white']"
-        :track-color="[$q.dark.isActive ? 'grey-3' : 'black']"
+        :color="qKnobColor"
+        :track-color="qKnobTrackColor"
         class="q-mr-md"
       >
         <q-icon name="volume_up" />
@@ -124,36 +140,6 @@ let hello = {
 
 let songsList_ = [hello]
 
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: '歌曲名称',
-    align: 'left',
-    sortable: true,
-  },
-  { name: 'singer', align: 'center', label: '歌手', sortable: true },
-  { name: 'album', label: '专辑', sortable: true },
-]
-
-const songListLayer_ = [
-  {
-    name: '安静',
-    singer: '周杰伦',
-    album: 'jay',
-  },
-  {
-    name: '安静',
-    singer: '周杰伦',
-    album: 'jay',
-  },
-  {
-    name: '安静',
-    singer: '周杰伦',
-    album: 'jay',
-  },
-]
-
 export default defineComponent({
   name: 'Bar',
   emits: [
@@ -163,6 +149,7 @@ export default defineComponent({
     'play',
     'updateCurrentTime',
     'updateDuration',
+    'priorBSSong',
   ],
   props: {
     songListToAudio: {
@@ -184,13 +171,12 @@ export default defineComponent({
     const audio = ref()
     let volume = ref(0)
     let songIds = ref('')
-    let currentTime = ref()
+    let currentTime = ref(0)
     let songDuration = ref()
     let playStatus = ref(false)
     let currentSongIndex = ref(0)
     let isReady = ref(false)
     const songsList = reactive(songsList_)
-    const songListLayer = ref(songListLayer_)
     let $q = useQuasar()
     let intervalTimer
 
@@ -499,6 +485,7 @@ export default defineComponent({
       $q,
       audio,
       togglePlay,
+      isUnNull,
       playStatus,
       volume,
       songsListLayerStatus: ref(false),
@@ -515,8 +502,9 @@ export default defineComponent({
       changMode,
       switchSong,
       changeProgressBySlide,
-      columns,
-      songListLayer,
+      sliderColor: $q.dark.isActive ? 'white' : 'black', // 写template中疯狂报错！？
+      qKnobColor: $q.dark.isActive ? 'teal' : 'white',
+      qKnobTrackColor: $q.dark.isActive ? 'grey-3' : 'black',
     }
   },
 })
@@ -573,10 +561,10 @@ export default defineComponent({
 
   .tools {
     .list-card {
-      width: 400px;
+      width: 500px;
       height: 350px;
       position: fixed;
-      bottom: 50px;
+      bottom: 70px;
       right: 10px;
     }
   }
