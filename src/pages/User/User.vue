@@ -111,17 +111,23 @@ export default defineComponent({
   methods: {
     updateData(_id) {
       let that = this
-      _id = _id || localStorage.getItem('userId') || '58323110'
-      if (_id == localStorage.getItem('userId')) {
+      _id = _id || sessionStorage.getItem('uid') || 'none'
+      if (_id === 'none') {
+        alert('请先登录~')
+        this.$router.push('/')
+      }
+      if (_id === sessionStorage.getItem('uid')) {
         this.self = true
         this.tab = 'album'
+        that.userdata = JSON.parse(sessionStorage.getItem('userInfo'))
       } else {
         this.self = false
         this.tab = 'follow'
+        QueryUser(_id).then(res => {
+          that.userdata = res.profile
+        })
       }
-      QueryUser(_id).then(res => {
-        that.userdata = res.profile
-      })
+
       QueryPlayList(_id).then(res => {
         that.like = res.playlist[0].id
       })
