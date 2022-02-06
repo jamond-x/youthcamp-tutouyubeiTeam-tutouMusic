@@ -194,6 +194,7 @@ export default defineComponent({
     let searchKeyword = ref()
     let $router = useRouter()
     let mode = ref('light_mode')
+    let broadcastPageStatus = ref(false)
 
     let option1 = ref(true)
     let avatarUrl = computed(() => {
@@ -390,6 +391,8 @@ export default defineComponent({
       handleLogin,
       handleLogout,
       handleRefreshLogin,
+      handlePause,
+      broadcastPageStatus,
     }
   },
 })
