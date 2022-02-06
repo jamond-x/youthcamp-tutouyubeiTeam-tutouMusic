@@ -13,7 +13,7 @@
       arrows
       height="27vw"
       class="rounded-borders col-12"
-      :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]"
+      :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
       <q-carousel-slide
         :name="index"
@@ -21,9 +21,7 @@
         :key="item"
         class="row justify-center no-wrap"
       >
-
         <img class="bannerImage" :src="item.imageUrl" alt="" />
-
       </q-carousel-slide>
     </q-carousel>
 
@@ -36,7 +34,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, watchEffect, computed } from 'vue'
+import { useStore } from 'vuex'
 
 import SongList from 'components/songList/SongList'
 
@@ -49,6 +48,11 @@ export default defineComponent({
     SongList,
   },
   setup() {
+    const store = useStore()
+
+    const loginFlag = computed(() => {
+      return store.state.loginFlag
+    })
     const state = reactive({
       // 轮播图
       banners: [],
@@ -56,14 +60,26 @@ export default defineComponent({
       songlist: [],
     })
 
+    watchEffect(() => {
+      if (loginFlag.value === 1) {
+        QueryRecommendSongList('recommend/resource').then(res => {
+          state.songlist = res.recommend.splice(0, 10)
+        })
+      } else {
+        QueryRecommendSongList().then(res => {
+          state.songlist = res.result
+        })
+      }
+    })
+
     QueryBanner().then(res => {
       state.banners = res.banners.splice(0, 4)
     })
 
-    QueryRecommendSongList().then(res => {
-      // console.log(res.result)
-      state.songlist = res.result
-    })
+    // QueryRecommendSongList().then(res => {
+    //   // console.log(res.result)
+    //   state.songlist = res.result
+    // })
 
     return {
       // ...toRefs(state),

@@ -66,7 +66,7 @@ export default defineComponent({
 .q-tabs {
   position: sticky;
   top: 57px;
-  z-index: 1;
+  z-index: 2;
 }
 
   .tab-panel {
