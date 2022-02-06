@@ -163,7 +163,7 @@ const linksList = [
 ]
 
 import { defineComponent, ref, reactive, nextTick, provide, computed, watch } from 'vue'
-import { useQuasar, Cookies } from 'quasar'
+import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
