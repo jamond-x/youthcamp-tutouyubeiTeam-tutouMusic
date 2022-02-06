@@ -11,10 +11,10 @@ const api = createApi(
 )
 
 // 获取推荐歌单（发现页个性推荐中使用）
-export const QueryRecommendSongList = async data => {
+export const QueryRecommendSongList = async (url = 'personalized') => {
   return await api({
     // url: 'recommend/resource'
-    url: 'personalized',
+    url,
     params: {
       limit: 10
     }
