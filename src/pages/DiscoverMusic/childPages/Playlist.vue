@@ -32,18 +32,22 @@
         >
       </div>
     </div>
-    <!-- <song-list :song-lists="state.songlist" /> -->
 
-    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250">
+    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250" scroll-target="body">
       <transition name="show-hide">
         <song-list :song-lists="state.songlist" />
       </transition>
       <template v-slot:loading>
         <div class="row justify-center q-my-md">
-          <q-spinner-dots color="white" size="40px"></q-spinner-dots>
+          <q-spinner-dots size="40px"></q-spinner-dots>
         </div>
       </template>
     </q-infinite-scroll>
+    
+    <!-- 返回顶部按钮 -->
+    <back-to-top bottom="100px" right="50px" visibleoffset="600">
+      <q-btn round color="primary" icon="navigation" size="lg" />
+    </back-to-top>
   </div>
 </template>
 
@@ -52,16 +56,19 @@ import { defineComponent, reactive } from 'vue'
 
 import SongList from 'components/songList/SongList'
 
+import BackToTop from 'vue-backtotop'
+
 import {
   QueryQualitySongList,
   QuerySongListTags,
   QuerySongListByTag,
-} from '../../../utils/request/songList/songList'
+} from 'src/utils/request/songList/songList'
 
 export default defineComponent({
   name: 'Playlist',
   components: {
     SongList,
+    BackToTop,
   },
   setup() {
     const state = reactive({
@@ -190,14 +197,16 @@ export default defineComponent({
   }
 }
 
+// 懒加载的动画
 .show-hide-enter-active {
-    transition: all .5s ease;
+  transition: all 0.5s ease;
 }
 .show-hide-leave-active {
-    transition: all 1s ease;
+  transition: all 1s ease;
 }
-.show-hide-enter, .show-hide-leave-active {
-    transform: translate( -100%, 0);
-    opacity: 0;
+.show-hide-enter,
+.show-hide-leave-active {
+  transform: translate(-100%, 0);
+  opacity: 0;
 }
 </style>

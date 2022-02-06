@@ -6,12 +6,12 @@
       <q-btn-toggle v-model="shaixuan" toggle-color="primary" :options="shaixuanData" />
     </div>
 
-    <q-infinite-scroll @load="onLoad" :debounce="1000" :offset="250" class="box">
+    <q-infinite-scroll @load="onLoad" :debounce="1000" :offset="250" class="box" scroll-target="body">
       <singerItem v-for="item in data.list" :key="item.id" :item="item"></singerItem>
     </q-infinite-scroll>
 
     <!-- 返回顶部按钮 -->
-    <back-to-top bottom="100px" right="50px" visibleoffset="300">
+    <back-to-top bottom="100px" right="50px" visibleoffset="600">
       <q-btn round color="primary" icon="navigation" size="lg" />
     </back-to-top>
   </div>

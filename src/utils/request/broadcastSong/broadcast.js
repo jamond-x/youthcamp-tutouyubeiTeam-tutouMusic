@@ -2,7 +2,17 @@ import axios from 'axios'
 import { createApi } from '..'
 import { REQUEST_BASE_URL, BROADCAST } from 'src/utils/const'
 
-let { cookie } = JSON.parse(window.localStorage.getItem('user'))
+import { Cookies } from 'quasar'
+
+//  这里会获取下cookie
+
+let cookie = Cookies.get('user')
+
+// if (!cookie) {
+//   cookie = JSON.parse(window.localStorage.getItem('cookie'))
+// }
+
+// let { cookie } = JSON.parse(window.localStorage.getItem('user'))
 const api = createApi(
   axios.create({
     baseURL: REQUEST_BASE_URL,
@@ -35,6 +45,10 @@ export const GetSongUrl = async data => {
     method: 'POST',
     url: `${BROADCAST.GET_URL}?timestamp=${new Date().getTime()}`,
     data,
+    // data: {
+    //   id,
+    //   cookie,
+    // },
   })
 }
 
@@ -105,12 +119,11 @@ export const SendComment = async (t, type, id, content, commentId) => {
     },
   })
 }
-
 /**
  *@description 获取歌曲详情
- * @param { Object } data{ids: '186016'} 歌曲id
+ * @param { String } {ids: '186016'} 歌曲id  支持多个 id, 用 , 隔开
  * @returns
- */
+ */ // TODO: 数字自动转换为字符串问题   !!!!   与对象解构有关！！！！？
 export const GetSongDetail = async data => {
   return await api({
     method: 'POST',

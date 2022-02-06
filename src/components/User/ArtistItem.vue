@@ -1,7 +1,7 @@
 <template>
   <div class="artist-item" :id="aid">
     <div>
-      <img :src="avatar" />
+      <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + avatar + ');'"></div>
     </div>
 
@@ -14,7 +14,26 @@ export default {
   name: 'ArtistItem',
   props: ['avatar', 'aid', 'name'],
   data() {
-    return {}
+    return {
+      trueAvatar: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+    }
+  },
+  created() {
+    let src = this.avatar
+    let that = this
+    new Promise((rs, rj) => {
+      let img = new Image()
+      img.onload = function () {
+        rs(img.src)
+      }
+      img.src = src
+    })
+      .then(success => {
+        that.trueAvatar = success
+      })
+      .catch(error => {
+        console.log('加载失败', error)
+      })
   },
 }
 </script>

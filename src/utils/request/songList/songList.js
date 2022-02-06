@@ -14,7 +14,10 @@ const api = createApi(
 export const QueryRecommendSongList = async data => {
   return await api({
     // url: 'recommend/resource'
-    url: 'personalized'
+    url: 'personalized',
+    params: {
+      limit: 10
+    }
   })
 }
 
