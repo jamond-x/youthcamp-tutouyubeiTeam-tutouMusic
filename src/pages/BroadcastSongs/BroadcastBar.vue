@@ -190,7 +190,7 @@ export default defineComponent({
   components: {},
   setup(props, context) {
     const audio = ref()
-    let volume = ref(1)
+    let volume = ref(0)
     let songIds = ref('')
     let currentTime = ref()
     let songDuration = ref()

@@ -1,7 +1,7 @@
 <template>
   <div class="list-item" @click="itemClick">
     <div class="img-box">
-      <img :src="listItem.picUrl || listItem.coverImgUrl" />
+      <img :src="listItem.cover" />
       <q-icon name="play_circle" />
     </div>
     <div class="list-info">
@@ -14,7 +14,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'SongListItem',
+  name: 'MvListItem',
   props: {
     listItem: {
       type: Object,
@@ -44,19 +44,19 @@ export default defineComponent({
   flex-wrap: wrap;
   justify-content: center;
   // flex: 20%;
-  width: 20%;
-  height: 15vw;
-  margin-bottom: 10px;
+  width: 25%;
+  height: 13vw;
+  margin-bottom: 5px;
   overflow: hidden;
   text-align: center;
   // align-items: center;
   /* background-color: pink; */
 
   .img-box {
-    width: 13vw;
+    width: 17vw;
     img {
-      width: 13vw;
-      height: 13vw;
+      width: 17vw;
+      height: 10vw;
       border-radius: 8px;
       /* 消除图片下的间隙 */
       vertical-align: middle;
@@ -64,9 +64,10 @@ export default defineComponent({
     }
     .q-icon {
       position: absolute;
-      top: 58%;
-      right: 16%;
-      font-size: 3.6vw;
+      top: 39%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4vw;
       color: white;
       opacity: 0;
       transition: opacity 1s;
@@ -84,17 +85,17 @@ export default defineComponent({
 
   .list-info {
     width: 100%;
-    height: 45px;
-    font-size: 13px;
+    height: 40px;
+    font-size: 14px;
     font-weight: 700;
-    padding-top: 10px;
+    padding-top: 5px;
     box-sizing: border-box;
     p {
       /* white-space: nowrap; */
       /* margin-bottom: 3px; */
       width: 100%;
       display: -webkit-box;
-      // color: white;
+      /* color: white; */
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       /* 文本溢出 */

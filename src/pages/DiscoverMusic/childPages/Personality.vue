@@ -7,12 +7,13 @@
       transition-prev="slide-right"
       transition-next="slide-left"
       infinite
-      :autoplay="5000"
-      control-color="white"
+      :autoplay="4900"
+      control-color="grey-6"
       navigation
       arrows
       height="27vw"
-      class="bg-transparent text-white rounded-borders col-12"
+      class="rounded-borders col-12"
+      :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
       <q-carousel-slide
         :name="index"
@@ -20,9 +21,7 @@
         :key="item"
         class="row justify-center no-wrap"
       >
-
         <img class="bannerImage" :src="item.imageUrl" alt="" />
-
       </q-carousel-slide>
     </q-carousel>
 
@@ -35,12 +34,13 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, watchEffect, computed } from 'vue'
+import { useStore } from 'vuex'
 
 import SongList from 'components/songList/SongList'
 
-import { QueryBanner } from '../../../utils/request/image/image.js'
-import { QueryRecommendSongList } from '../../../utils/request/songList/songList'
+import { QueryBanner } from 'src/utils/request/image/image.js'
+import { QueryRecommendSongList } from 'src/utils/request/songList/songList'
 
 export default defineComponent({
   name: 'Personality',
@@ -48,6 +48,11 @@ export default defineComponent({
     SongList,
   },
   setup() {
+    const store = useStore()
+
+    const loginFlag = computed(() => {
+      return store.state.loginFlag
+    })
     const state = reactive({
       // 轮播图
       banners: [],
@@ -55,15 +60,26 @@ export default defineComponent({
       songlist: [],
     })
 
-    QueryBanner().then(res => {
-      state.banners = res.banners.splice(0, 4)
-      // console.log(state.banners)
+    watchEffect(() => {
+      if (loginFlag.value === 1) {
+        QueryRecommendSongList('recommend/resource').then(res => {
+          state.songlist = res.recommend.splice(0, 10)
+        })
+      } else {
+        QueryRecommendSongList().then(res => {
+          state.songlist = res.result
+        })
+      }
     })
 
-    QueryRecommendSongList().then(res => {
-      console.log(res.result)
-      state.songlist = res.result.splice(0, 10)
+    QueryBanner().then(res => {
+      state.banners = res.banners.splice(0, 4)
     })
+
+    // QueryRecommendSongList().then(res => {
+    //   // console.log(res.result)
+    //   state.songlist = res.result
+    // })
 
     return {
       // ...toRefs(state),
@@ -81,8 +97,8 @@ export default defineComponent({
 .title {
   font-weight: bold;
   font-size: 20px;
-  margin-top: 10px;
-  margin-left: 10px;
+  // margin-top: .1vh;
+  margin-left: 1.5vw;
   margin-bottom: 10px;
   .q-icon {
     margin-left: -4px;
