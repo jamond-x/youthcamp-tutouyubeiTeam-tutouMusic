@@ -1,5 +1,5 @@
 <template>
-  <div class="broadcast-container">
+  <div :class="['broadcast-container', $q.dark.isActive ? 'lyric-dark' : 'lyric-light']">
     <div class="header">
       <div class="column items-center">
         <div class="q-mt-md">
@@ -64,7 +64,7 @@
           free-mode
           :speed="500"
           :effect="'cube'"
-          :cube-effect="{ shadow: true, slideShadows: false, shadowScale: 0.8, shadowOffset: 50 }"
+          :cube-effect="{ shadow: true, slideShadows: false, shadowScale: 0.8, shadowOffset: 35 }"
           loop
           :update-on-images-ready="true"
           @init="getInstance"
@@ -355,12 +355,11 @@ export default defineComponent({
   grid-template-rows: 1fr 6fr 2fr;
   margin: 0;
   padding: 0;
-  background-color: #2c1919;
-
   .header {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     text-transform: capitalize;
+    cursor: pointer;
     & > div {
       grid-area: 1/2/2/3;
       & > div {

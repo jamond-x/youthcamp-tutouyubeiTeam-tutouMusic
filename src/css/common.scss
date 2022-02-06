@@ -54,3 +54,15 @@
 .font-weight-sm {
   @include custom-font(17px, 900, 1px, inherit);
 }
+
+.lyric-dark {
+  background-color: #2c1919;
+}
+
+.lyric-light {
+  background-color: white;
+}
+
+.cursor__pointer {
+  cursor: pointer;
+}

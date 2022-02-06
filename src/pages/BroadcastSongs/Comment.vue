@@ -60,15 +60,24 @@
           <div class="each-comment q-my-md" v-for="(item, index) in currentComment" :key="index">
             <div class="column">
               <router-link :to="`/user/${item.user.userId}`">
-                <q-avatar class="user-avatar q-mt-xs" v-close-popup>
+                <q-avatar
+                  :class="['q-mt-xs', $q.dark.isActive ? 'user-avatar' : 'user-avatar__dark']"
+                  v-close-popup
+                >
                   <img :src="item.user.avatarUrl" />
                 </q-avatar>
               </router-link>
               <q-badge class="badge" rounded color="orange" label="v" />
             </div>
             <div class="column justify-center">
-              <div class="name">{{ item.user.nickname }} :{{ item.content }}</div>
-              <div v-if="item.beReplied.length > 0" class="comment-replied q-my-sm q-py-xs q-pl-sm">
+              <div class="name">
+                <span class="cursor__pointer">{{ item.user.nickname }}</span> :{{ item.content }}
+              </div>
+              <div
+                v-if="item.beReplied.length > 0"
+                :class="[$q.dark.isActive ? 'comment-replied__dark' : 'comment-replied']"
+                class="q-my-sm q-py-xs q-pl-sm"
+              >
                 @{{ item.beReplied[0].user.nickname }}： {{ item.beReplied[0].content }}
               </div>
               <div class="bar q-mt-sm">
@@ -297,6 +306,11 @@ export default defineComponent({
       .user-avatar {
         cursor: pointer;
       }
+      .user-avatar__dark {
+        cursor: pointer;
+        box-shadow: 8px 8px 16px #797979, -8px -8px 16px #ffffff;
+      }
+
       .badge {
         width: 15px;
         height: 15px;
@@ -304,11 +318,18 @@ export default defineComponent({
         top: 5px;
         left: 35px;
       }
-      .comment-replied {
+      .comment-replied__dark {
         width: 320px;
         opacity: 0.4;
         background-color: #165156;
         border-radius: 5px;
+      }
+      .comment-replied {
+        width: 320px;
+        background-color: black;
+        opacity: 0.5;
+        border-radius: 5px;
+        color: white;
       }
       .bar {
         display: grid;

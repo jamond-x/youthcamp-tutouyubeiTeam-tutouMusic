@@ -90,7 +90,7 @@
         v-model="volume"
         size="30px"
         :thickness="0.3"
-        :color="[$q.dark.isActive ? 'teal' : 'grey-3']"
+        :color="[$q.dark.isActive ? 'teal' : 'white']"
         :track-color="[$q.dark.isActive ? 'grey-3' : 'black']"
         class="q-mr-md"
       >
