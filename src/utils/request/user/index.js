@@ -10,7 +10,7 @@ const api = createApi(
   })
 )
 
-const ccookie = localStorage.getItem('cookie') || ''
+const ccookie = sessionStorage.getItem('cookie') || ''
 
 // 直接使用 QuerySongs() 函数即可
 export const QueryUser = async uid => {
