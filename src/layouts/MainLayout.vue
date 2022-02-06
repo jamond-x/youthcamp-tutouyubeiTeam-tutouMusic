@@ -335,6 +335,7 @@ export default defineComponent({
 
     const handleLogin = () => {
       console.log('点击登录', showLogin.value)
+      showLogin.value = true
     }
     const handleLogout = async () => {
       let res = await store.dispatch('goLogout')
