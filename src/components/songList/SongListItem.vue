@@ -40,6 +40,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .list-item {
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   // flex: 20%;
   width: 20%;
   height: 15vw;
@@ -48,32 +51,37 @@ export default defineComponent({
   text-align: center;
   // align-items: center;
   /* background-color: pink; */
-  .q-icon {
-    position: absolute;
-    top: 57%;
-    right: 20%;
-    font-size: 3vw;
-    color: white;
-    opacity: 0;
-    transition: opacity 1s;
-  }
-  .img-box:hover {
-    cursor: pointer;
-    .q-icon {
-      opacity: 1;
-    }
-    img {
-      filter: brightness(80%);
-    }
-  }
-  img {
+
+  .img-box {
     width: 13vw;
-    height: 13vw;
-    border-radius: 8px;
-    /* 消除图片下的间隙 */
-    vertical-align: middle;
-    transition: filter 1s;
+    img {
+      width: 13vw;
+      height: 13vw;
+      border-radius: 8px;
+      /* 消除图片下的间隙 */
+      vertical-align: middle;
+      transition: filter 1s;
+    }
+    .q-icon {
+      position: absolute;
+      top: 58%;
+      right: 16%;
+      font-size: 3.6vw;
+      color: white;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    &:hover {
+      cursor: pointer;
+      .q-icon {
+        opacity: 1;
+      }
+      img {
+        filter: brightness(75%);
+      }
+    }
   }
+
   .list-info {
     width: 100%;
     height: 45px;
@@ -94,7 +102,6 @@ export default defineComponent({
       overflow: hidden;
       &:hover {
         cursor: pointer;
-        color: gainsboro;
       }
     }
   }
