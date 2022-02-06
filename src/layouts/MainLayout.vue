@@ -87,7 +87,7 @@
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
-      <router-view @immediatelyBroadcast="immediatelyBroadcast" />
+      <router-view @immediatelyBroadcast="immediatelyBroadcast" @newPlaylist="newPlaylist" />
     </q-page-container>
     <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal>
       <BroadcastBar

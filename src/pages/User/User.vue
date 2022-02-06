@@ -8,7 +8,7 @@
         :signature="userdata.signature"
       />
 
-      <UserLikeBar :list="like" @immediatelyBroadcast="play" />
+      <UserLikeBar :list="like" @immediatelyBroadcast="play" @newPlaylist="playList" />
     </div>
 
     <div class="content">
@@ -146,6 +146,9 @@ export default defineComponent({
     },
     play(_id) {
       this.$emit('immediatelyBroadcast', _id + '')
+    },
+    playList(list) {
+      this.$emit('newPlaylist', list)
     },
   },
   mounted() {
