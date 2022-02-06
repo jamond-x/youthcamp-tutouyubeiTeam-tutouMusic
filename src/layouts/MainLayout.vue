@@ -121,6 +121,7 @@
         @changePlaylist="newPlaylist"
         @addSongToList="pushToList"
         @changeProgress="handleChangeProgress"
+        :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
       />
     </q-dialog>
   </q-layout>

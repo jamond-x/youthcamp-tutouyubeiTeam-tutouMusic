@@ -50,7 +50,7 @@
           @mouseleave="slidePointThumb = true"
           thumb-size="15px"
           class="slider-progress col-10 q-px-sm"
-          color="white"
+          :color="[$q.dark.isActive ? 'white' : 'black']"
           v-model="currentTime"
           :min="0"
           :max="songDuration"
@@ -90,8 +90,8 @@
         v-model="volume"
         size="30px"
         :thickness="0.3"
-        color="teal"
-        track-color="grey-3"
+        :color="[$q.dark.isActive ? 'teal' : 'grey-3']"
+        :track-color="[$q.dark.isActive ? 'grey-3' : 'black']"
         class="q-mr-md"
       >
         <q-icon name="volume_up" />
@@ -104,13 +104,7 @@
 import { defineComponent, ref, reactive, watch, computed } from 'vue'
 import { throttle } from 'quasar'
 import { useQuasar } from 'quasar'
-import {
-  GetSongUrl,
-  GetSongDetail,
-  Check_Music,
-  Search,
-  Login,
-} from 'src/utils/request/broadcastSong/broadcast'
+import { GetSongUrl, GetSongDetail } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 
 let hello = {
@@ -126,8 +120,6 @@ let hello = {
   id: 186016,
   mv: 504177,
   name: 'HELLO!',
-  no: 1,
-  publishTime: 1059580800000,
 }
 
 let songsList_ = [hello]
@@ -496,7 +488,7 @@ export default defineComponent({
     // init()
     watch(
       () => props.songListToAudio,
-      newVal => {
+      () => {
         init(props.playMode)
       },
       {
@@ -504,6 +496,7 @@ export default defineComponent({
       }
     )
     return {
+      $q,
       audio,
       togglePlay,
       playStatus,
