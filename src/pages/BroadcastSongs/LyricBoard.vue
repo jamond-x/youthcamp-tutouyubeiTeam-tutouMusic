@@ -360,6 +360,7 @@ export default defineComponent({
   .header {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    text-transform: capitalize;
     & > div {
       grid-area: 1/2/2/3;
       & > div {

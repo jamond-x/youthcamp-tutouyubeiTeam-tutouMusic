@@ -200,6 +200,12 @@ export default defineComponent({
     const songsList = reactive(songsList_)
     const songListLayer = ref(songListLayer_)
     let $q = useQuasar()
+    let intervalTimer
+
+    let clearTimer = () => {
+      clearInterval(intervalTimer)
+      intervalTimer = null
+    }
 
     let modeListObj = [
       {
@@ -217,13 +223,6 @@ export default defineComponent({
     })
     modeListObj[2].next = modeListObj[0]
     let autoplayMode = ref(modeListObj[0])
-
-    let intervalTimer
-
-    let clearTimer = () => {
-      clearInterval(intervalTimer)
-      intervalTimer = null
-    }
 
     const listenProgress = url => {
       let audioObj = new Audio(url)
@@ -374,6 +373,7 @@ export default defineComponent({
       }
       return '随机播放'
     })
+
     let autoplayModeForBtnSwitch = computed(() => {
       if (autoplayMode.value.val === 'listLoop' || autoplayMode.value.val === 'selfLoop') {
         return 0
@@ -396,7 +396,6 @@ export default defineComponent({
       let s = temp % 60
       if (m < 10) m = `0${m}`
       if (s < 10) s = `0${s}`
-
       return `${m}:${s}`
     })
 
@@ -424,7 +423,6 @@ export default defineComponent({
       let ids = ''
       if (mode === 0) {
         ids = props.songListToAudio[0]
-        // 直接解构会报错！？？
         let res = await GetSongDetail({ ids })
         const { songs } = res
         // if (isUnNull(songs)) return

@@ -147,7 +147,7 @@ export const SendComment = async (t, type, id, content, commentId, replyCommentI
  *@description 获取歌曲详情
  * @param { String } {ids: '186016'} 歌曲id  支持多个 id, 用 , 隔开
  * @returns
- */ // TODO: 数字自动转换为字符串问题   !!!!   与对象解构有关！！！！？
+ */
 export const GetSongDetail = async data => {
   return await api({
     method: 'POST',
