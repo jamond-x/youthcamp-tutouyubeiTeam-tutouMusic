@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     play() {
-      this.$emit('immediatelyBroadcast', this.id)
+      this.$emit('immediatelyBroadcast', this.id + '')
     },
   },
   created() {

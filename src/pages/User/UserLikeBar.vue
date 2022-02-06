@@ -21,6 +21,7 @@
           :cover="song.al.picUrl"
           :title="song.name"
           :singer="song.ar[0].name"
+          :id="song.id"
           @immediatelyBroadcast="play"
         />
       </div>
@@ -55,7 +56,7 @@ export default {
         })
     },
     play(_id) {
-      this.$emit('immediatelyBroadcast', _id)
+      this.$emit('immediatelyBroadcast', _id + '')
     },
   },
   watch: {
