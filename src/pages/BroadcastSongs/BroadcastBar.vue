@@ -202,7 +202,7 @@ export default defineComponent({
     // }
     //TODO: $q is not a function
     const audio = ref()
-    let volume = ref()
+    let volume = ref(0)
     let songIds = ref('')
     let currentTime = ref()
     let songDuration = ref()
