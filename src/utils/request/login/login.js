@@ -11,7 +11,7 @@ const api = createApi(
 export const LoginByPhone = async data => {
   return await api({
     method: 'POST',
-    url: '/login/cellphone',
+    url: `/login/cellphone?timestamp=${Date.parse(new Date())}`,
     data,
   })
 }
@@ -26,7 +26,7 @@ export const RefreshLogin = async () => {
 export const Logout = async () => {
   return await api({
     method: 'POST',
-    url: '/logout',
+    url: `/logout?timestamp=${Date.parse(new Date())}`,
   })
 }
 

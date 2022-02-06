@@ -37,49 +37,58 @@ export default defineComponent({
 })
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .list-item {
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   // flex: 20%;
   width: 25%;
   height: 13vw;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   overflow: hidden;
   text-align: center;
   // align-items: center;
   /* background-color: pink; */
-  .q-icon {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4vw;
-    color: white;
-    opacity: 0;
-    transition: opacity 1s;
-  }
-  .img-box:hover {
-    cursor: pointer;
-    .q-icon {
-      opacity: 1;
-    }
-    img {
-      filter: brightness(80%);
-    }
-  }
-  img {
+
+  .img-box {
     width: 17vw;
-    height: 10vw;
-    border-radius: 8px;
-    /* 消除图片下的间隙 */
-    vertical-align: middle;
-    transition: filter 1s;
+    img {
+      width: 17vw;
+      height: 10vw;
+      border-radius: 8px;
+      /* 消除图片下的间隙 */
+      vertical-align: middle;
+      transition: filter 1s;
+    }
+    .q-icon {
+      position: absolute;
+      top: 39%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4vw;
+      color: white;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    &:hover {
+      cursor: pointer;
+      .q-icon {
+        opacity: 1;
+      }
+      img {
+        filter: brightness(75%);
+      }
+    }
   }
+
   .list-info {
     width: 100%;
-    height: 35px;
+    height: 40px;
     font-size: 14px;
-    padding-top: 10px;
+    font-weight: 700;
+    padding-top: 5px;
     box-sizing: border-box;
     p {
       /* white-space: nowrap; */
@@ -94,7 +103,6 @@ export default defineComponent({
       overflow: hidden;
       &:hover {
         cursor: pointer;
-        color: gainsboro;
       }
     }
   }

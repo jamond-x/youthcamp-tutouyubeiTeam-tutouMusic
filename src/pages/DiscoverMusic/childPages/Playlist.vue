@@ -125,7 +125,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .imgBox {
   position: relative;
-  height: 13vw;
+  height: 14vw;
   overflow: hidden;
   // background-color: pink;
   border-radius: 15px;
@@ -138,7 +138,7 @@ export default defineComponent({
     left: 0;
     right: 0;
     /* background: url(./img/109951164840594920.jpg); */
-    filter: blur(45px) brightness(0.8);
+    filter: blur(35px) brightness(0.8);
     img {
       width: 100%;
       height: 100%;
@@ -150,7 +150,7 @@ export default defineComponent({
     width: 10vw;
     height: 10vw;
     margin-left: 3vw;
-    z-index: 999;
+    z-index: 1;
     img {
       width: 100%;
       height: 100%;
@@ -160,7 +160,7 @@ export default defineComponent({
 
   .songlistDetail {
     // 歌单文字描述
-    z-index: 999;
+    z-index: 1;
     margin-left: 2vw;
     // width: 20vw;
     p {
