@@ -51,6 +51,7 @@
             :key="item.id"
             :duration="item.duration"
             :album="item.album.name"
+            @immediatelyBroadcast="play"
           />
 
           <template v-slot:loading>
@@ -109,6 +110,10 @@ export default {
           if (typeof done === 'function') done()
         })
       }
+    },
+    play(_id) {
+      console.log(_id)
+      this.$emit('immediatelyBroadcast', _id + '')
     },
   },
   created() {

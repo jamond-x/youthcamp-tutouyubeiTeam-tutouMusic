@@ -8,7 +8,7 @@
         :signature="userdata.signature"
       />
 
-      <UserLikeBar :list="like" />
+      <UserLikeBar :list="like" @immediatelyBroadcast="play" />
     </div>
 
     <div class="content">
@@ -143,6 +143,9 @@ export default defineComponent({
       QueryFollowerList(_id).then(res => {
         that.followerList = res.followeds
       })
+    },
+    play(_id) {
+      this.$emit('immediatelyBroadcast', _id + '')
     },
   },
   mounted() {

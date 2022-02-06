@@ -1,5 +1,5 @@
 <template>
-  <div class="song-list-item row q-mb-xs">
+  <div class="song-list-item row q-mb-xs" @click="play">
     <div class="col">
       <div class="song-item">
         <img :src="trueCover" alt="title" />
@@ -44,6 +44,9 @@ export default {
   methods: {
     PrefixZero(num, n) {
       return (Array(n).join(0) + num).slice(-n)
+    },
+    play() {
+      this.$emit('immediatelyBroadcast', this.id)
     },
   },
   created() {

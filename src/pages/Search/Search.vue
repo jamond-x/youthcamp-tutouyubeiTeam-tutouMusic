@@ -23,6 +23,7 @@
               cover="default"
               :title="song.name"
               :singer="song.artists[0].name"
+              @immediatelyBroadcast="play"
             />
           </div>
         </div>
@@ -109,6 +110,9 @@ export default {
     },
     jump(to) {
       this.$router.push('/search/' + this.keywords + '/' + to)
+    },
+    play(_id) {
+      this.$emit('immediatelyBroadcast', _id + '')
     },
   },
   mounted() {
