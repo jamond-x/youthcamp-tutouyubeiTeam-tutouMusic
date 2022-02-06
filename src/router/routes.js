@@ -11,7 +11,6 @@ const routes = [
       {
         path: '/discover',
         component: () => import('pages/DiscoverMusic/Discover.vue'),
-
       },
       {
         path: '/user/:uid',
@@ -34,15 +33,7 @@ const routes = [
       },
       {
         path: '/playlist',
-        component: () => import('pages/Playlist/Playlist.vue'),
-      },
-      {
-        path: '/LikeMusic',
         component: () => import('pages/LikeMusic/LikeMusic.vue'),
-      },
-      {
-        path: '/entrance',
-        component: () => import('pages/AuthPanel/AuthPanel.vue'),
       },
     ],
   },
