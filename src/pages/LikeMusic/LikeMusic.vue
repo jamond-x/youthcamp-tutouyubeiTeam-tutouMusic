@@ -169,6 +169,7 @@ export default defineComponent({
       collectNum,
       songTotalList,
       onLoad,
+      loginFlag,
     }
   },
 })
