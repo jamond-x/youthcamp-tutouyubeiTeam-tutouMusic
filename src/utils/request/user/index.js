@@ -92,3 +92,13 @@ export const QueryAlbum = async id => {
     },
   })
 }
+
+export const AddFavorSong = async (song, list) => {
+  return await api({
+    method: 'post',
+    url: '/playlist/tracks?op=add&pid=' + list + '&tracks=' + song,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
