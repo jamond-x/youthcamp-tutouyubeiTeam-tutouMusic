@@ -419,7 +419,7 @@ export default defineComponent({
     }
   }
   .lyric {
-    @extend .scroll;
+    @extend .scroll_lyric;
     user-select: none;
     & ul {
       list-style: none;
