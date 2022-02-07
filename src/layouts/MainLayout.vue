@@ -95,7 +95,7 @@
         <component :is="Component" v-if="!route.meta.keepAlive" />
       </router-view>
     </q-page-container>
-    <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal>
+    <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal >
       <BroadcastBar
         :songListToAudio="songsList"
         :controlPlayStatus="playStatus"
