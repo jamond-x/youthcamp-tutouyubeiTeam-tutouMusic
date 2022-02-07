@@ -24,7 +24,7 @@
               <q-avatar>
                 <img :src="avatarUrl" />
               </q-avatar>
-              <span class="q-ml-md">{{ username }}</span>
+              <span class="q-ml-md">{{ nickname }}</span>
             </template>
             <div class="row no-wrap q-pa-lg z-top">
               <div class="column">
@@ -46,7 +46,7 @@
                 <q-avatar size="64px">
                   <img :src="avatarUrl" />
                 </q-avatar>
-                <div class="text-subtitle1 q-mt-md q-mb-xs">{{ username }}</div>
+                <div class="text-subtitle1 q-mt-md q-mb-xs">{{ nickname }}</div>
                 <q-btn
                   @click="handleLogout"
                   v-if="loginFlag"
@@ -83,7 +83,7 @@
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
-        <UserSongListLink />
+        <UserSongListLink v-if="loginFlag" />
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
@@ -121,14 +121,14 @@
       />
     </q-dialog>
   </q-layout>
-  <q-dialog v-model="showLogin" persistent><AuthPanel /></q-dialog>
+  <q-dialog v-model="showLogin" persistent><LoginPanel /></q-dialog>
 </template>
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
 import LyricBoard from 'src/pages/BroadcastSongs/LyricBoard.vue'
-import AuthPanel from 'src/pages/AuthPanel/AuthPanel.vue'
+import LoginPanel from 'src/components/login/Login.vue'
 import UserSongListLink from 'src/components/UserSongListLink/UserSongListLink.vue'
 import { RefreshLogin } from 'src/utils/request/login/login'
 const linksList = [
@@ -164,7 +164,7 @@ const linksList = [
   },
 ]
 
-import { defineComponent, ref, reactive, nextTick, provide, computed, watch } from 'vue'
+import { defineComponent, ref, nextTick, provide, computed, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -176,7 +176,7 @@ export default defineComponent({
     EssentialLink,
     BroadcastBar,
     LyricBoard,
-    AuthPanel,
+    LoginPanel,
     UserSongListLink,
   },
 
@@ -200,20 +200,44 @@ export default defineComponent({
     let broadcastPageStatus = ref(false)
 
     let option1 = ref(true)
-    let avatarUrl = computed(() => {
-      return store.state.userInfo.avatarUrl
-    })
-    let username = computed(() => {
-      return store.state.userInfo.nickname
-    })
-    let loginFlag = computed(() => {
-      return store.state.loginFlag
-    })
+    let avatarUrl = ref(
+      'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+    )
+    let nickname = ref('秃头预备')
+    let loginFlag = ref(0)
     let showLogin = ref(false)
     let refreshing = ref(false)
-    watch([loginFlag, username], () => {
-      console.log('登录状态变化')
+    const updateLoginFlag = param => {
+      loginFlag.value = param
+    }
+
+    const checkLoginFlag = () => {
+      console.log(Number(window.sessionStorage.getItem('loginFlag')))
+      if (Number(window.sessionStorage.getItem('loginFlag')) === 1) {
+        let userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
+        if (userInfo) {
+          nickname.value = userInfo['nickname']
+          avatarUrl.value = userInfo['avatarUrl']
+          updateLoginFlag(1)
+        } else {
+          nickname.value = '秃头预备'
+          avatarUrl.value =
+            'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+          updateLoginFlag(0)
+        }
+      } else {
+        nickname.value = '秃头预备'
+        avatarUrl.value =
+          'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+        updateLoginFlag(0)
+      }
+    }
+    checkLoginFlag()
+    watch(loginFlag, () => {
+      console.log('loginFlag变化了 ', loginFlag.value)
+      checkLoginFlag()
     })
+
     //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
@@ -337,15 +361,20 @@ export default defineComponent({
     }
 
     const handleLogin = () => {
-      console.log('点击登录', showLogin.value)
       showLogin.value = true
     }
     const handleLogout = async () => {
       let res = await store.dispatch('goLogout')
-      console.log('点击登出', res)
-      window.sessionStorage.removeItem('userInfo')
-      window.sessionStorage.removeItem('loginFlag')
-      window.sessionStorage.removeItem('uid')
+      if (res.code === 200) {
+        window.sessionStorage.removeItem('userInfo')
+        window.sessionStorage.removeItem('loginFlag')
+        window.sessionStorage.removeItem('uid')
+        window.sessionStorage.removeItem('cookie')
+        window.sessionStorage.removeItem('token')
+        window.sessionStorage.removeItem('userSongList')
+        window.sessionStorage.setItem('loginFlag', 0)
+        checkLoginFlag()
+      }
     }
 
     const handleRefreshLogin = () => {
@@ -364,6 +393,8 @@ export default defineComponent({
 
     provide('showLogin', showLogin)
     provide('toggleLoginShow', toggleLoginShow)
+    provide('loginFlag', loginFlag)
+    provide('updateLoginFlag', updateLoginFlag)
 
     return {
       essentialLinks: linksList,
@@ -388,7 +419,7 @@ export default defineComponent({
       mode,
       option1,
       avatarUrl,
-      username,
+      nickname,
       loginFlag,
       showLogin,
       refreshing,
@@ -397,6 +428,7 @@ export default defineComponent({
       handleRefreshLogin,
       handlePause,
       broadcastPageStatus,
+      updateLoginFlag,
     }
   },
 })
@@ -410,9 +442,6 @@ export default defineComponent({
 }
 .logo {
   @include custom-font(45px, inherit, 1px, inherit);
-}
-.font {
-  @include custom-font(16px, 900, 3px, inherit);
 }
 
 .footer {

@@ -33,3 +33,10 @@ export const QueryUserSongList = async data => {
     params: data,
   })
 }
+
+export const QueryTrack = async data => {
+  return await api({
+    url: `/playlist/detail?timestamp=${Date.parse(new Date())}`,
+    params: data,
+  })
+}

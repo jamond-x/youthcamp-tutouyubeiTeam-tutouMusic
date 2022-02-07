@@ -1,175 +1,165 @@
 <template>
   <div class="q-page container">
-    <template class="flex column items-center no-wrap">
-      <div class="Wrapper flex row no-wrap q-pa-md">
-        <div class="col topBanner">
-          <q-img src="./example.png" :ratio="1" class="img q-mr-lg">
-            <div class="absolute-full text-subtitle2 flex flex-center">Caption</div>
-          </q-img>
-        </div>
-        <q-separator vertical inset class="q-mx-lg" />
-        <div class="flex column col listInfo justify-between">
-          <div class="title row">我喜欢的音乐(还没改好,到时候改菜单分割线下面?)</div>
-          <div class="row flex items-center">
-            <q-btn round class="q-mr-lg">
-              <q-avatar size="40px">
-                <img class="listHeadImg" :src="avatarUrl" alt="" />
-              </q-avatar>
-            </q-btn>
-            <q-chip color="purple" icon="bookmark">{{ userName }} {{ time }}创建</q-chip>
+    <div class="flex column no-wrap">
+      <template v-if="!finishLoading">
+        <PlaylistSkeleton />
+      </template>
+      <template v-else>
+        <div class="Wrapper flex row no-wrap q-pa-md">
+          <div class="topBanner">
+            <img :src="playlist.coverImgUrl" />
           </div>
-          <div class="row">
-            <q-btn-group class="q-mr-md">
-              <q-btn>
-                <q-icon name="fas fa-chevron-right" size="16px" />
-                播放全部
+          <q-separator vertical inset class="q-mx-lg" />
+          <div class="flex column justify-between">
+            <div class="text-h6 text-weight-bold row">{{ playlist.name }}</div>
+            <div class="row flex items-center">
+              <q-btn round class="q-mr-lg">
+                <q-avatar size="40px">
+                  <img class="listHeadImg" :src="creator.avatarUrl" />
+                </q-avatar>
               </q-btn>
-              <q-btn>
-                <q-icon name="fas fa-plus" size="16px" />
-              </q-btn>
-            </q-btn-group>
-            <q-btn label="收藏">({{ collectNum }})</q-btn>
-          </div>
+              <div class="text-subtitle1">
+                {{ creator.nickname }} {{ formatDate(playlist.createTime) }}创建
+              </div>
+            </div>
+            <div class="row">
+              <q-btn-group class="q-mr-md">
+                <q-btn @click="handleAddAllSong">
+                  <q-icon name="fas fa-chevron-right" size="16px" />
+                  播放全部
+                </q-btn>
+                <q-btn>
+                  <q-icon name="fas fa-plus" size="16px" />
+                </q-btn>
+              </q-btn-group>
+              <q-btn label="收藏">({{ playlist.subscribedCount }})</q-btn>
+            </div>
 
-          <div class="row">
-            <q-chip> 歌曲: {{ songNum }} </q-chip>
-            <q-chip>播放: {{ playNum }}</q-chip>
+            <div class="row">
+              <p class="text-subtitle2 q-mr-md">歌曲: {{ playlist.trackCount }}</p>
+              <p class="text-subtitle2">播放: {{ playlist.playCount }}</p>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-    <div class="songList">
-      <q-infinite-scroll v-if="loginFlag" @load="onLoad" :offset="1000">
-        <q-markup-table>
-          <thead>
-            <tr>
-              <th class="text-left">序号</th>
-              <th class="text-left">操作</th>
-              <th class="text-left">标题</th>
-              <th class="text-left">歌手</th>
-              <th class="text-left">专辑</th>
-              <!-- <th class="text-left">时间</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in songTotalList" :key="index">
-              <td>{{ index + 1 }}</td>
-              <td>
-                <!-- 空心 -->
-                <q-icon name="far fa-heart" />
-                <!-- 实心 -->
-                <!-- <q-icon name="fas fa-heart" /> -->
-              </td>
-              <td>
-                {{ item['name'] }}
-              </td>
-              <td>
-                {{ item['author'].join('/') }}
-              </td>
-              <td>
-                {{ item['album']['name'] }}
-              </td>
-              <!-- <td>
-                {{ `${item['min']}分${item['sec']}秒` }}
-              </td> -->
-            </tr>
-          </tbody>
-        </q-markup-table>
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-dots color="primary" size="40px" />
-          </div>
-        </template>
-      </q-infinite-scroll>
-      <div v-else>
-        <q-card> 没登录 </q-card>
+      </template>
+      <div class="songList q-mt-md" v-if="finishLoading">
+        <q-infinite-scroll v-if="loginFlag" @load="onLoad" :offset="250" debounce="1000">
+          <template v-for="(item, index) in finalTrack" :key="index">
+            <div class="song-list-item row q-mb-xs">
+              <div class="col">
+                <div class="song-item">
+                  <div class="song-item-content">
+                    <h5 class="text-h6 text-weight-bold">{{ item['name'] }}</h5>
+                    <div class="text-subtitle2">{{ item['authorStr'] }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <div class="text-subtitle1 album">
+                      <div>
+                        {{ item['al']['name'] }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="text-subtitle1 duration q-pr-md">
+                      <p>
+                        {{ '1分钟' }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import { QueryUserLikeList, QuerySongDetail } from 'src/utils/request/userSongList/userSongList'
+import { defineComponent, ref, reactive, inject, toRefs } from 'vue'
+import PlaylistSkeleton from './PlaylistSkeleton.vue'
+import { QueryTrack } from 'src/utils/request/userSongList/userSongList'
+import { formatDate } from 'src/utils/time/time'
 
 export default defineComponent({
   name: 'LikeMusic',
-  setup() {
-    const time = ref('2016-01-09')
-    const songNum = ref(893)
-    const playNum = ref(76)
-    const collectNum = ref(0)
+  props: ['id'],
+  components: { PlaylistSkeleton },
+  mounted() {
+    this.loadTrack(this.$route.params.id)
+  },
+  watch: {
+    id(n, o) {
+      this.finishLoading = false
+      this.loadTrack(n)
+    },
+  },
+  setup(props) {
+    const finishLoading = ref(false)
     const songTotalList = ref([])
-    const ids = ref([])
-    const avatarUrl = ref(
-      'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
-    )
-    const userName = ref('秃头预备')
-    const loginFlag = ref(0)
-    let userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
-    if (userInfo && userInfo['avatarUrl'] && userInfo['nickname']) {
-      avatarUrl.value = userInfo['avatarUrl']
-      userName.value = userInfo['nickname']
-      loginFlag.value = 1
-    }
-
-    let uid = window.sessionStorage.getItem('uid') || '121963173'
-
+    const loginFlag = inject('loginFlag')
+    const updateLoginFlag = inject('updateLoginFlag')
+    const trackState = reactive({
+      playlist: {},
+      creator: {},
+      finalTrack: [],
+    })
     function onLoad(index, done) {
-      const LoadDetail = () => {
-        let id = index - 1
-        let idsString = ids.value.slice(id, id + 100).join(',')
-        // console.log(idsString)
-        let data = { ids: idsString }
-        QuerySongDetail(data).then(res => {
-          let songList = []
-          if (res.code != 200) {
-            return
-          }
-          console.log(res)
-          res['songs'].forEach(raw => {
-            let song = {}
-            song['name'] = raw['name']
-            song['album'] = raw['al']
-            song['authorList'] = raw['ar']
-            song['dt'] = parseInt(raw['dt']) / 1000
-            song['min'] = Math.floor(song['dt'] / 60)
-            song['sec'] = Math.floor(song['dt'] % 60)
-            song['author'] = []
-            song['authorList'].forEach(author => {
-              song['author'].push(author['name'])
-            })
-            songList.push(song)
-          })
-          songTotalList.value.push(...songList)
-          console.log(songTotalList.value)
-          done()
-        })
-      }
-      const Query = async () => {
-        if (uid === '') {
-          done()
-        }
-        if (ids.value.length === 0) {
-          let res = await QueryUserLikeList({ uid })
-          // console.log(res)
-          ids.value = res.ids
-        }
-        LoadDetail()
-      }
-      Query()
+      songTotalList.value.push(...trackState.finalTrack.slice(index - 1, index + 99))
+      console.log('加载')
+      done()
+    }
+    const handleAddAllSong = () => {
+      console.log('加歌')
+      addSongToPlaylist('95558515', true)
     }
 
+    function loadTrack(id) {
+      trackState.playlist = {}
+      trackState.creator = {}
+      trackState.finalTrack = []
+      QueryTrack({ id }).then(res => {
+        console.log(res)
+        if (res.code != 200) {
+          return
+        }
+        trackState.playlist = res.playlist
+        trackState.creator = res.playlist.creator
+        finishLoading.value = true
+        res.playlist.tracks.map(item => {
+          let song = {}
+          song['name'] = item['name'].trim()
+          song['id'] = item['id']
+          song['authorList'] = item['ar']
+          song['authorStr'] = item['ar']
+            .map(ele => {
+              return ele.name
+            })
+            .join('/')
+          song['al'] = item['al']
+          song['dt'] = item['dt']
+          trackState.finalTrack.push(song)
+        })
+      })
+    }
     return {
-      userName,
-      avatarUrl,
-      time,
-      songNum,
-      playNum,
-      collectNum,
-      songTotalList,
       onLoad,
+      loadTrack,
       loginFlag,
+      formatDate,
+      finishLoading,
+      handleAddAllSong,
+      ...toRefs(trackState),
     }
   },
 })
@@ -183,23 +173,72 @@ export default defineComponent({
   position: relative;
   height: 13vw;
   overflow: hidden;
-  filter: blur(5px) brightness(0.4);
-}
-.listInfo {
-  .title {
-    font-size: 1.5rem;
+  img {
+    height: 180px;
+    width: 180px;
+    /* filter: blur(5px) brightness(0.4); */
   }
 }
 .Wrapper {
   width: 100%;
-  background-color: #23232b;
-  border: #2a2a29 2px solid;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
-.selected-item {
-  font-size: larger;
-  font: bold;
-  border-bottom: #af3131 1px solid;
+.song-list-item {
+  height: 5rem;
+  width: 100%;
+  border-radius: 15px;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem;
+
+  .album p,
+  .duration p {
+    margin: 0;
+    line-height: 4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .duration {
+    text-align: right;
+  }
+}
+.song-item {
+  display: flex;
+  width: 100%;
+
+  border-radius: 15px;
+  box-sizing: border-box;
+  transition: background 0.2s;
+
+  position: relative;
+
+  img {
+    border-radius: 15px;
+    margin-right: 1.5rem;
+    height: 4rem;
+    width: 4rem;
+  }
+  .text-h6 {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.song-item-content {
+  position: relative;
+  width: calc(100% - 4.75rem);
+}
+
+.song-list-item:hover {
+  background-color: $grey-9;
+}
+
+.body--light .song-list-item:hover {
+  background-color: $grey-3;
 }
 </style>
