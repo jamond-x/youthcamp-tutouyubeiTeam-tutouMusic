@@ -290,7 +290,7 @@ export default defineComponent({
     //   immediatelyBroadcast('1293886117')
     // }, 2000)
     setTimeout(() => {
-      newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
+      newPlaylist(['1465114465', '1293886117', '32507038'])
     }, 1000)
     // setTimeout(() => {
     //   addSongToPlaylist('25787222', true)
