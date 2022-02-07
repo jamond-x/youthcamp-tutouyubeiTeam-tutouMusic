@@ -64,6 +64,7 @@
               :avatar="al.picUrl"
               :name="al.name"
               :aid="al.id"
+              @newPlaylist="playList"
             />
           </div>
         </div>
@@ -113,6 +114,9 @@ export default {
     },
     play(_id) {
       this.$emit('immediatelyBroadcast', _id + '')
+    },
+    playList(list) {
+      this.$emit('newPlaylist', list)
     },
   },
   mounted() {

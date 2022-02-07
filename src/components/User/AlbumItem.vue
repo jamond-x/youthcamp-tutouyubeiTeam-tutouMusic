@@ -1,5 +1,5 @@
 <template>
-  <div class="album-item" :id="aid">
+  <div class="album-item" :id="aid" @click="play">
     <div>
       <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + trueAvatar + ');'"></div>
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { QueryAlbum } from 'src/utils/request/user'
 export default {
   name: 'AlbumItem',
   props: ['avatar', 'aid', 'name'],
@@ -17,6 +18,17 @@ export default {
     return {
       trueAvatar: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
     }
+  },
+  methods: {
+    play() {
+      QueryAlbum(this.aid).then(res => {
+        let list = []
+        res.songs.forEach(element => {
+          list.push(element.id + '')
+        })
+        this.$emit('newPlaylist', list)
+      })
+    },
   },
   created() {
     let src = this.avatar

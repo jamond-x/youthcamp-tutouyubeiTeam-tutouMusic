@@ -27,6 +27,7 @@
               :aid="item.id"
               :avatar="item.picUrl"
               :name="item.name"
+              @newPlaylist="playList"
             />
           </div>
         </q-tab-panel>

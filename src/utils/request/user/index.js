@@ -82,3 +82,13 @@ export const QueryFollowerList = async uid => {
     },
   })
 }
+
+export const QueryAlbum = async id => {
+  return await api({
+    method: 'post',
+    url: '/album?id=' + id,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}

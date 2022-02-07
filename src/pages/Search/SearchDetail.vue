@@ -30,6 +30,7 @@
             :name="item.name"
             :aid="item.id"
             :key="item.id"
+            @newPlaylist="playList"
           />
 
           <template v-slot:loading>
@@ -112,8 +113,10 @@ export default {
       }
     },
     play(_id) {
-      console.log(_id)
       this.$emit('immediatelyBroadcast', _id + '')
+    },
+    playList(list) {
+      this.$emit('newPlaylist', list)
     },
   },
   created() {
