@@ -70,6 +70,29 @@
         </div>
       </div>
     </div>
+
+    <div class="playlist q-pt-xl">
+      <div class="row">
+        <div class="col">
+          <div>
+            <div class="text-h4 text-weight-bold">歌单</div>
+            <div class="text-subtitle q-pt-xs more" @click="jump('playlist')">更多</div>
+          </div>
+        </div>
+        <div class="col-10">
+          <div class="content">
+            <PlayListItem
+              v-for="pl in playlists"
+              :key="pl.id"
+              :avatar="pl.coverImgUrl"
+              :name="pl.name"
+              :aid="pl.id"
+              @newPlaylist="playList"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -77,6 +100,7 @@
 import SongItem from 'src/components/User/SongItem.vue'
 import ArtistItem from 'src/components/User/ArtistItem.vue'
 import AlbumItem from 'src/components/User/AlbumItem.vue'
+import PlayListItem from 'src/components/User/PlayListItem.vue'
 import { QuerySearch } from 'src/utils/request/search'
 export default {
   name: 'Search',
@@ -85,12 +109,14 @@ export default {
     SongItem,
     ArtistItem,
     AlbumItem,
+    PlayListItem,
   },
   data() {
     return {
       songs: [],
       albums: [],
       artists: [],
+      playlists: [],
     }
   },
   methods: {
@@ -107,6 +133,10 @@ export default {
       QuerySearch(this.keywords, 100).then(res => {
         res.result.artists = res.result.artists.slice(0, 5)
         that.artists = res.result.artists
+      })
+      QuerySearch(this.keywords, 1000).then(res => {
+        res.result.playlists = res.result.playlists.slice(0, 5)
+        that.playlists = res.result.playlists
       })
     },
     jump(to) {

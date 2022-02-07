@@ -5,7 +5,7 @@
 
     <div class="content q-pt-xl">
       <div v-if="type === 'artist'">
-        <q-infinite-scroll @load="update" :offset="250">
+        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
           <ArtistItem
             v-for="item in artists"
             :avatar="item.img1v1Url"
@@ -23,7 +23,7 @@
       </div>
 
       <div v-if="type === 'album'">
-        <q-infinite-scroll @load="update" :offset="250">
+        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
           <AlbumItem
             v-for="item in albums"
             :avatar="item.picUrl"
@@ -42,7 +42,7 @@
       </div>
 
       <div v-if="type === 'song'">
-        <q-infinite-scroll @load="update" :offset="250">
+        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
           <SongListItem
             v-for="item in songs"
             cover="default"
@@ -62,6 +62,25 @@
           </template>
         </q-infinite-scroll>
       </div>
+
+      <div v-if="type === 'playlist'">
+        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
+          <PlayListItem
+            v-for="pl in playlists"
+            :key="pl.id"
+            :avatar="pl.coverImgUrl"
+            :name="pl.name"
+            :aid="pl.id"
+            @newPlaylist="playList"
+          />
+
+          <template v-slot:loading>
+            <div class="row justify-center q-my-md">
+              <q-spinner-dots color="primary" size="40px" />
+            </div>
+          </template>
+        </q-infinite-scroll>
+      </div>
     </div>
   </div>
 </template>
@@ -71,6 +90,7 @@ import { QuerySearch } from 'src/utils/request/search'
 import ArtistItem from 'src/components/User/ArtistItem.vue'
 import AlbumItem from 'src/components/User/AlbumItem.vue'
 import SongListItem from 'src/components/User/SongListItem.vue'
+import PlayListItem from 'src/components/User/PlayListItem.vue'
 export default {
   name: 'SearchDetail',
   props: ['keywords', 'type'],
@@ -78,6 +98,7 @@ export default {
     ArtistItem,
     AlbumItem,
     SongListItem,
+    PlayListItem,
   },
   data() {
     return {
@@ -85,6 +106,7 @@ export default {
       songs: [],
       albums: [],
       artists: [],
+      playlists: [],
     }
   },
   methods: {
@@ -104,11 +126,17 @@ export default {
           if (res.result.albums.length < 30) finished = true
           if (typeof done === 'function') done(finished)
         })
-      } else {
+      } else if (this.type === 'song') {
         QuerySearch(this.keywords, 1, offset).then(res => {
           that.songs = that.songs.concat(res.result.songs)
           if (res.result.songs.length < 30) finished = true
-          if (typeof done === 'function') done()
+          if (typeof done === 'function') done(finished)
+        })
+      } else {
+        QuerySearch(this.keywords, 1000, offset).then(res => {
+          that.playlists = that.playlists.concat(res.result.playlists)
+          if (res.result.playlists.length < 30) finished = true
+          if (typeof done === 'function') done(finished)
         })
       }
     },
@@ -120,7 +148,19 @@ export default {
     },
   },
   created() {
-    this.title = this.type === 'song' ? '歌曲' : this.type === 'album' ? '专辑' : '歌手'
+    switch (this.type) {
+      case 'song':
+        this.title = '歌曲'
+        break
+      case 'album':
+        this.title = '专辑'
+        break
+      case 'artist':
+        this.title = '艺人'
+      default:
+        this.title = '歌单'
+        break
+    }
   },
 }
 </script>
@@ -133,6 +173,7 @@ export default {
   .content div {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
   }
 }
 </style>
