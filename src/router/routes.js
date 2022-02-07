@@ -36,15 +36,7 @@ const routes = [
       },
       {
         path: '/playlist',
-        component: () => import('pages/Playlist/Playlist.vue'),
-      },
-      {
-        path: '/LikeMusic',
         component: () => import('pages/LikeMusic/LikeMusic.vue'),
-      },
-      {
-        path: '/entrance',
-        component: () => import('pages/AuthPanel/AuthPanel.vue'),
       },
     ],
   },

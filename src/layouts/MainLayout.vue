@@ -83,6 +83,7 @@
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
+        <UserSongListLink />
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
@@ -134,6 +135,7 @@ import EssentialLink from 'components/EssentialLink.vue'
 import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
 import LyricBoard from 'src/pages/BroadcastSongs/LyricBoard.vue'
 import AuthPanel from 'src/pages/AuthPanel/AuthPanel.vue'
+import UserSongListLink from 'src/components/UserSongListLink/UserSongListLink.vue'
 import { RefreshLogin } from 'src/utils/request/login/login'
 const linksList = [
   {
@@ -181,6 +183,7 @@ export default defineComponent({
     BroadcastBar,
     LyricBoard,
     AuthPanel,
+    UserSongListLink,
   },
 
   setup() {
@@ -413,6 +416,9 @@ export default defineComponent({
 }
 .logo {
   @include custom-font(45px, inherit, 1px, inherit);
+}
+.font {
+  @include custom-font(16px, 900, 3px, inherit);
 }
 
 .footer {
