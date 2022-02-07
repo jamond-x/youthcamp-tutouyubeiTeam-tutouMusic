@@ -87,7 +87,23 @@
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
-      <router-view />
+      <router-view v-slot="{ Component, route }">
+        <!-- 因为发现音乐的轮播图存在性能问题所以使用keep-alive缓存 -->
+        <keep-alive>
+          <component
+            :is="Component"
+            v-if="route.meta.keepAlive"
+            @immediatelyBroadcast="immediatelyBroadcast"
+            @newPlaylist="newPlaylist"
+          />
+        </keep-alive>
+        <component
+          :is="Component"
+          v-if="!route.meta.keepAlive"
+          @immediatelyBroadcast="immediatelyBroadcast"
+          @newPlaylist="newPlaylist"
+        />
+      </router-view>
     </q-page-container>
     <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal>
       <BroadcastBar
@@ -99,6 +115,7 @@
         @pause="handlePause"
         @updateCurrentTime="handleUpdateCurrentTime"
         @switchSong="handleSwitchSong"
+        @priorBSSong="handelPriorBSSong"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
       />
     </q-footer>
@@ -111,12 +128,15 @@
       full-width
       full-height
       no-shake
-      class="broadcast-panel"
+      class="broadcast-panel scroll"
     >
       <LyricBoard
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
+        @changeSong="immediatelyBroadcast"
+        @changePlaylist="newPlaylist"
+        @addSongToList="pushToList"
         @changeProgress="handleChangeProgress"
       />
     </q-dialog>
@@ -290,16 +310,20 @@ export default defineComponent({
     }
 
     // 调用示例
+    // setTimeout(() => {
+    //   immediatelyBroadcast('1293886117')
+    // }, 2000)
     setTimeout(() => {
-      immediatelyBroadcast('1293886117')
-    }, 2000)
-    setTimeout(() => {
-      newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
-    }, 10000)
-    setTimeout(() => {
-      addSongToPlaylist('25787222', true)
-    }, 15000)
+      newPlaylist(['1465114465', '1293886117', '32507038'])
+    }, 1000)
+    // setTimeout(() => {
+    //   addSongToPlaylist('25787222', true)
+    // }, 15000)
     //*  *************************************************
+
+    const pushToList = param => {
+      addSongToPlaylist(param, false)
+    }
 
     const handlePlay = songDetail => {
       const { id } = songDetail
@@ -344,6 +368,10 @@ export default defineComponent({
         currentSongId.value = idStr
       }
       currentSongDetail.value = songDetail
+    }
+
+    const handelPriorBSSong = songDetail => {
+      // TODO: 播放列表点击播放
     }
 
     const handleSearch = () => {
@@ -407,6 +435,8 @@ export default defineComponent({
       immediatelyBroadcast,
       newPlaylist,
       addSongToPlaylist,
+      pushToList,
+      handelPriorBSSong,
       currentSongId,
       currentSongDetail,
       currentTime,

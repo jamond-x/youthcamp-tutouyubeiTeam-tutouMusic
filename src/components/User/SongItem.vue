@@ -1,5 +1,5 @@
 <template>
-  <div class="song-item">
+  <div class="song-item" @click="play">
     <img :src="trueCover" alt="title" />
     <div class="song-item-content">
       <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
@@ -18,7 +18,11 @@ export default {
       trueCover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
     }
   },
-  methods: {},
+  methods: {
+    play() {
+      this.$emit('immediatelyBroadcast', this.id + '')
+    },
+  },
   created() {
     if (this.cover == 'default') {
       QuerySong(this.id).then(res => {

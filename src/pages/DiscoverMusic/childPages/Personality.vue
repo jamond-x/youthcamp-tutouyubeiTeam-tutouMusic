@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, watchEffect, computed } from 'vue'
+import { defineComponent, ref, reactive, watchEffect, computed, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 
 import SongList from 'components/songList/SongList'
@@ -63,10 +63,12 @@ export default defineComponent({
     watchEffect(() => {
       if (loginFlag.value === 1) {
         QueryRecommendSongList('recommend/resource').then(res => {
+          console.log(res)
           state.songlist = res.recommend.splice(0, 10)
         })
       } else {
         QueryRecommendSongList().then(res => {
+          console.log(res)
           state.songlist = res.result
         })
       }
@@ -80,6 +82,10 @@ export default defineComponent({
     //   // console.log(res.result)
     //   state.songlist = res.result
     // })
+
+    onUnmounted(() => {
+      console.log('erer')
+    })
 
     return {
       // ...toRefs(state),
