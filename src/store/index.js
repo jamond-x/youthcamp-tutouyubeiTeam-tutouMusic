@@ -32,26 +32,26 @@ export default store(function (/* { ssrContext } */) {
     },
     mutations: {
       setUser(state, payload) {
-        state.userInfo = payload.profile
-        state.loginFlag = payload.loginType
+        state.userInfo = payload.userInfo
+        state.loginFlag = payload.loginFlag
       },
     },
     actions: {
       async phoneLogin(content, payload) {
         let res = await LoginByPhone(payload)
-        let { loginType, profile } = res
-        content.commit('setUser', { loginType, profile })
+        let { loginType: loginFlag, profile: userInfo } = res
+        content.commit('setUser', { loginFlag, userInfo })
         return res
       },
       async goLogout(content, payload) {
         let res = await Logout()
-        let profile = {
+        let userInfo = {
           nickname: '秃头预备',
           avatarUrl:
             'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png',
         }
-        let loginType = 0
-        content.commit('setUser', { loginType, profile })
+        let loginFlag = 0
+        content.commit('setUser', { loginFlag, userInfo })
         return res
       },
     },
