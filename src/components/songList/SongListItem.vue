@@ -1,7 +1,7 @@
 <template>
   <div class="list-item" @click="itemClick">
     <div class="img-box">
-      <img :src="listItem.picUrl || listItem.coverImgUrl" />
+      <q-img :src="listItem.picUrl || listItem.coverImgUrl" :width="width" :height="height" />
       <q-icon name="play_circle" />
     </div>
     <div class="list-info">
@@ -22,8 +22,20 @@ export default defineComponent({
         return {}
       },
     },
+    width: {
+      type: Number,
+      default() {
+        return 13
+      },
+    },
+    height: {
+      type: Number,
+      default() {
+        return 13
+      },
+    },
   },
-  setup() {
+  setup(props) {
     function itemClick() {
       let id = this.listItem.id
       this.$router.push({
@@ -46,7 +58,7 @@ export default defineComponent({
   // flex: 20%;
   width: 20%;
   height: 15vw;
-  margin-bottom: 10px;
+  margin-bottom: 1vw;
   overflow: hidden;
   text-align: center;
   // align-items: center;
@@ -54,10 +66,10 @@ export default defineComponent({
 
   .img-box {
     width: 13vw;
-    img {
-      width: 13vw;
-      height: 13vw;
-      border-radius: 8px;
+    .q-img {
+      // width: 13vw;
+      // height: 13vw;
+      border-radius: 10px;
       /* 消除图片下的间隙 */
       vertical-align: middle;
       transition: filter 1s;
@@ -65,7 +77,7 @@ export default defineComponent({
     .q-icon {
       position: absolute;
       top: 58%;
-      right: 16%;
+      right: 17%;
       font-size: 3.6vw;
       color: white;
       opacity: 0;
@@ -76,7 +88,7 @@ export default defineComponent({
       .q-icon {
         opacity: 1;
       }
-      img {
+      .q-img {
         filter: brightness(75%);
       }
     }
@@ -84,10 +96,10 @@ export default defineComponent({
 
   .list-info {
     width: 100%;
-    height: 45px;
+    // height: 45px;
     font-size: 13px;
     font-weight: 700;
-    padding-top: 10px;
+    padding-top: 0.65vw;
     box-sizing: border-box;
     p {
       /* white-space: nowrap; */

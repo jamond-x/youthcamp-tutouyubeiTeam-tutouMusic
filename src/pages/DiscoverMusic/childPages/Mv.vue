@@ -138,6 +138,7 @@ export default defineComponent({
     }
 
     function onLoad(index, done) {
+      console.log('执行' + index)
       choose.index = index - 1
       QueryMv(choose.area, choose.type, choose.order, choose.index * 20).then(res => {
         if (!choose.index) {
