@@ -102,6 +102,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useQuasar } from 'quasar'
 import {
   QueryUser,
   QueryPlayList,
@@ -142,7 +143,7 @@ export default defineComponent({
       let that = this
       _id = _id || sessionStorage.getItem('uid') || 'none'
       if (_id === 'none') {
-        alert('请先登录~')
+        this.$q.notify({ message: '请先登录', position: 'top' })
         this.$router.push('/')
       }
       if (_id === sessionStorage.getItem('uid')) {
@@ -229,6 +230,13 @@ export default defineComponent({
     uid(n, o) {
       this.updateData(n)
     },
+  },
+  setup() {
+    let $q = useQuasar()
+
+    return {
+      $q,
+    }
   },
 })
 </script>
