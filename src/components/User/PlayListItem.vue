@@ -1,5 +1,5 @@
 <template>
-  <div class="album-item" :id="aid" @click="play">
+  <div class="playlist-item" :id="aid" @dblclick="play" @click="jump">
     <div>
       <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + trueAvatar + ');'"></div>
@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import { QueryAlbum } from 'src/utils/request/user'
+import { QueryPlayListDetail } from 'src/utils/request/user'
 export default {
-  name: 'AlbumItem',
+  name: 'PlayListItem',
   props: ['avatar', 'aid', 'name'],
   data() {
     return {
@@ -21,13 +21,16 @@ export default {
   },
   methods: {
     play() {
-      QueryAlbum(this.aid).then(res => {
+      QueryPlayListDetail(this.aid).then(res => {
         let list = []
-        res.songs.forEach(element => {
+        res.playlist.trackIds.forEach(element => {
           list.push(element.id + '')
         })
         this.$emit('newPlaylist', list)
       })
+    },
+    jump() {
+      this.$router.push('/playlist/' + this.aid)
     },
   },
   created() {
@@ -51,7 +54,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.album-item {
+.playlist-item {
   position: relative;
   width: 17%;
   margin: 1rem;
@@ -59,7 +62,7 @@ export default {
   user-select: none;
 }
 
-.album-item img {
+.playlist-item img {
   position: relative;
   width: 100%;
   border-radius: 15px;
@@ -81,11 +84,11 @@ export default {
   transition: opacity 0.2s;
 }
 
-.album-item:hover img {
+.playlist-item:hover img {
   transform: translateY(-0.2rem);
 }
 
-.album-item:hover .shadow {
+.playlist-item:hover .shadow {
   opacity: 1;
 }
 </style>

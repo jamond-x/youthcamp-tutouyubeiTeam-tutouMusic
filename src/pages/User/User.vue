@@ -8,7 +8,7 @@
         :signature="userdata.signature"
       />
 
-      <UserLikeBar :list="like" />
+      <UserLikeBar :list="like" @immediatelyBroadcast="play" @newPlaylist="playList" />
     </div>
 
     <div class="content">
@@ -20,51 +20,80 @@
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="album" class="tab-panel">
-          <div class="sub-albums">
-            <AlbumItem
-              v-for="(item, index) in subAlbums"
-              :key="index"
-              :aid="item.id"
-              :avatar="item.picUrl"
-              :name="item.name"
-            />
-          </div>
+          <q-infinite-scroll @load="updateSubAlbum" :offset="250">
+            <div class="sub-albums">
+              <AlbumItem
+                v-for="item in subAlbums"
+                :key="item.id"
+                :aid="item.id"
+                :avatar="item.picUrl"
+                :name="item.name"
+                @newPlaylist="playList"
+              />
+            </div>
+            <template v-slot:loading>
+              <div class="row justify-center q-my-md">
+                <q-spinner-dots color="primary" size="40px" />
+              </div>
+            </template>
+          </q-infinite-scroll>
         </q-tab-panel>
 
         <q-tab-panel name="artist" class="tab-panel">
-          <div class="sub-artists">
-            <ArtistItem
-              v-for="(item, index) in subArtists"
-              :key="index"
-              :aid="item.id"
-              :avatar="item.picUrl"
-              :name="item.name"
-            />
-          </div>
+          <q-infinite-scroll @load="updateSubArtist" :offset="250">
+            <div class="sub-artists">
+              <ArtistItem
+                v-for="item in subArtists"
+                :key="item.id"
+                :aid="item.id"
+                :avatar="item.img1v1Url"
+                :name="item.name"
+              />
+            </div>
+            <template v-slot:loading>
+              <div class="row justify-center q-my-md">
+                <q-spinner-dots color="primary" size="40px" />
+              </div>
+            </template>
+          </q-infinite-scroll>
         </q-tab-panel>
 
         <q-tab-panel name="follow" class="tab-panel">
-          <div class="sub-artists">
-            <UserItem
-              v-for="(item, index) in followList"
-              :key="index"
-              :aid="item.userId"
-              :avatar="item.avatarUrl"
-              :name="item.nickname"
-            />
-          </div>
+          <q-infinite-scroll @load="updateFollowList" :offset="250">
+            <div class="sub-artists">
+              <UserItem
+                v-for="item in followList"
+                :key="item.id"
+                :aid="item.userId"
+                :avatar="item.avatarUrl"
+                :name="item.nickname"
+              />
+            </div>
+            <template v-slot:loading>
+              <div class="row justify-center q-my-md">
+                <q-spinner-dots color="primary" size="40px" />
+              </div>
+            </template>
+          </q-infinite-scroll>
         </q-tab-panel>
 
         <q-tab-panel name="follower" class="tab-panel">
-          <div class="sub-artists">
-            <UserItem
-              v-for="(item, index) in followerList"
-              :key="index"
-              :aid="item.userId"
-              :avatar="item.avatarUrl"
-              :name="item.nickname"
-            />
-          </div>
+          <q-infinite-scroll @load="updateFollowerList" :offset="250">
+            <div class="sub-artists">
+              <UserItem
+                v-for="item in followerList"
+                :key="item.id"
+                :aid="item.userId"
+                :avatar="item.avatarUrl"
+                :name="item.nickname"
+              />
+            </div>
+            <template v-slot:loading>
+              <div class="row justify-center q-my-md">
+                <q-spinner-dots color="primary" size="40px" />
+              </div>
+            </template>
+          </q-infinite-scroll>
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -73,6 +102,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useQuasar } from 'quasar'
 import {
   QueryUser,
   QueryPlayList,
@@ -111,17 +141,23 @@ export default defineComponent({
   methods: {
     updateData(_id) {
       let that = this
-      _id = _id || localStorage.getItem('userId') || '58323110'
-      if (_id == localStorage.getItem('userId')) {
+      _id = _id || sessionStorage.getItem('uid') || 'none'
+      if (_id === 'none') {
+        this.q.notify({ message: '请先登录', position: 'top' })
+        this.$router.push('/')
+      }
+      if (_id === sessionStorage.getItem('uid')) {
         this.self = true
         this.tab = 'album'
+        that.userdata = JSON.parse(sessionStorage.getItem('userInfo'))
       } else {
         this.self = false
         this.tab = 'follow'
+        QueryUser(_id).then(res => {
+          that.userdata = res.profile
+        })
       }
-      QueryUser(_id).then(res => {
-        that.userdata = res.profile
-      })
+
       QueryPlayList(_id).then(res => {
         that.like = res.playlist[0].id
       })
@@ -138,6 +174,54 @@ export default defineComponent({
         that.followerList = res.followeds
       })
     },
+    play(_id) {
+      this.$emit('immediatelyBroadcast', _id + '')
+    },
+    playList(list) {
+      this.$emit('newPlaylist', list)
+    },
+    updateSubArtist(index, done) {
+      let that = this
+      let offset = index * 30
+      let finished = false
+      QuerySubArtist(offset).then(res => {
+        that.subArtists = that.subArtists.concat(res.data)
+        if (res.data.length < 30) finished = true
+        if (typeof done === 'function') done(finished)
+      })
+    },
+    updateSubAlbum(index, done) {
+      let that = this
+      let offset = index * 30
+      let finished = false
+      QuerySubAlbum(offset).then(res => {
+        that.subAlbums = that.subAlbums.concat(res.data)
+        if (res.data.length < 30) finished = true
+        if (typeof done === 'function') done(finished)
+      })
+    },
+    updateFollowList(index, done) {
+      let _id = this.$route.params.uid || sessionStorage.getItem('uid')
+      let that = this
+      let offset = index * 30
+      let finished = false
+      QueryFollowList(_id, offset).then(res => {
+        that.followList = that.followList.concat(res.follow)
+        if (!res.hasMore) finished = true
+        if (typeof done === 'function') done(finished)
+      })
+    },
+    updateFollowerList(index, done) {
+      let _id = this.$route.params.uid || sessionStorage.getItem('uid')
+      let that = this
+      let offset = index * 30
+      let finished = false
+      QueryFollowerList(_id, offset).then(res => {
+        that.followerList = that.followerList.concat(res.followeds)
+        if (!res.hasMore) finished = true
+        if (typeof done === 'function') done(finished)
+      })
+    },
   },
   mounted() {
     this.updateData(this.$route.params.uid)
@@ -146,6 +230,13 @@ export default defineComponent({
     uid(n, o) {
       this.updateData(n)
     },
+  },
+  setup() {
+    let q = useQuasar()
+
+    return {
+      q,
+    }
   },
 })
 </script>
@@ -175,7 +266,6 @@ export default defineComponent({
 .sub-albums {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
   margin-bottom: 5rem;
 }
 </style>

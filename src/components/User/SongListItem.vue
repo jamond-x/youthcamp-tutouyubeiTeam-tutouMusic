@@ -1,5 +1,5 @@
 <template>
-  <div class="song-list-item row q-mb-xs">
+  <div class="song-list-item row q-mb-xs" @click="play" @contextmenu.prevent="addFavor">
     <div class="col">
       <div class="song-item">
         <img :src="trueCover" alt="title" />
@@ -32,6 +32,8 @@
 
 <script>
 import { QuerySong } from 'src/utils/request/search'
+import { QueryPlayList, AddFavorSong } from 'src/utils/request/user'
+import { useQuasar } from 'quasar'
 export default {
   name: 'SongListItem',
   props: ['id', 'cover', 'title', 'singer', 'album', 'duration'],
@@ -44,6 +46,40 @@ export default {
   methods: {
     PrefixZero(num, n) {
       return (Array(n).join(0) + num).slice(-n)
+    },
+    play() {
+      this.$emit('immediatelyBroadcast', this.id)
+    },
+    addFavor() {
+      console.log('yo')
+      if (sessionStorage.getItem('uid')) {
+        QueryPlayList(sessionStorage.getItem('uid')).then(res => {
+          AddFavorSong(this.id, res.playlist[0].id)
+            .then(r => {
+              this.$q.notify({
+                message: '收藏成功',
+                position: 'top',
+              })
+            })
+            .catch(error => {
+              this.$q.notify({
+                message: '哎呀，出了点问题',
+                position: 'top',
+              })
+            })
+        })
+      } else {
+        this.$q.notify({
+          message: '请先登录！',
+          position: 'top',
+        })
+      }
+    },
+    setup() {
+      const $q = useQuasar()
+      return {
+        $q,
+      }
     },
   },
   created() {
