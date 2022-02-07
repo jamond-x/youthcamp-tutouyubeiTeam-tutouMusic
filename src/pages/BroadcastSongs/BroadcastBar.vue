@@ -69,27 +69,32 @@
       <q-card class="list-card" v-show="songsListLayerStatus">
         <q-markup-table separator="horizontal" flat bordered>
           <div class="font-weight-sm q-ml-xl q-mt-lg q-mb-sm">播放列表</div>
-          <tbody>
-            <div v-if="!isUnNull(songsList)">
-              <tr
-                v-for="(item, index) in songsList"
-                :key="index"
-                class="cursor__pointer"
-                @click="$emit('priorBSSong', item)"
-              >
-                <td class="text-center">{{ item.name }}</td>
-                <td class="text-center">
-                  {{ item.ar.length === 1 ? item.ar[0].name : `${item.ar[0].name}...` }}
-                </td>
-                <td class="text-center">{{ item.al.name }}</td>
-              </tr>
-            </div>
-            <div v-else>
-              <tr v-for="item in 5" :key="item">
-                <q-skeleton type="QSlider" />
-              </tr>
-            </div>
-          </tbody>
+          <div v-if="!isUnNull(songsList)" class="column items-center">
+            <li
+              v-for="(item, index) in songsList"
+              :key="index"
+              class="cursor__pointer song-list__line row justify-around font-weight-sm q-mt-sm"
+              @click="$emit('priorBSSong', item)"
+            >
+              <q-icon
+                class="song__active"
+                v-if="item.id === songsList[currentSongIndex].id"
+                name="fab fa-napster"
+              ></q-icon>
+              <span class="text-left">{{ item.name }}</span>
+              <span class="text-right" style="opacity: 0.7">
+                {{ item.ar.length === 1 ? item.ar[0].name : `${item.ar[0].name}...` }}
+              </span>
+              <span class="text-right" style="opacity: 0.7">
+                {{ item.al.name }}
+              </span>
+            </li>
+          </div>
+          <div v-else>
+            <tr v-for="item in 5" :key="item">
+              <q-skeleton type="QSlider" />
+            </tr>
+          </div>
         </q-markup-table>
       </q-card>
       <q-btn
@@ -126,7 +131,7 @@ import { isUnNull } from 'src/utils'
 let hello = {
   al: {
     id: 18905,
-    name: 'Hey，尽情享受音乐吧',
+    name: '享受这一刻',
     picUrl:
       'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01a6335c643c5ea801203d2250753c.jpg%401280w_1l_2o_100sh.jpg&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1645283402&t=cbda9c0a58289845c521f96121138dd6',
     tns: Array(0),
@@ -580,11 +585,34 @@ export default defineComponent({
 
   .tools {
     .list-card {
-      width: 500px;
       height: 350px;
+      width: 380px;
       position: fixed;
       bottom: 90px;
       right: 10px;
+      .song-list__line {
+        position: relative;
+        width: 350px;
+        list-style: none;
+        font-size: 13px;
+      }
+      .song__active {
+        position: absolute;
+        left: 1px;
+        top: 3px;
+        animation: pointer 1s infinite;
+      }
+      @keyframes pointer {
+        0% {
+          transform: scale(0.8);
+        }
+        50% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0.8);
+        }
+      }
     }
   }
 }
