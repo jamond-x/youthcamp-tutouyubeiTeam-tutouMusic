@@ -30,8 +30,7 @@ export default {
       })
     },
     jump() {
-      alert('假装跳转了')
-      //this.$router.push('/')
+      this.$router.push('/playlist/' + this.aid)
     },
   },
   created() {
