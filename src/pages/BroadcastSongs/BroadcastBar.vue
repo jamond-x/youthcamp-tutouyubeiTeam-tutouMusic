@@ -73,7 +73,7 @@
             <li
               v-for="(item, index) in songsList"
               :key="index"
-              class="cursor__pointer song-list__line row justify-around font-weight-sm q-mt-sm"
+              class="cursor__pointer song-list__line font-weight-sm q-mt-sm"
               @click="$emit('priorBSSong', item)"
             >
               <q-icon
@@ -81,11 +81,11 @@
                 v-if="item.id === songsList[currentSongIndex].id"
                 name="fab fa-napster"
               ></q-icon>
-              <span class="text-left">{{ item.name }}</span>
-              <span class="text-right" style="opacity: 0.7">
+              <span class="cell">{{ item.name }}</span>
+              <span class="cell" style="opacity: 0.7">
                 {{ item.ar.length === 1 ? item.ar[0].name : `${item.ar[0].name}...` }}
               </span>
-              <span class="text-right" style="opacity: 0.7">
+              <span class="cell" style="opacity: 0.7">
                 {{ item.al.name }}
               </span>
             </li>
@@ -595,6 +595,14 @@ export default defineComponent({
         width: 350px;
         list-style: none;
         font-size: 13px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .cell {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: center;
       }
       .song__active {
         position: absolute;
