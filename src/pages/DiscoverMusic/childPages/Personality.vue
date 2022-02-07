@@ -63,10 +63,12 @@ export default defineComponent({
     watchEffect(() => {
       if (loginFlag.value === 1) {
         QueryRecommendSongList('recommend/resource').then(res => {
+          console.log(res)
           state.songlist = res.recommend.splice(0, 10)
         })
       } else {
         QueryRecommendSongList().then(res => {
+          console.log(res)
           state.songlist = res.result
         })
       }
