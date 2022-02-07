@@ -11,7 +11,9 @@ const routes = [
       {
         path: '/discover',
         component: () => import('pages/DiscoverMusic/Discover.vue'),
-
+        meta: {
+          keepAlive: true
+        }
       },
       {
         path: '/user/:uid',

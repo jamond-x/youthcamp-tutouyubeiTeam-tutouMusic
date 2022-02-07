@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, watchEffect, computed } from 'vue'
+import { defineComponent, ref, reactive, watchEffect, computed, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 
 import SongList from 'components/songList/SongList'
@@ -82,6 +82,10 @@ export default defineComponent({
     //   // console.log(res.result)
     //   state.songlist = res.result
     // })
+
+    onUnmounted(() => {
+      console.log('erer')
+    })
 
     return {
       // ...toRefs(state),
