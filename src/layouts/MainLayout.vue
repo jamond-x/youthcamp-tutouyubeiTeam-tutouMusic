@@ -83,7 +83,7 @@
         <div class="logo font-GEO row justify-center q-my-xl">TT</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
-        <UserSongListLink v-if="loginFlag" />
+        <keep-alive><UserSongListLink v-if="loginFlag" /></keep-alive>
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
@@ -161,11 +161,6 @@ const linksList = [
     title: '我的主页',
     icon: 'fas fa-user',
     link: '/user',
-  },
-  {
-    title: '我的歌单',
-    icon: 'fas fa-stream',
-    link: '/playlist',
   },
   {
     title: '拓展',
