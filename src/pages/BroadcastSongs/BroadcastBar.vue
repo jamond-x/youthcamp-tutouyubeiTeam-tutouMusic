@@ -586,7 +586,7 @@ export default defineComponent({
   .tools {
     .list-card {
       height: 350px;
-      width: 400px;
+      width: 430px;
       overflow: scroll;
       position: fixed;
       bottom: 90px;
@@ -607,7 +607,7 @@ export default defineComponent({
       }
       .song__active {
         position: absolute;
-        left: 1px;
+        left: -17px;
         top: 3px;
         animation: pointer 1s infinite;
       }
