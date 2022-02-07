@@ -19,8 +19,6 @@ const api = createApi(
   })
 )
 
-// 有的需要cookie 有的不需要 带上反而会报错？
-
 /**
  *@description 搜索
  * @param { Object } data{keywords: '关键词'}
@@ -97,6 +95,31 @@ export const GetComment = async (id, limit) => {
 }
 
 /**
+ *@description 获取歌曲热门评论
+ * @param { String } id: '186016' 歌曲id
+ * @param { Number } type: 0: 歌曲
+    1: mv
+    2: 歌单
+    3: 专辑
+    4: 电台
+    5: 视频
+ * @param { String } limit: 评论数量
+ * @returns
+ */
+export const GetHotComment = async (id, type, limit) => {
+  return await api({
+    method: 'POST',
+    url: `/comment/hot?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+      type,
+      limit,
+      cookie,
+    },
+  })
+}
+
+/**
  *
  * @param {String} t  1 发送, 2 回复
  * @param {String} type 0: 歌曲  1: mv 2: 歌单 3: 专辑 4: 电台 5: 视频
@@ -105,7 +128,7 @@ export const GetComment = async (id, limit) => {
  * @param {String} commentId  回复的评论 id (回复评论时必填)
  * @returns
  */
-export const SendComment = async (t, type, id, content, commentId) => {
+export const SendComment = async (t, type, id, content, commentId, replyCommentId) => {
   return await api({
     method: 'POST',
     url: `/comment?timestamp=${new Date().getTime()}`,
@@ -115,6 +138,7 @@ export const SendComment = async (t, type, id, content, commentId) => {
       id,
       content,
       commentId,
+      replyCommentId,
       cookie,
     },
   })
@@ -123,7 +147,7 @@ export const SendComment = async (t, type, id, content, commentId) => {
  *@description 获取歌曲详情
  * @param { String } {ids: '186016'} 歌曲id  支持多个 id, 用 , 隔开
  * @returns
- */ // TODO: 数字自动转换为字符串问题   !!!!   与对象解构有关！！！！？
+ */
 export const GetSongDetail = async data => {
   return await api({
     method: 'POST',
@@ -181,6 +205,50 @@ export const LikeComment = async (id, cid, t, type) => {
       cid,
       t,
       type,
+      cookie,
+    },
+  })
+}
+
+/**
+ * 获取相似歌曲
+ * @param {String} id
+ * @returns
+ */
+export const SimilarSongs = async id => {
+  return api({
+    method: 'POST',
+    url: `/simi/song?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+    },
+  })
+}
+
+/**
+ * 获取相似歌单
+ * @param {String} id
+ * @returns
+ */
+export const SimilarPlaylists = async id => {
+  return api({
+    method: 'POST',
+    url: `/simi/playlist?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+    },
+  })
+}
+
+/**
+ * FM
+ * @returns
+ */
+export const PersonalFM = () => {
+  return api({
+    method: 'POST',
+    url: `/personal_fm?timestamp=${new Date().getTime()}`,
+    data: {
       cookie,
     },
   })

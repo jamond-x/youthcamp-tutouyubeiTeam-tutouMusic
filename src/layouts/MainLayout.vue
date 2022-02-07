@@ -115,6 +115,7 @@
         @pause="handlePause"
         @updateCurrentTime="handleUpdateCurrentTime"
         @switchSong="handleSwitchSong"
+        @priorBSSong="handelPriorBSSong"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
       />
     </q-footer>
@@ -127,12 +128,15 @@
       full-width
       full-height
       no-shake
-      class="broadcast-panel"
+      class="broadcast-panel scroll"
     >
       <LyricBoard
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
+        @changeSong="immediatelyBroadcast"
+        @changePlaylist="newPlaylist"
+        @addSongToList="pushToList"
         @changeProgress="handleChangeProgress"
       />
     </q-dialog>
@@ -282,16 +286,20 @@ export default defineComponent({
     }
 
     // 调用示例
+    // setTimeout(() => {
+    //   immediatelyBroadcast('1293886117')
+    // }, 2000)
     setTimeout(() => {
-      immediatelyBroadcast('1293886117')
-    }, 2000)
-    setTimeout(() => {
-      newPlaylist(['1856265847', '1465114465', '1293886117', '32507038'])
-    }, 10000)
-    setTimeout(() => {
-      addSongToPlaylist('25787222', true)
-    }, 15000)
+      newPlaylist(['1465114465', '1293886117', '32507038'])
+    }, 1000)
+    // setTimeout(() => {
+    //   addSongToPlaylist('25787222', true)
+    // }, 15000)
     //*  *************************************************
+
+    const pushToList = param => {
+      addSongToPlaylist(param, false)
+    }
 
     const handlePlay = songDetail => {
       const { id } = songDetail
@@ -336,6 +344,10 @@ export default defineComponent({
         currentSongId.value = idStr
       }
       currentSongDetail.value = songDetail
+    }
+
+    const handelPriorBSSong = songDetail => {
+      // TODO: 播放列表点击播放
     }
 
     const handleSearch = () => {
@@ -392,6 +404,8 @@ export default defineComponent({
       immediatelyBroadcast,
       newPlaylist,
       addSongToPlaylist,
+      pushToList,
+      handelPriorBSSong,
       currentSongId,
       currentSongDetail,
       currentTime,

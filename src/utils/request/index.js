@@ -1,6 +1,7 @@
 import axios from 'axios'
 // import { CodeDictionary } from '../const'
-// import { Dialog } from 'quasar'
+import { useQuasar } from 'quasar'
+let $q = useQuasar()
 
 export const createApi = (api = axios) => {
   return async config => {
@@ -20,7 +21,10 @@ export const createApi = (api = axios) => {
       //if (error.response.status === 401) {
       //}
       // if()...
-      console.log('请求出错了')
+      $q.notify({
+        message: '请求出错了！',
+        color: purple,
+      })
       return '请求出错了！'
     }
   }
