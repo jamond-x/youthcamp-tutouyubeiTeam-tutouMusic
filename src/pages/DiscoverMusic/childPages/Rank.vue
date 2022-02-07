@@ -87,7 +87,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .box {
-  background-color: #121212;
   opacity: 0.8;
   // background-image: radial-gradient(#9fc5f9 1.1px, #121212 1.1px);
   background-size: 22px 22px;
@@ -99,7 +98,6 @@ export default defineComponent({
   .mian {
     width: 92%;
     height: 400px;
-    background-color: #121212;
     margin-top: 30px;
     border-radius: 20px;
     // box-shadow: 6px 6px 8px #ffffff, -6px -6px 8px #ffffff;
@@ -107,14 +105,14 @@ export default defineComponent({
     margin-bottom: 40px;
     .title {
       font-size: 32px;
-      color: white;
+      // color: white;
       font-weight: bolder;
       margin-top: 10px;
     }
     .line {
       width: 200px;
       height: 4px;
-      background-color: #fff;
+      // background-color: #fff;
       margin: -35px auto 11px;
     }
     .myCarousel {
@@ -124,14 +122,14 @@ export default defineComponent({
   }
   .title {
     font-size: 32px;
-    color: white;
+    // color: white;
     font-weight: bolder;
     margin-top: 10px;
   }
   .line {
     width: 200px;
     height: 4px;
-    background-color: #fff;
+    // background-color: #fff;
     margin: 5px auto 20px;
   }
 

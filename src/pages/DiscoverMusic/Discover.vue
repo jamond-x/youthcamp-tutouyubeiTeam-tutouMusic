@@ -8,7 +8,7 @@
       <q-tab name="mv" label="MV" :ripple="false"></q-tab>
     </q-tabs>
 
-    <q-tab-panels v-model="tab" animated :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]">
+    <q-tab-panels v-model="tab" animated :class="[ $q.dark.mode ? 'body--dark' : 'body--light' ]" keep-alive>
       <q-tab-panel name="personality" class="tab-panel">
         <personality />
       </q-tab-panel>
