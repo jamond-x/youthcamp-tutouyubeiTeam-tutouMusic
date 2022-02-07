@@ -143,7 +143,7 @@ export default defineComponent({
       let that = this
       _id = _id || sessionStorage.getItem('uid') || 'none'
       if (_id === 'none') {
-        this.$q.notify({ message: '请先登录', position: 'top' })
+        this.q.notify({ message: '请先登录', position: 'top' })
         this.$router.push('/')
       }
       if (_id === sessionStorage.getItem('uid')) {
@@ -232,10 +232,10 @@ export default defineComponent({
     },
   },
   setup() {
-    let $q = useQuasar()
+    let q = useQuasar()
 
     return {
-      $q,
+      q,
     }
   },
 })
