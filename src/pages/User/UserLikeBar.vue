@@ -14,7 +14,7 @@
       </q-card>
     </div>
     <div class="col-8">
-      <div class="user-like-preview">
+      <div class="user-like-preview" v-if="!visible">
         <SongItem
           v-for="(song, index) in playListData.tracks"
           :key="index"
@@ -25,6 +25,9 @@
           @immediatelyBroadcast="play"
         />
       </div>
+      <q-inner-loading :showing="visible">
+        <q-spinner-gears size="50px" color="primary" />
+      </q-inner-loading>
     </div>
   </div>
 </template>
@@ -45,6 +48,7 @@ export default {
         tracks: [],
         raw: [],
       },
+      visible: true,
     }
   },
   methods: {
@@ -52,6 +56,7 @@ export default {
       let that = this
       if (id)
         QueryPlayListDetail(id).then(res => {
+          that.visible = false
           that.raw = res.playlist
           res.playlist.tracks = res.playlist.tracks.slice(0, 9)
           that.playListData = res.playlist
@@ -74,6 +79,7 @@ export default {
   watch: {
     list(n, o) {
       this.updateData(n)
+      this.visible = true
     },
   },
   mounted() {
