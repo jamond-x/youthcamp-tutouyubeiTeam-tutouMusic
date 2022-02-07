@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable :to="link">
+  <q-item clickable :to="link" @click="beforeOpenFM(title)">
     <q-item-section v-if="icon" class="q-ml-md" avatar>
       <q-icon :name="icon" />
     </q-item-section>
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, inject } from 'vue'
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -35,6 +35,17 @@ export default defineComponent({
       type: String,
       default: '',
     },
+  },
+  setup() {
+    const openFM = inject('openFM')
+    const beforeOpenFM = type => {
+      if (type === '个性FM') {
+        openFM()
+      }
+    }
+    return {
+      beforeOpenFM,
+    }
   },
 })
 </script>

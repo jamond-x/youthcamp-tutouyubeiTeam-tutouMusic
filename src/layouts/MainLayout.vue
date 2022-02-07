@@ -168,18 +168,8 @@ const linksList = [
     link: '/playlist',
   },
   {
-    title: '拓展',
-    icon: 'fab fa-artstation',
-    link: '',
-  },
-  {
-    title: '设置',
-    icon: 'fas fa-cog',
-    link: '',
-  },
-  {
-    title: 'XXX',
-    icon: 'fab fa-atlassian',
+    title: '个性FM',
+    icon: 'fas fa-headphones-alt',
     link: '',
   },
 ]
@@ -390,8 +380,14 @@ export default defineComponent({
       showLogin.value = !showLogin.value
     }
 
+    const openFM = () => {
+      broadcastPageStatus.value = true
+      store.commit('setFMStatus', true)
+    }
+
     provide('showLogin', showLogin)
     provide('toggleLoginShow', toggleLoginShow)
+    provide('openFM', openFM)
 
     return {
       essentialLinks: linksList,
