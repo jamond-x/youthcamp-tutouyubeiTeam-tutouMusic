@@ -140,7 +140,7 @@ export default defineComponent({
 .container {
   bottom: 0;
   padding: 0 20px;
-  background-color: #121212;
+  // background-color: #121212;
   opacity: 0.8;
   // background-image: radial-gradient(#9fc5f9 1.1px, #121212 1.1px);
   background-size: 22px 22px;

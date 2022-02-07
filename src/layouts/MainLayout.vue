@@ -87,7 +87,17 @@
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
-      <router-view @immediatelyBroadcast="immediatelyBroadcast" @newPlaylist="newPlaylist" />
+      <router-view
+        v-slot="{ Component, route }"
+        @immediatelyBroadcast="immediatelyBroadcast"
+        @newPlaylist="newPlaylist"
+      >
+        <!-- 因为发现音乐的轮播图存在性能问题所以使用keep-alive缓存 -->
+        <keep-alive>
+          <component :is="Component" v-if="route.meta.keepAlive" />
+        </keep-alive>
+        <component :is="Component" v-if="!route.meta.keepAlive" />
+      </router-view>
     </q-page-container>
     <q-footer class="footer shadow-7" :class="[$q.dark.mode ? 'body--dark' : 'body--light']" reveal>
       <BroadcastBar
