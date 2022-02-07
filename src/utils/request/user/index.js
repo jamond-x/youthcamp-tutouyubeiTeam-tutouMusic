@@ -43,40 +43,40 @@ export const QueryPlayListDetail = async id => {
   })
 }
 
-export const QuerySubArtist = async () => {
+export const QuerySubArtist = async (offset = 0, limit = 30) => {
   return await api({
     method: 'post',
-    url: '/artist/sublist',
+    url: '/artist/sublist?offset=' + offset + '&limit=' + limit,
     data: {
       cookie: ccookie,
     },
   })
 }
 
-export const QuerySubAlbum = async () => {
+export const QuerySubAlbum = async (offset = 0, limit = 30) => {
   return await api({
     method: 'post',
-    url: '/album/sublist',
+    url: '/album/sublist?offset=' + offset + '&limit=' + limit,
     data: {
       cookie: ccookie,
     },
   })
 }
 
-export const QueryFollowList = async uid => {
+export const QueryFollowList = async (uid, offset = 0, limit = 30) => {
   return await api({
     method: 'post',
-    url: '/user/follows?uid=' + uid,
+    url: '/user/follows?uid=' + uid + '&offset=' + offset + '&limit=' + limit,
     data: {
       cookie: ccookie,
     },
   })
 }
 
-export const QueryFollowerList = async uid => {
+export const QueryFollowerList = async (uid, offset = 0, limit = 30) => {
   return await api({
     method: 'post',
-    url: '/user/followeds?uid=' + uid,
+    url: '/user/followeds?uid=' + uid + '&offset=' + offset + '&limit=' + limit,
     data: {
       cookie: ccookie,
     },
