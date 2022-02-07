@@ -224,7 +224,7 @@ export default defineComponent({
             }
           } catch (err) {
             console.log(err)
-            clearTimer()
+            clearTimer(intervalTimer)
           }
         }, 100)
         audio.value.play()
@@ -586,7 +586,8 @@ export default defineComponent({
   .tools {
     .list-card {
       height: 350px;
-      width: 380px;
+      width: 400px;
+      overflow: scroll;
       position: fixed;
       bottom: 90px;
       right: 10px;
