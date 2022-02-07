@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-item" :id="aid" @click="play">
+  <div class="playlist-item" :id="aid" @dblclick="play" @click="jump">
     <div>
       <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + trueAvatar + ');'"></div>
@@ -28,6 +28,10 @@ export default {
         })
         this.$emit('newPlaylist', list)
       })
+    },
+    jump() {
+      alert('假装跳转了')
+      //this.$router.push('/')
     },
   },
   created() {
