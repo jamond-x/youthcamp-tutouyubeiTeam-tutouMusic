@@ -481,6 +481,25 @@ export default defineComponent({
         deep: true,
       }
     )
+    // 直接在template中 $q.dark.isActive ? 'white' : 'black' 就好  但是给出一堆warn
+    // 所以才有以下笨方法
+    let sliderColor = ref($q.dark.isActive ? 'white' : 'black')
+    let qKnobColor = ref($q.dark.isActive ? 'teal' : 'white')
+    let qKnobTrackColor = ref($q.dark.isActive ? 'grey-3' : 'black')
+    watch(
+      () => $q.dark.isActive,
+      newVal => {
+        if (newVal) {
+          sliderColor.value = 'white'
+          qKnobColor.value = 'teal'
+          qKnobTrackColor.value = 'grey-3'
+          return
+        }
+        sliderColor.value = 'black'
+        qKnobColor.value = 'white'
+        qKnobTrackColor.value = 'black'
+      }
+    )
     return {
       $q,
       audio,
@@ -502,9 +521,9 @@ export default defineComponent({
       changMode,
       switchSong,
       changeProgressBySlide,
-      sliderColor: $q.dark.isActive ? 'white' : 'black', // 写template中疯狂报错！？
-      qKnobColor: $q.dark.isActive ? 'teal' : 'white',
-      qKnobTrackColor: $q.dark.isActive ? 'grey-3' : 'black',
+      sliderColor,
+      qKnobColor,
+      qKnobTrackColor,
     }
   },
 })
@@ -564,7 +583,7 @@ export default defineComponent({
       width: 500px;
       height: 350px;
       position: fixed;
-      bottom: 70px;
+      bottom: 90px;
       right: 10px;
     }
   }

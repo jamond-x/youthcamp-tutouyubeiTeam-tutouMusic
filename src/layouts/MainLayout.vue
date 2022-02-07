@@ -419,14 +419,6 @@ export default defineComponent({
 <style lang="scss">
 @import 'src/css/common.scss';
 
-::-webkit-scrollbar {
-  display: none; /* Chrome Safari */
-}
-* {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-}
-
 .user {
   @include custom-font(inherit, 600, 1px, inherit);
 }
