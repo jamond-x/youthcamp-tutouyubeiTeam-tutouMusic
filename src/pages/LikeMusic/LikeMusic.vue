@@ -65,9 +65,7 @@
                   </div>
                   <div class="col">
                     <div class="text-subtitle1 duration q-pr-md">
-                      <p>
-                        {{ '1分钟' }}
-                      </p>
+                      <p>{{ item['min'] }}分{{ item['sec'] }}秒</p>
                     </div>
                   </div>
                 </div>
@@ -147,7 +145,9 @@ export default defineComponent({
             })
             .join('/')
           song['al'] = item['al']
-          song['dt'] = item['dt']
+          song['dt'] = Number(item['dt'] / 1000)
+          song['min'] = Math.floor(song['dt'] / 60)
+          song['sec'] = Math.floor(song['dt'] % 60)
           trackState.finalTrack.push(song)
         })
       })

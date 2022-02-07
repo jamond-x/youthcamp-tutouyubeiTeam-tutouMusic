@@ -19,29 +19,13 @@
         <q-btn :icon="mode" @click="modeToggle" size="12px" round ripple />
         <q-separator vertical inset class="q-mx-md" />
         <div>
-          <q-btn-dropdown>
+          <q-btn-dropdown flat unelevated>
             <template v-slot:label>
               <q-avatar>
                 <img :src="avatarUrl" />
               </q-avatar>
-              <span class="q-ml-md">{{ nickname }}</span>
             </template>
             <div class="row no-wrap q-pa-lg z-top">
-              <div class="column">
-                <div class="text-h6 q-mb-md">设置</div>
-                <q-toggle v-model="option1" label="没想好" />
-                <q-btn
-                  v-if="loginFlag"
-                  :loading="refreshing"
-                  @click="handleRefreshLogin"
-                  label="刷新登录状态"
-                >
-                  <template v-slot:loading>
-                    <q-spinner-facebook />
-                  </template>
-                </q-btn>
-              </div>
-              <q-separator vertical inset class="q-mx-lg" />
               <div class="column items-center">
                 <q-avatar size="64px">
                   <img :src="avatarUrl" />
@@ -52,7 +36,6 @@
                   v-if="loginFlag"
                   color="purple"
                   label="登出"
-                  push
                   size="md"
                   v-close-popup
                 />
