@@ -104,7 +104,7 @@ export default defineComponent({
     },
     playList(list) {
       console.log(list)
-      this.$emit('newPlaylist', list)
+      this.$emit('newPlaylist', list + '')
     },
     playMoreList(list) {
       console.log(list)
