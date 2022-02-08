@@ -476,14 +476,8 @@ export default defineComponent({
 
       //删去多余id
       for (let i = 0; i < props.songListToAudio.length; i++) {
-        console.log('--------------i = ' + i)
-        console.log(songsList[i])
-        console.log(props.songListToAudio[i])
-        console.log('--------------------')
-
         if (songsList[i].id != props.songListToAudio[i]) {
           songsList.splice(i, 1)
-          console.log('执行删除操作！！！')
         }
       }
 
