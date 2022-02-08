@@ -119,6 +119,7 @@
         @switchSong="handleSwitchSong"
         @priorBSSong="handelPriorBSSong"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
+        @closePop="broadcastPageStatus = false"
       />
     </q-footer>
     <q-dialog
