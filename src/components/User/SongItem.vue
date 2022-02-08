@@ -26,7 +26,7 @@ export default {
   created() {
     if (this.cover == 'default') {
       QuerySong(this.id).then(res => {
-        this.trueCover = res.songs[0].al.picUrl
+        this.trueCover = res.songs[0].al.picUrl + '?param=500y500'
       })
     } else {
       this.trueCover = this.cover

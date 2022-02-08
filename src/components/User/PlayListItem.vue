@@ -34,7 +34,7 @@ export default {
     },
   },
   created() {
-    let src = this.avatar
+    let src = this.avatar + '?param=500y500'
     let that = this
     new Promise((rs, rj) => {
       let img = new Image()
