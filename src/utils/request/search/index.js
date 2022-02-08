@@ -30,8 +30,18 @@ export const QuerySearch = async (keyword, type = 1, offset = 0) => {
 
 export const QuerySong = async id => {
   return await api({
-    method: 'GET',
+    method: 'POST',
     url: '/song/detail?ids=' + id,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
+
+export const QueryArtist = async id => {
+  return await api({
+    method: 'POST',
+    url: '/artist/detail?id=' + id,
     data: {
       cookie: ccookie,
     },
