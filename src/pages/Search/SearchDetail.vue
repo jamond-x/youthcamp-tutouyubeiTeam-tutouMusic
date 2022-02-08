@@ -49,6 +49,7 @@
             :title="item.name"
             :id="item.id"
             :singer="item.artists[0].name"
+            :singers="item.artists"
             :key="item.id"
             :duration="item.duration"
             :album="item.album.name"

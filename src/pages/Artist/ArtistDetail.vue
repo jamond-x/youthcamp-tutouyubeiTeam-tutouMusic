@@ -32,6 +32,7 @@
             :singer="item.ar[0].name"
             :key="item.id"
             :duration="item.dt"
+            :singers="item.ar"
             :album="item.al.name"
             @immediatelyBroadcast="play"
           />
