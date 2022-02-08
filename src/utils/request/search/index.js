@@ -8,7 +8,7 @@ const api = createApi(
   })
 )
 
-const ccookie = localStorage.getItem('cookie') || sessionStorage.getItem('cookie') || ''
+const ccookie = localStorage.getItem('cookie') || ''
 
 export const QuerySearch = async (keyword, type = 1, offset = 0) => {
   return await api({

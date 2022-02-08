@@ -68,10 +68,10 @@ export default defineComponent({
     const updateLoginFlag = inject('updateLoginFlag')
     watch(loginFlag, () => {
       console.log('loginFlag变化了 ', loginFlag.value)
-      let userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
+      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
       if (userInfo) {
         nickname.value = userInfo['nickname']
-        updateLoginFlag(Number(window.sessionStorage.getItem('loginFlag')))
+        updateLoginFlag(Number(window.localStorage.getItem('loginFlag')))
       } else {
         nickname.value = '秃头预备'
         updateLoginFlag(0)
@@ -80,11 +80,11 @@ export default defineComponent({
     const setUserStorage = res => {
       let { loginType, profile, cookie, token } = res
       let { userId: uid } = profile
-      window.sessionStorage.setItem('userInfo', JSON.stringify(profile))
-      window.sessionStorage.setItem('loginFlag', loginType)
-      window.sessionStorage.setItem('uid', uid)
-      window.sessionStorage.setItem('cookie', cookie)
-      window.sessionStorage.setItem('token', token)
+      window.localStorage.setItem('userInfo', JSON.stringify(profile))
+      window.localStorage.setItem('loginFlag', loginType)
+      window.localStorage.setItem('uid', uid)
+      window.localStorage.setItem('cookie', cookie)
+      window.localStorage.setItem('token', token)
       nickname.value = profile['nickname']
       updateLoginFlag(loginType)
     }
@@ -95,7 +95,6 @@ export default defineComponent({
       }
       isLoading.value = true
       store.dispatch('phoneLogin', data).then(res => {
-        console.log(res)
         if (res.code === 200) {
           setUserStorage(res)
           showNotify(`登录成功!,欢迎${nickname.value}`)

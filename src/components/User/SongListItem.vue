@@ -52,9 +52,9 @@ export default {
       this.$emit('immediatelyBroadcast', this.id)
     },
     addFavor() {
-      if (sessionStorage.getItem('uid') || localStorage.getItem('uid')) {
+      if (localStorage.getItem('uid')) {
         let that = this
-        QueryPlayList(sessionStorage.getItem('uid')).then(res => {
+        QueryPlayList(localStorage.getItem('uid')).then(res => {
           AddFavorSong(this.id, res.playlist[0].id)
             .then(r => {
               that.$q.notify({
