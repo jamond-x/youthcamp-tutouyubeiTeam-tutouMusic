@@ -12,8 +12,8 @@ const routes = [
         path: '/discover',
         component: () => import('pages/DiscoverMusic/Discover.vue'),
         meta: {
-          keepAlive: true
-        }
+          keepAlive: true,
+        },
       },
       {
         path: '/user/:uid',
@@ -38,6 +38,11 @@ const routes = [
         path: '/playlist/:id',
         props: true,
         component: () => import('pages/LikeMusic/LikeMusic.vue'),
+      },
+      {
+        path: '/artist/:id',
+        props: true,
+        component: () => import('pages/Artist/Artist.vue'),
       },
     ],
   },
