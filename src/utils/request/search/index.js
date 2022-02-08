@@ -47,3 +47,13 @@ export const QueryArtist = async id => {
     },
   })
 }
+
+export const QueryArtistTopSong = async id => {
+  return await api({
+    method: 'POST',
+    url: '/artist/top/song?id=' + id,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
