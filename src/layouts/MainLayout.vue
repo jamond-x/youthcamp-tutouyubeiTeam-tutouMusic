@@ -97,6 +97,7 @@
             v-if="route.meta.keepAlive"
             @immediatelyBroadcast="immediatelyBroadcast"
             @newPlaylist="newPlaylist"
+            @addSongToPlaylist="addSongToPlaylist"
           />
         </keep-alive>
         <component
@@ -104,6 +105,7 @@
           v-if="!route.meta.keepAlive"
           @immediatelyBroadcast="immediatelyBroadcast"
           @newPlaylist="newPlaylist"
+          @addSongToPlaylist="addSongToPlaylist"
         />
       </router-view>
     </q-page-container>
