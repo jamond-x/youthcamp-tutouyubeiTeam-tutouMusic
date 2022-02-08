@@ -20,7 +20,7 @@ export default {
   },
   methods: {
     jump() {
-      this.$router.push('/artist/' + aid)
+      this.$router.push('/artist/' + this.aid)
     },
   },
   created() {
