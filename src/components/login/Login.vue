@@ -62,21 +62,9 @@ export default defineComponent({
     const password = ref('')
     const isPwd = ref(true)
     const isLoading = ref(false)
-    const nickname = ref('秃头预备')
     const loginFlag = inject('loginFlag')
     const toggleLoginShow = inject('toggleLoginShow')
     const updateLoginFlag = inject('updateLoginFlag')
-    watch(loginFlag, () => {
-      console.log('loginFlag变化了 ', loginFlag.value)
-      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
-      if (userInfo) {
-        nickname.value = userInfo['nickname']
-        updateLoginFlag(Number(window.localStorage.getItem('loginFlag')))
-      } else {
-        nickname.value = '秃头预备'
-        updateLoginFlag(0)
-      }
-    })
     const setUserStorage = res => {
       let { loginType, profile, cookie, token } = res
       let { userId: uid } = profile
@@ -85,7 +73,6 @@ export default defineComponent({
       window.localStorage.setItem('uid', uid)
       window.localStorage.setItem('cookie', cookie)
       window.localStorage.setItem('token', token)
-      nickname.value = profile['nickname']
       updateLoginFlag(loginType)
     }
     const onSubmit = () => {
@@ -97,13 +84,12 @@ export default defineComponent({
       store.dispatch('phoneLogin', data).then(res => {
         if (res.code === 200) {
           setUserStorage(res)
-          showNotify(`登录成功!,欢迎${nickname.value}`)
-          isLoading.value = false
+          showNotify(`登录成功!,欢迎${res.profile.nickname}`)
           toggleLoginShow()
         } else {
           showNotify(`登录失败!,检查手机号和密码!`)
-          isLoading.value = false
         }
+        isLoading.value = false
       })
     }
     const showNotify = msg => {
@@ -119,7 +105,6 @@ export default defineComponent({
       password,
       isPwd,
       isLoading,
-      nickname,
       toggleLoginShow,
       showNotify,
       onSubmit,
