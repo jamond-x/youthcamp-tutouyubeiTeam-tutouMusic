@@ -5,7 +5,7 @@
 
     <div class="content q-pt-xl">
       <div v-if="type === 'artist'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
+        <q-infinite-scroll @load="update" :offset="250">
           <ArtistItem
             v-for="item in artists"
             :avatar="item.img1v1Url"
@@ -23,7 +23,7 @@
       </div>
 
       <div v-if="type === 'album'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
+        <q-infinite-scroll @load="update" :offset="250">
           <AlbumItem
             v-for="item in albums"
             :avatar="item.picUrl"
@@ -42,7 +42,7 @@
       </div>
 
       <div v-if="type === 'song'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
+        <q-infinite-scroll @load="update" :offset="250">
           <SongListItem
             v-for="item in songs"
             cover="default"
@@ -65,7 +65,7 @@
       </div>
 
       <div v-if="type === 'playlist'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
+        <q-infinite-scroll @load="update" :offset="250">
           <PlayListItem
             v-for="pl in playlists"
             :key="pl.id"
