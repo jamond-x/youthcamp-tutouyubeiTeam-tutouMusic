@@ -41,7 +41,7 @@ export default defineComponent({
           list['tags'] = item['tags']
           list['description'] = item['description']
           list['privacy'] = item['privacy']
-          list['icon'] = list['privacy'] === 0 ? 'fas fa-lock' : 'fas fa-coffee'
+          list['icon'] = list['privacy'] === 0 ? 'fas fa-coffee' : 'fas fa-lock'
           list['link'] = `/playlist/${list['id']}`
           songList.push(list)
         })
