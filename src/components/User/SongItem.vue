@@ -26,10 +26,10 @@ export default {
   created() {
     if (this.cover == 'default') {
       QuerySong(this.id).then(res => {
-        this.trueCover = res.songs[0].al.picUrl + '?param=500y500'
+        this.trueCover = res.songs[0].al.picUrl + '?param=200y200'
       })
     } else {
-      this.trueCover = this.cover
+      this.trueCover = this.cover + '?param=200y200'
     }
   },
 }
