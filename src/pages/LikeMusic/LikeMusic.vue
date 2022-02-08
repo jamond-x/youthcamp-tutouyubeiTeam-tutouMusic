@@ -24,11 +24,11 @@
             </div>
             <div class="row q-mt-sm">
               <q-btn-group class="q-mr-md">
-                <q-btn @click="handleAddAllSong">
+                <q-btn @click="playList(trackIds)">
                   <q-icon name="fas fa-chevron-right" size="16px" />
                   播放全部
                 </q-btn>
-                <q-btn>
+                <q-btn @click="playMoreList(trackIds)">
                   <q-icon name="fas fa-plus" size="16px" />
                 </q-btn>
               </q-btn-group>
@@ -45,7 +45,7 @@
       <div class="songList q-mt-md" v-if="finishLoading">
         <q-infinite-scroll @load="onLoad" :offset="250" debounce="1000">
           <template v-for="(item, index) in finalTrack" :key="index">
-            <div class="song-list-item row q-mb-xs">
+            <div class="song-list-item row q-mb-xs" @click="play(item['id'])">
               <div class="col">
                 <div class="song-item">
                   <div class="song-item-content">
@@ -58,9 +58,9 @@
                 <div class="row">
                   <div class="col">
                     <div class="text-subtitle1 album">
-                      <div>
+                      <p>
                         {{ item['al']['name'] }}
-                      </div>
+                      </p>
                     </div>
                   </div>
                   <div class="col">
@@ -98,6 +98,22 @@ export default defineComponent({
   name: 'LikeMusic',
   props: ['id'],
   components: { PlaylistSkeleton, BackToTop },
+  methods: {
+    play(songId) {
+      this.$emit('immediatelyBroadcast', songId + '')
+    },
+    playList(list) {
+      console.log(list)
+      this.$emit('newPlaylist', list)
+    },
+    playMoreList(list) {
+      console.log(list)
+      list.forEach(songId => {
+        console.log(songId)
+        this.$emit('addSongToPlaylist', songId + '', false)
+      })
+    },
+  },
   mounted() {
     this.loadTrack(this.$route.params.id)
   },
@@ -117,7 +133,7 @@ export default defineComponent({
       creator: {},
       finalTrack: [],
     })
-    let trackIds = []
+    const trackIds = ref([])
 
     const tracksDecorate = tracks => {
       tracks.map(item => {
@@ -139,7 +155,7 @@ export default defineComponent({
     }
 
     function onLoad(index, done) {
-      // *坏了 现在登录页只能请求到20首*...
+      // *坏了 现在登录也只能请求到20首*...
       if (0) {
         // 已登录则分批加入
         // console.log((index - 1) * 100, (index - 1) * 100 + 99)
@@ -153,19 +169,18 @@ export default defineComponent({
         // done()
       } else {
         // 未登录则分批请求
-        console.log(1)
-        let trackIdsStr = trackIds.slice((index - 1) * 100, index * 100 + 99).join(',')
+        let trackIdsStr = trackIds.value.slice((index - 1) * 100, index * 100 + 99).join(',')
         let data = { ids: trackIdsStr }
         QuerySongDetail(data).then(res => {
           let tracks = res.songs
           tracksDecorate(tracks)
-          done()
+          if (index * 100 + 99 > trackIds.value.length) {
+            done(true)
+          } else {
+            done(false)
+          }
         })
       }
-    }
-    const handleAddAllSong = () => {
-      console.log('加歌' + props.id)
-      emit('immediatelyBroadcast', 1350051594)
     }
 
     function loadTrack(id) {
@@ -173,7 +188,6 @@ export default defineComponent({
       trackState.creator = {}
       trackState.finalTrack = []
       QueryTrack({ id }).then(res => {
-        console.log(res)
         if (res.code != 200) {
           return
         }
@@ -186,8 +200,8 @@ export default defineComponent({
           tracks = res.playlist.tracks
           tracksDecorate(tracks)
         } else {
-          trackIds = res.playlist.trackIds
-          trackIds = trackIds.map(item => item.id)
+          trackIds.value = res.playlist.trackIds
+          trackIds.value = trackIds.value.map(item => item.id)
         }
         finishLoading.value = true
       })
@@ -198,8 +212,8 @@ export default defineComponent({
       loginFlag,
       formatDate,
       finishLoading,
-      handleAddAllSong,
       ...toRefs(trackState),
+      trackIds,
     }
   },
 })
