@@ -78,6 +78,10 @@
             </div>
           </template>
         </q-infinite-scroll>
+        <!-- 返回顶部按钮 -->
+        <back-to-top bottom="100px" right="50px" visibleoffset="600">
+          <q-btn round color="primary" icon="navigation" size="lg" />
+        </back-to-top>
       </div>
     </div>
   </div>
@@ -88,11 +92,12 @@ import { defineComponent, ref, reactive, inject, toRefs } from 'vue'
 import PlaylistSkeleton from './PlaylistSkeleton.vue'
 import { QueryTrack } from 'src/utils/request/userSongList/userSongList'
 import { formatDate } from 'src/utils/time/time'
+import BackToTop from 'vue-backtotop'
 
 export default defineComponent({
   name: 'LikeMusic',
   props: ['id'],
-  components: { PlaylistSkeleton },
+  components: { PlaylistSkeleton, BackToTop },
   mounted() {
     this.loadTrack(this.$route.params.id)
   },
@@ -118,8 +123,8 @@ export default defineComponent({
       done()
     }
     const handleAddAllSong = () => {
-      console.log('加歌')
-      emit('immediatelyBroadcast', 95558515)
+      console.log('加歌' + props.id)
+      emit('immediatelyBroadcast', 1350051594)
     }
 
     function loadTrack(id) {
