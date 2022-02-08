@@ -382,16 +382,15 @@ export default defineComponent({
       })
     }
 
-    // 调用示例
-    // setTimeout(() => {
-    //   immediatelyBroadcast('1293886117')
-    // }, 2000)
-    setTimeout(() => {
-      newPlaylist(['1465114465', '1293886117', '32507038'])
-    }, 1000)
-    // setTimeout(() => {
-    //   addSongToPlaylist('25787222', true)
-    // }, 15000)
+    const addPlaylist = list => {
+      playMode.value = 4
+      nextTick(() => {
+        list.forEach(el => {
+          songsList.value.push(el)
+        })
+      })
+    }
+
     //*  *************************************************
 
     const pushToList = param => {
@@ -522,6 +521,7 @@ export default defineComponent({
       toggleAudioPlay,
       immediatelyBroadcast,
       newPlaylist,
+      addPlaylist,
       addSongToPlaylist,
       pushToList,
       handelPriorBSSong,

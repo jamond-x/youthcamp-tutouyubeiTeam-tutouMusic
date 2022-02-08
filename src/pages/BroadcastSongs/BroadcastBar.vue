@@ -425,14 +425,16 @@ export default defineComponent({
         songIds.value = ''
         songIds.value = songsList[0].id.toString()
       }
-      if (mode === 1) {
+      if (mode === 1 || mode === 4) {
         for (let id of props.songListToAudio) {
           ids += `,${id}`
         }
         ids = ids.split('').splice(1).join('')
         let res = await GetSongDetail({ ids })
         let { songs } = res
-        songsList.length = 0
+        if (mode === 1) {
+          songsList.length = 0
+        }
         for (let obj of songs) {
           songsList.push(obj)
         }
@@ -474,8 +476,14 @@ export default defineComponent({
 
       //删去多余id
       for (let i = 0; i < props.songListToAudio.length; i++) {
+        console.log('--------------i = ' + i)
+        console.log(songsList[i])
+        console.log(props.songListToAudio[i])
+        console.log('--------------------')
+
         if (songsList[i].id != props.songListToAudio[i]) {
           songsList.splice(i, 1)
+          console.log('执行删除操作！！！')
         }
       }
 
