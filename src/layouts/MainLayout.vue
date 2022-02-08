@@ -378,6 +378,9 @@ export default defineComponent({
     const newPlaylist = list => {
       playMode.value = 1
       nextTick(() => {
+        list.forEach(el => {
+          songIdMap.set(el, 1)
+        })
         songsList.value = list
       })
     }
@@ -386,10 +389,15 @@ export default defineComponent({
       playMode.value = 4
       nextTick(() => {
         list.forEach(el => {
+          songIdMap.set(el, 1)
           songsList.value.push(el)
         })
       })
     }
+
+    setTimeout(() => {
+      addPlaylist(['36496695', '19293014', '29572506', '1906281210'])
+    }, 5000)
 
     //*  *************************************************
 
