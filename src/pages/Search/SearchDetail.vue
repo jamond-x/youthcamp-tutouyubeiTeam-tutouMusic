@@ -162,6 +162,7 @@ export default {
         break
       case 'artist':
         this.title = '艺人'
+        break
       default:
         this.title = '歌单'
         break
