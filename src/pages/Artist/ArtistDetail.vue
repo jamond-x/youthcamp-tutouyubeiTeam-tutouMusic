@@ -5,14 +5,16 @@
     <div class="content q-pt-xl">
       <div v-if="type === 'album'">
         <q-infinite-scroll @load="update" :offset="250">
-          <AlbumItem
-            v-for="item in albums"
-            :avatar="item.picUrl"
-            :name="item.name"
-            :aid="item.id"
-            :key="item.id"
-            @newPlaylist="playList"
-          />
+          <div class="flexbox">
+            <AlbumItem
+              v-for="item in albums"
+              :avatar="item.picUrl"
+              :name="item.name"
+              :aid="item.id"
+              :key="item.id"
+              @newPlaylist="playList"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -24,17 +26,20 @@
 
       <div v-if="type === 'songs'">
         <q-infinite-scroll @load="update" :offset="250">
-          <SongListItem
-            v-for="item in songs"
-            cover="default"
-            :title="item.name"
-            :id="item.id"
-            :singer="item.ar[0].name"
-            :key="item.id"
-            :duration="item.dt"
-            :album="item.al.name"
-            @immediatelyBroadcast="play"
-          />
+          <div class="flexbox">
+            <SongListItem
+              v-for="item in songs"
+              cover="default"
+              :title="item.name"
+              :id="item.id"
+              :singer="item.ar[0].name"
+              :key="item.id"
+              :duration="item.dt"
+              :singers="item.ar"
+              :album="item.al.name"
+              @immediatelyBroadcast="play"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -113,7 +118,7 @@ export default {
   padding: 2rem;
   box-sizing: border-box;
 
-  .content div {
+  .flexbox {
     display: flex;
     flex-wrap: wrap;
   }

@@ -18,12 +18,12 @@ export default defineComponent({
   name: 'UserSongListLink',
   setup() {
     const loginFlag = ref(0)
-    if (window.sessionStorage.getItem('loginFlag')) {
-      loginFlag.value = window.sessionStorage.getItem('loginFlag')
+    if (window.localStorage.getItem('loginFlag')) {
+      loginFlag.value = window.localStorage.getItem('loginFlag')
     }
     const songList = reactive([])
     let data = {
-      uid: window.sessionStorage.getItem('uid') || '',
+      uid: window.localStorage.getItem('uid') || '',
       offset: 0,
     }
     if (uid) {
@@ -46,7 +46,7 @@ export default defineComponent({
           songList.push(list)
         })
         let songListStr = JSON.stringify(songList)
-        window.sessionStorage.setItem('userSongList', songListStr)
+        window.localStorage.setItem('userSongList', songListStr)
       })
     }
 

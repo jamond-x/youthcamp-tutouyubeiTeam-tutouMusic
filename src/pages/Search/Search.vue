@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="col-10">
-          <div class="content">
+          <div class="content" style="justify-content: space-between">
             <SongItem
               v-for="song in songs"
               :key="song.id"
@@ -168,7 +168,6 @@ export default {
   .content {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
   }
 
   .more {

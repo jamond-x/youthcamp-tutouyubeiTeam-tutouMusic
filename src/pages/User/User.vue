@@ -141,17 +141,15 @@ export default defineComponent({
   methods: {
     updateData(_id) {
       let that = this
-      _id = _id || sessionStorage.getItem('uid') || localStorage.getItem('uid') || 'none'
+      _id = _id || localStorage.getItem('uid') || 'none'
       if (_id === 'none') {
         this.q.notify({ message: '请先登录', position: 'top' })
         this.$router.push('/')
       }
-      if (_id === sessionStorage.getItem('uid') || _id === localStorage.getItem('uid')) {
+      if (_id === localStorage.getItem('uid')) {
         this.self = true
         this.tab = 'album'
-        that.userdata = JSON.parse(
-          sessionStorage.getItem('userInfo') || localStorage.getItem('userInfo')
-        )
+        that.userdata = JSON.parse(localStorage.getItem('userInfo'))
       } else {
         this.self = false
         this.tab = 'follow'
@@ -185,43 +183,35 @@ export default defineComponent({
     updateSubArtist(index, done) {
       let that = this
       let offset = index * 30
-      let finished = false
       QuerySubArtist(offset).then(res => {
         that.subArtists = that.subArtists.concat(res.data)
-        if (res.data.length < 30) finished = true
-        if (typeof done === 'function') done(finished)
+        done(res.data.length < 30)
       })
     },
     updateSubAlbum(index, done) {
       let that = this
       let offset = index * 30
-      let finished = false
       QuerySubAlbum(offset).then(res => {
         that.subAlbums = that.subAlbums.concat(res.data)
-        if (res.data.length < 30) finished = true
-        if (typeof done === 'function') done(finished)
+        done(res.data.length < 30)
       })
     },
     updateFollowList(index, done) {
-      let _id = this.$route.params.uid || sessionStorage.getItem('uid')
+      let _id = this.$route.params.uid || localStorage.getItem('uid')
       let that = this
       let offset = index * 30
-      let finished = false
       QueryFollowList(_id, offset).then(res => {
         that.followList = that.followList.concat(res.follow)
-        if (!res.hasMore) finished = true
-        if (typeof done === 'function') done(finished)
+        done(!res.hasMore)
       })
     },
     updateFollowerList(index, done) {
-      let _id = this.$route.params.uid || sessionStorage.getItem('uid')
+      let _id = this.$route.params.uid || localStorage.getItem('uid')
       let that = this
       let offset = index * 30
-      let finished = false
       QueryFollowerList(_id, offset).then(res => {
         that.followerList = that.followerList.concat(res.followeds)
-        if (!res.hasMore) finished = true
-        if (typeof done === 'function') done(finished)
+        done(!res.hasMore)
       })
     },
   },

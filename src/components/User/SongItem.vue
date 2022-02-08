@@ -3,7 +3,7 @@
     <img :src="trueCover" alt="title" />
     <div class="song-item-content">
       <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
-      <div class="text-subtitle2">{{ singer }}</div>
+      <div class="text-subtitle2 singers">{{ trueSinger }}</div>
     </div>
   </div>
 </template>
@@ -12,10 +12,11 @@
 import { QuerySong } from 'src/utils/request/search'
 export default {
   name: 'SongItem',
-  props: ['id', 'cover', 'title', 'singer'],
+  props: ['id', 'cover', 'title', 'singer', 'singers'],
   data() {
     return {
       trueCover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+      trueSinger: '',
     }
   },
   methods: {
@@ -31,6 +32,13 @@ export default {
     } else {
       this.trueCover = this.cover + '?param=200y200'
     }
+    if (this.singers) {
+      let singerList = []
+      this.singers.forEach(element => {
+        singerList.push(element.name)
+      })
+      this.trueSinger = singerList.join(' / ')
+    } else this.trueSinger = this.singer
   },
 }
 </script>
@@ -61,7 +69,8 @@ export default {
   width: 4rem;
 }
 
-.text-h6 {
+.text-h6,
+.singers {
   position: relative;
   margin: 0;
   overflow: hidden;

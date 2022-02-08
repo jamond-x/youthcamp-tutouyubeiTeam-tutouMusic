@@ -21,13 +21,18 @@ export default {
   },
   methods: {
     play() {
-      QueryPlayListDetail(this.aid).then(res => {
-        let list = []
-        res.playlist.trackIds.forEach(element => {
-          list.push(element.id + '')
+      if (localStorage.getItem('playlist' + this.aid)) {
+        this.$emit('newPlaylist', JSON.parse(localStorage.getItem('playlist' + this.aid)))
+      } else {
+        QueryPlayListDetail(this.aid).then(res => {
+          let list = []
+          res.playlist.trackIds.forEach(element => {
+            list.push(element.id + '')
+          })
+          localStorage.setItem('playlist' + this.aid, JSON.stringify(list))
+          this.$emit('newPlaylist', list)
         })
-        this.$emit('newPlaylist', list)
-      })
+      }
     },
     jump() {
       this.$router.push('/playlist/' + this.aid)

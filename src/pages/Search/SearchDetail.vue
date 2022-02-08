@@ -5,14 +5,16 @@
 
     <div class="content q-pt-xl">
       <div v-if="type === 'artist'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
-          <ArtistItem
-            v-for="item in artists"
-            :avatar="item.img1v1Url"
-            :name="item.name"
-            :aid="item.id"
-            :key="item.id"
-          />
+        <q-infinite-scroll @load="update" :offset="250">
+          <div class="flexbox">
+            <ArtistItem
+              v-for="item in artists"
+              :avatar="item.img1v1Url"
+              :name="item.name"
+              :aid="item.id"
+              :key="item.id"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -23,15 +25,17 @@
       </div>
 
       <div v-if="type === 'album'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
-          <AlbumItem
-            v-for="item in albums"
-            :avatar="item.picUrl"
-            :name="item.name"
-            :aid="item.id"
-            :key="item.id"
-            @newPlaylist="playList"
-          />
+        <q-infinite-scroll @load="update" :offset="250">
+          <div class="flexbox">
+            <AlbumItem
+              v-for="item in albums"
+              :avatar="item.picUrl"
+              :name="item.name"
+              :aid="item.id"
+              :key="item.id"
+              @newPlaylist="playList"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -42,18 +46,21 @@
       </div>
 
       <div v-if="type === 'song'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
-          <SongListItem
-            v-for="item in songs"
-            cover="default"
-            :title="item.name"
-            :id="item.id"
-            :singer="item.artists[0].name"
-            :key="item.id"
-            :duration="item.duration"
-            :album="item.album.name"
-            @immediatelyBroadcast="play"
-          />
+        <q-infinite-scroll @load="update" :offset="250">
+          <div class="flexbox">
+            <SongListItem
+              v-for="item in songs"
+              cover="default"
+              :title="item.name"
+              :id="item.id"
+              :singer="item.artists[0].name"
+              :singers="item.artists"
+              :key="item.id"
+              :duration="item.duration"
+              :album="item.album.name"
+              @immediatelyBroadcast="play"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -64,15 +71,17 @@
       </div>
 
       <div v-if="type === 'playlist'">
-        <q-infinite-scroll @load="update" :offset="250" style="justify-content: center">
-          <PlayListItem
-            v-for="pl in playlists"
-            :key="pl.id"
-            :avatar="pl.coverImgUrl"
-            :name="pl.name"
-            :aid="pl.id"
-            @newPlaylist="playList"
-          />
+        <q-infinite-scroll @load="update" :offset="250">
+          <div class="flexbox">
+            <PlayListItem
+              v-for="pl in playlists"
+              :key="pl.id"
+              :avatar="pl.coverImgUrl"
+              :name="pl.name"
+              :aid="pl.id"
+              @newPlaylist="playList"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -113,30 +122,26 @@ export default {
     update(index = 0, done) {
       let that = this
       let offset = (index - 1) * 30
-      let finished = false
       if (this.type === 'artist') {
         QuerySearch(this.keywords, 100, offset).then(res => {
           that.artists = that.artists.concat(res.result.artists)
-          if (res.result.artists.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(!res.result.hasMore)
         })
       } else if (this.type === 'album') {
         QuerySearch(this.keywords, 10, offset).then(res => {
           that.albums = that.albums.concat(res.result.albums)
-          if (res.result.albums.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(res.result.albums.length < 30)
         })
       } else if (this.type === 'song') {
         QuerySearch(this.keywords, 1, offset).then(res => {
           that.songs = that.songs.concat(res.result.songs)
-          if (res.result.songs.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(!res.result.hasMore)
         })
       } else {
         QuerySearch(this.keywords, 1000, offset).then(res => {
+          console.log(res)
           that.playlists = that.playlists.concat(res.result.playlists)
-          if (res.result.playlists.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(!res.result.hasMore)
         })
       }
     },
@@ -157,6 +162,7 @@ export default {
         break
       case 'artist':
         this.title = '艺人'
+        break
       default:
         this.title = '歌单'
         break
@@ -170,7 +176,7 @@ export default {
   padding: 2rem;
   box-sizing: border-box;
 
-  .content div {
+  .flexbox {
     display: flex;
     flex-wrap: wrap;
   }

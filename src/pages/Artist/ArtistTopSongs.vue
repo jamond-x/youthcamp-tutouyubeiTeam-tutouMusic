@@ -12,6 +12,7 @@
           :cover="s.al.picUrl"
           :title="s.name"
           :singer="s.ar[0].name"
+          :singers="s.ar"
           :id="s.id"
           @immediatelyBroadcast="play"
         />

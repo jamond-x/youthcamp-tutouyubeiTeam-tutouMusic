@@ -24,11 +24,11 @@
             </div>
             <div class="row q-mt-sm">
               <q-btn-group class="q-mr-md">
-                <q-btn @click="handleAddAllSong">
+                <q-btn @click="playList(trackIds)">
                   <q-icon name="fas fa-chevron-right" size="16px" />
                   播放全部
                 </q-btn>
-                <q-btn>
+                <q-btn @click="playMoreList(trackIds)">
                   <q-icon name="fas fa-plus" size="16px" />
                 </q-btn>
               </q-btn-group>
@@ -43,9 +43,9 @@
         </div>
       </template>
       <div class="songList q-mt-md" v-if="finishLoading">
-        <q-infinite-scroll v-if="loginFlag" @load="onLoad" :offset="250" debounce="1000">
+        <q-infinite-scroll @load="onLoad" :offset="250" debounce="1000">
           <template v-for="(item, index) in finalTrack" :key="index">
-            <div class="song-list-item row q-mb-xs">
+            <div class="song-list-item row q-mb-xs" @click="play(item['id'])">
               <div class="col">
                 <div class="song-item">
                   <div class="song-item-content">
@@ -58,9 +58,9 @@
                 <div class="row">
                   <div class="col">
                     <div class="text-subtitle1 album">
-                      <div>
+                      <p>
                         {{ item['al']['name'] }}
-                      </div>
+                      </p>
                     </div>
                   </div>
                   <div class="col">
@@ -90,7 +90,7 @@
 <script>
 import { defineComponent, ref, reactive, inject, toRefs } from 'vue'
 import PlaylistSkeleton from './PlaylistSkeleton.vue'
-import { QueryTrack } from 'src/utils/request/userSongList/userSongList'
+import { QuerySongDetail, QueryTrack } from 'src/utils/request/userSongList/userSongList'
 import { formatDate } from 'src/utils/time/time'
 import BackToTop from 'vue-backtotop'
 
@@ -98,6 +98,22 @@ export default defineComponent({
   name: 'LikeMusic',
   props: ['id'],
   components: { PlaylistSkeleton, BackToTop },
+  methods: {
+    play(songId) {
+      this.$emit('immediatelyBroadcast', songId + '')
+    },
+    playList(list) {
+      console.log(list)
+      this.$emit('newPlaylist', list)
+    },
+    playMoreList(list) {
+      console.log(list)
+      list.forEach(songId => {
+        console.log(songId)
+        this.$emit('addSongToPlaylist', songId + '', false)
+      })
+    },
+  },
   mounted() {
     this.loadTrack(this.$route.params.id)
   },
@@ -117,14 +133,54 @@ export default defineComponent({
       creator: {},
       finalTrack: [],
     })
-    function onLoad(index, done) {
-      songTotalList.value.push(...trackState.finalTrack.slice(index - 1, index + 99))
-      console.log('加载')
-      done()
+    const trackIds = ref([])
+
+    const tracksDecorate = tracks => {
+      tracks.map(item => {
+        let song = {}
+        song['name'] = item['name'].trim()
+        song['id'] = item['id']
+        song['authorList'] = item['ar']
+        song['authorStr'] = item['ar']
+          .map(ele => {
+            return ele.name
+          })
+          .join('/')
+        song['al'] = item['al']
+        song['dt'] = Number(item['dt'] / 1000)
+        song['min'] = Math.floor(song['dt'] / 60)
+        song['sec'] = Math.floor(song['dt'] % 60)
+        trackState.finalTrack.push(song)
+      })
     }
-    const handleAddAllSong = () => {
-      console.log('加歌' + props.id)
-      emit('immediatelyBroadcast', 1350051594)
+
+    function onLoad(index, done) {
+      // *坏了 现在登录也只能请求到20首*...
+      if (0) {
+        // 已登录则分批加入
+        // console.log((index - 1) * 100, (index - 1) * 100 + 99)
+        // console.log('final', trackState.finalTrack)
+        // let batch = trackState.finalTrack.slice((index - 1) * 100, (index - 1) * 100 + 99)
+        // console.log(batch)
+        // if (batch.length != 0) {
+        //   songTotalList.value.push(...batch)
+        //   console.log(songTotalList.value)
+        // }
+        // done()
+      } else {
+        // 未登录则分批请求
+        let trackIdsStr = trackIds.value.slice((index - 1) * 100, index * 100 + 99).join(',')
+        let data = { ids: trackIdsStr }
+        QuerySongDetail(data).then(res => {
+          let tracks = res.songs
+          tracksDecorate(tracks)
+          if (index * 100 + 99 > trackIds.value.length) {
+            done(true)
+          } else {
+            done(false)
+          }
+        })
+      }
     }
 
     function loadTrack(id) {
@@ -132,29 +188,22 @@ export default defineComponent({
       trackState.creator = {}
       trackState.finalTrack = []
       QueryTrack({ id }).then(res => {
-        console.log(res)
         if (res.code != 200) {
           return
         }
         trackState.playlist = res.playlist
         trackState.creator = res.playlist.creator
+        // 针对登录状态请求不同接口 已登录能获取所有 未登录只能获取全部id 交给onLoad分批请求
+        // *现在都只能请求到20首了*
+        let tracks
+        if (0) {
+          tracks = res.playlist.tracks
+          tracksDecorate(tracks)
+        } else {
+          trackIds.value = res.playlist.trackIds
+          trackIds.value = trackIds.value.map(item => item.id)
+        }
         finishLoading.value = true
-        res.playlist.tracks.map(item => {
-          let song = {}
-          song['name'] = item['name'].trim()
-          song['id'] = item['id']
-          song['authorList'] = item['ar']
-          song['authorStr'] = item['ar']
-            .map(ele => {
-              return ele.name
-            })
-            .join('/')
-          song['al'] = item['al']
-          song['dt'] = Number(item['dt'] / 1000)
-          song['min'] = Math.floor(song['dt'] / 60)
-          song['sec'] = Math.floor(song['dt'] % 60)
-          trackState.finalTrack.push(song)
-        })
       })
     }
     return {
@@ -163,8 +212,8 @@ export default defineComponent({
       loginFlag,
       formatDate,
       finishLoading,
-      handleAddAllSong,
       ...toRefs(trackState),
+      trackIds,
     }
   },
 })
@@ -216,15 +265,7 @@ export default defineComponent({
   border-radius: 15px;
   box-sizing: border-box;
   transition: background 0.2s;
-
   position: relative;
-
-  img {
-    border-radius: 15px;
-    margin-right: 1.5rem;
-    height: 4rem;
-    width: 4rem;
-  }
   .text-h6 {
     position: relative;
     margin: 0;

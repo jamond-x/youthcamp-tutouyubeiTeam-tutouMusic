@@ -97,6 +97,7 @@
             v-if="route.meta.keepAlive"
             @immediatelyBroadcast="immediatelyBroadcast"
             @newPlaylist="newPlaylist"
+            @addSongToPlaylist="addSongToPlaylist"
           />
         </keep-alive>
         <component
@@ -104,6 +105,7 @@
           v-if="!route.meta.keepAlive"
           @immediatelyBroadcast="immediatelyBroadcast"
           @newPlaylist="newPlaylist"
+          @addSongToPlaylist="addSongToPlaylist"
         />
       </router-view>
     </q-page-container>
@@ -153,7 +155,6 @@ import BroadcastBar from 'src/pages/BroadcastSongs/BroadcastBar.vue'
 import LyricBoard from 'src/pages/BroadcastSongs/LyricBoard.vue'
 import LoginPanel from 'src/components/login/Login.vue'
 import UserSongListLink from 'src/components/UserSongListLink/UserSongListLink.vue'
-import { RefreshLogin } from 'src/utils/request/login/login'
 const linksList = [
   {
     title: '发现音乐',
@@ -177,7 +178,7 @@ const linksList = [
   },
 ]
 
-import { defineComponent, ref, nextTick, provide, computed, watch } from 'vue'
+import { defineComponent, ref, nextTick, provide, watchEffect } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -211,8 +212,6 @@ export default defineComponent({
     let $router = useRouter()
     let mode = ref('light_mode')
     let broadcastPageStatus = ref(false)
-
-    let option1 = ref(true)
     let avatarUrl = ref(
       'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
     )
@@ -291,35 +290,37 @@ export default defineComponent({
         }
       }
     }
+    /**
+     * @description 改变LoginFlag(单纯为了统一些)
+     */
     const updateLoginFlag = param => {
       loginFlag.value = param
     }
-
-    const checkLoginFlag = () => {
-      console.log(Number(window.sessionStorage.getItem('loginFlag')))
-      if (Number(window.sessionStorage.getItem('loginFlag')) === 1) {
-        let userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
-        if (userInfo) {
-          nickname.value = userInfo['nickname']
-          avatarUrl.value = userInfo['avatarUrl']
-          updateLoginFlag(1)
-        } else {
-          nickname.value = '秃头预备'
-          avatarUrl.value =
-            'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
-          updateLoginFlag(0)
-        }
+    /**
+     * @description 检查登录状态,只针对右上角显示
+     */
+    const checkLoginState = () => {
+      // 首先检查localStorage
+      let tmpLoginFlag = Number(window.localStorage.getItem('loginFlag')) || 0
+      if (tmpLoginFlag) {
+        // 有登录过
+        updateLoginFlag(1)
+        let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+        nickname.value = userInfo['nickname']
+        avatarUrl.value = userInfo['avatarUrl']
       } else {
+        // 没登陆过
+        updateLoginFlag(0)
         nickname.value = '秃头预备'
         avatarUrl.value =
           'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
-        updateLoginFlag(0)
       }
     }
-    checkLoginFlag()
-    watch(loginFlag, () => {
-      console.log('loginFlag变化了 ', loginFlag.value)
-      checkLoginFlag()
+    /**
+     * @description 默认检查登录态
+     */
+    watchEffect(() => {
+      checkLoginState()
     })
 
     //****************************************************
@@ -479,25 +480,15 @@ export default defineComponent({
     const handleLogout = async () => {
       let res = await store.dispatch('goLogout')
       if (res.code === 200) {
-        window.sessionStorage.removeItem('userInfo')
-        window.sessionStorage.removeItem('loginFlag')
-        window.sessionStorage.removeItem('uid')
-        window.sessionStorage.removeItem('cookie')
-        window.sessionStorage.removeItem('token')
-        window.sessionStorage.removeItem('userSongList')
-        window.sessionStorage.setItem('loginFlag', 0)
-        checkLoginFlag()
+        window.localStorage.removeItem('userInfo')
+        window.localStorage.removeItem('loginFlag')
+        window.localStorage.removeItem('uid')
+        window.localStorage.removeItem('cookie')
+        window.localStorage.removeItem('token')
+        window.localStorage.removeItem('userSongList')
+        window.localStorage.setItem('loginFlag', 0)
+        checkLoginState()
       }
-    }
-
-    const handleRefreshLogin = () => {
-      refreshing.value = true
-      RefreshLogin().then(res => {
-        console.log('刷新登录状态', res)
-        setTimeout(() => {
-          refreshing.value = false
-        }, 1000)
-      })
     }
 
     const toggleLoginShow = () => {
@@ -539,7 +530,6 @@ export default defineComponent({
       handleSearch,
       modeToggle,
       mode,
-      option1,
       avatarUrl,
       nickname,
       loginFlag,
@@ -547,11 +537,11 @@ export default defineComponent({
       refreshing,
       handleLogin,
       handleLogout,
-      handleRefreshLogin,
       handlePause,
       broadcastPageStatus,
       updateLoginFlag,
       goClick,
+      checkLoginState,
     }
   },
 })
