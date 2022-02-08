@@ -2,7 +2,7 @@
   <div class="artist-profile">
     <div class="content">
       <img
-        :src="info.user.avatarUrl + '?param=500y500'"
+        :src="info.artist.cover + '?param=500y500'"
         :alt="info.artist.name"
         :title="info.artist.name"
         class="avatar shadow-2"
@@ -40,6 +40,7 @@ export default {
           albumSize: 0,
           musicSize: 0,
           mvSize: 0,
+          cover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
         },
         user: {
           avatarUrl: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
@@ -52,6 +53,7 @@ export default {
       let that = this
       QueryArtist(_id).then(res => {
         that.info = res.data
+        console.log(res.data)
         that.visible = false
       })
     },
