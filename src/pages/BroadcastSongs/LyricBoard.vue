@@ -5,7 +5,17 @@
         <div class="q-mt-md">
           {{ isUnNull(songDetail.name) ? '播放器中没有歌曲哦~' : songDetail.name }}
         </div>
-        <div>{{ singers }}</div>
+        <div>
+          <router-link
+            :class="['singer', $q.dark.isActive ? 'text-white' : 'text-black']"
+            v-close-popup
+            :to="`/artist/${artist.id}`"
+            v-for="(artist, index) in songDetail.ar"
+            :key="index"
+            tag="span"
+            >{{ index >= 1 ? `/${artist.name}` : artist.name }}
+          </router-link>
+        </div>
       </div>
       <div class="row reverse items-center">
         <q-btn class="q-mr-xl" icon="fas fa-angle-down" v-close-popup flat round />
@@ -73,6 +83,8 @@
             style="position: relative; cursor: pointer"
             v-for="(item, index) in similarPlaylists"
             :key="index"
+            @click="toPlaylist(item.id)"
+            v-close-popup
           >
             <q-img class="img" :src="item.coverImgUrl">
               <div class="bar absolute-bottom text-subtitle1 text-center">
@@ -115,6 +127,7 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 import {
@@ -158,6 +171,7 @@ export default defineComponent({
   setup(props, context) {
     let $q = useQuasar()
     let store = useStore()
+    let router = useRouter()
     let lyric_ = ref()
     let lyricWithAnchor = ref([])
     let lyricMap = new Map()
@@ -306,6 +320,10 @@ export default defineComponent({
       FMMode.value = true
     }
 
+    const toPlaylist = playlistId => {
+      router.push(`/playlist/${playlistId}`)
+    }
+
     watch(
       () => props.songCurrentTime,
       time => {
@@ -355,6 +373,7 @@ export default defineComponent({
       getInstance,
       changeProgress,
       isUnNull,
+      toPlaylist,
     }
   },
 })
@@ -385,6 +404,9 @@ export default defineComponent({
     }
     & > div + div {
       grid-area: 1/3/2/4;
+    }
+    .singer {
+      text-decoration: none;
     }
     .fm {
       position: absolute;
