@@ -61,6 +61,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
 .font {
-  @include custom-font(16px, 900, 3px, inherit);
+  @include custom-font(16px, 900, 1px, inherit);
+  /* white-space: nowrap; */
+  /* margin-bottom: 3px; */
+  width: 100%;
+  display: -webkit-box;
+  // color: white;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  /* 文本溢出 */
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

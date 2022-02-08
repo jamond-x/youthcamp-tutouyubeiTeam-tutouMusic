@@ -1,7 +1,7 @@
 <template>
   <div class="list-item" @click="itemClick">
     <div class="img-box">
-      <img :src="listItem.cover" />
+      <q-img :src="listItem.cover" />
       <q-icon name="play_circle" />
     </div>
     <div class="list-info">
@@ -54,7 +54,7 @@ export default defineComponent({
 
   .img-box {
     width: 17vw;
-    img {
+    .q-img {
       width: 17vw;
       height: 10vw;
       border-radius: 8px;
@@ -77,7 +77,7 @@ export default defineComponent({
       .q-icon {
         opacity: 1;
       }
-      img {
+      .q-img {
         filter: brightness(75%);
       }
     }

@@ -9,7 +9,7 @@
           <div class="topBanner">
             <img :src="playlist.coverImgUrl" />
           </div>
-          <q-separator vertical inset class="q-mx-lg" />
+          <q-separator vertical inset spaced="2vw" />
           <div class="flex column justify-between">
             <div class="text-h6 text-weight-bold row">{{ playlist.name }}</div>
             <div class="row flex items-center">
@@ -78,6 +78,10 @@
             </div>
           </template>
         </q-infinite-scroll>
+        <!-- 返回顶部按钮 -->
+        <back-to-top bottom="100px" right="50px" visibleoffset="600">
+          <q-btn round color="primary" icon="navigation" size="lg" />
+        </back-to-top>
       </div>
     </div>
   </div>
@@ -88,11 +92,12 @@ import { defineComponent, ref, reactive, inject, toRefs } from 'vue'
 import PlaylistSkeleton from './PlaylistSkeleton.vue'
 import { QueryTrack } from 'src/utils/request/userSongList/userSongList'
 import { formatDate } from 'src/utils/time/time'
+import BackToTop from 'vue-backtotop'
 
 export default defineComponent({
   name: 'LikeMusic',
   props: ['id'],
-  components: { PlaylistSkeleton },
+  components: { PlaylistSkeleton, BackToTop },
   mounted() {
     this.loadTrack(this.$route.params.id)
   },
@@ -118,8 +123,8 @@ export default defineComponent({
       done()
     }
     const handleAddAllSong = () => {
-      console.log('加歌')
-      emit('immediatelyBroadcast', 95558515)
+      console.log('加歌' + props.id)
+      emit('immediatelyBroadcast', 1350051594)
     }
 
     function loadTrack(id) {
@@ -175,8 +180,10 @@ export default defineComponent({
   overflow: hidden;
   img {
     height: 100%;
+    border-radius: 8px;
   }
 }
+
 .Wrapper {
   width: 100%;
   border-top-left-radius: 0.5rem;
