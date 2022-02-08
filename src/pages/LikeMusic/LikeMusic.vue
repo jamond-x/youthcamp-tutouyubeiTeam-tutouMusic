@@ -58,9 +58,9 @@
                 <div class="row">
                   <div class="col">
                     <div class="text-subtitle1 album">
-                      <div>
+                      <p>
                         {{ item['al']['name'] }}
-                      </div>
+                      </p>
                     </div>
                   </div>
                   <div class="col">
