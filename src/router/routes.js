@@ -35,7 +35,8 @@ const routes = [
         component: () => import('pages/Search/SearchDetail.vue'),
       },
       {
-        path: '/playlist',
+        path: '/playlist/:id',
+        props: true,
         component: () => import('pages/LikeMusic/LikeMusic.vue'),
       },
     ],

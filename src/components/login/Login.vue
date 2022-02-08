@@ -4,20 +4,18 @@
     <q-card-section>
       <div>欢迎登录</div>
     </q-card-section>
-    <q-card-section class="row justify-between InputWrapper">
-      <q-select class="col-4" dense outlined v-model="prefix" :options="prefixOptions" />
+    <q-card-section class="InputBox">
       <q-input
-        class="col-8"
         dense
         outlined
-        v-model="phoneNum"
+        v-model="phone"
         placeholder="手机号"
         :rules="[
           val => (val && val.length > 0 && /^1[35789]\d{9}$/.test(val)) || '请输入正确手机号',
         ]"
       />
     </q-card-section>
-    <q-card-section class="InputWrapper">
+    <q-card-section class="InputBox">
       <q-input
         dense
         outlined
@@ -38,55 +36,48 @@
         </template>
       </q-input>
     </q-card-section>
-    <q-card-section class="row justify-between InputWrapper">
-      <div class="rightBox column InputWrapper">
-        <q-btn
-          :loading="isLoading"
-          type="submit"
-          color="primary"
-          label="登录"
-          class="btn q-mb-md"
-          @click="onSubmit"
-        />
-      </div>
+    <q-card-section>
+      <q-btn
+        :loading="isLoading"
+        type="submit"
+        color="primary"
+        label="登录"
+        class="q-mb-md InputBox"
+        @click="onSubmit"
+      />
     </q-card-section>
-    <q-dialog v-model="secondDialog" persistent transition-show="scale" transition-hide="scale">
-      <q-card class="bg-teal text-white" style="width: 300px">
-        <q-card-section>
-          <div class="text-h6">登录成功</div>
-        </q-card-section>
-        <q-card-section class="q-pt-none"> 欢迎回来 {{ username }}! </q-card-section>
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" @click="toggleLoginShow" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <q-dialog v-model="thirdDialog" persistent transition-show="scale" transition-hide="scale">
-      <q-card class="bg-teal text-white" style="width: 300px">
-        <q-card-section>
-          <div class="text-h6">登录失败</div>
-        </q-card-section>
-        <q-card-section class="q-pt-none"> 检查手机号和密码! </q-card-section>
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-card>
 </template>
 <script>
-import { defineComponent, ref, computed, watch, inject } from 'vue'
+import { defineComponent, ref, watch, inject } from 'vue'
+import { useQuasar } from 'quasar'
 import { useStore } from 'vuex'
+import md5 from 'js-md5'
 export default defineComponent({
   name: 'Login',
-  props: {
-    type: {
-      type: String,
-      default: 'Login',
-    },
-  },
-  methods: {
-    setUserStorage: function (res) {
+  setup(props, { emit }) {
+    const $q = useQuasar()
+    const store = useStore()
+    const phone = ref('')
+    const password = ref('')
+    const isPwd = ref(true)
+    const isLoading = ref(false)
+    const nickname = ref('秃头预备')
+    const loginFlag = inject('loginFlag')
+    const toggleLoginShow = inject('toggleLoginShow')
+    const updateLoginFlag = inject('updateLoginFlag')
+    watch(loginFlag, () => {
+      console.log('loginFlag变化了 ', loginFlag.value)
+      let userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
+      if (userInfo) {
+        nickname.value = userInfo['nickname']
+        updateLoginFlag(Number(window.sessionStorage.getItem('loginFlag')))
+      } else {
+        nickname.value = '秃头预备'
+        updateLoginFlag(0)
+      }
+    })
+    const setUserStorage = res => {
       let { loginType, profile, cookie, token } = res
       let { userId: uid } = profile
       window.sessionStorage.setItem('userInfo', JSON.stringify(profile))
@@ -94,64 +85,45 @@ export default defineComponent({
       window.sessionStorage.setItem('uid', uid)
       window.sessionStorage.setItem('cookie', cookie)
       window.sessionStorage.setItem('token', token)
-    },
-    onSubmit: async function () {
-      let data = {
-        phone: this.phoneNum,
-        password: this.password,
-      }
-      this.isLoading = true
-      let res = await this.$store.dispatch('phoneLogin', data)
-      console.log(res)
-      if (res.code === 200) {
-        console.log(res)
-        setInterval(() => {
-          this.isLoading = false
-        }, 500)
-        this.secondDialog = true
-        this.setUserStorage(res)
-      } else {
-        this.thirdDialog = true
-      }
-    },
-  },
-  setup(props, { emit }) {
-    const store = useStore()
-    const phoneNum = ref('')
-    const password = ref('')
-    const prefixOptions = ref(['+86 CN'])
-    const prefix = ref('+86 CN')
-    const autoLogin = ref(false)
-    const isPwd = ref(true)
-    const isLoading = ref(false)
-    const secondDialog = ref(false)
-    const thirdDialog = ref(false)
-    const username = computed(() => {
-      return store.state.userInfo.nickname
-    })
-    const loginFlag = computed(() => {
-      return store.state.loginFlag
-    })
-    const updateType = param => {
-      emit('update:type', param)
+      nickname.value = profile['nickname']
+      updateLoginFlag(loginType)
     }
-    const toggleLoginShow = inject('toggleLoginShow')
-    watch(loginFlag, () => {
-      console.log('loginFlag变化了 ', loginFlag.value)
-    })
+    const onSubmit = () => {
+      let data = {
+        phone: phone.value,
+        md5_password: md5(password.value),
+      }
+      isLoading.value = true
+      store.dispatch('phoneLogin', data).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          setUserStorage(res)
+          showNotify(`登录成功!,欢迎${nickname.value}`)
+          isLoading.value = false
+          toggleLoginShow()
+        } else {
+          showNotify(`登录失败!,检查手机号和密码!`)
+          isLoading.value = false
+        }
+      })
+    }
+    const showNotify = msg => {
+      $q.notify({
+        message: msg,
+        color: 'primary',
+        position: 'top',
+      })
+    }
+
     return {
-      phoneNum,
+      phone,
       password,
-      prefixOptions,
-      prefix,
-      autoLogin,
       isPwd,
       isLoading,
-      secondDialog,
-      username,
+      nickname,
       toggleLoginShow,
-      thirdDialog,
-      updateType,
+      showNotify,
+      onSubmit,
     }
   },
 })
@@ -159,15 +131,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
-.InputWrapper {
+.InputBox {
   min-width: 370px;
 }
 .closeBtn {
   position: absolute;
   right: 0;
   top: 0;
-}
-.btn {
-  min-width: 120px;
 }
 </style>
