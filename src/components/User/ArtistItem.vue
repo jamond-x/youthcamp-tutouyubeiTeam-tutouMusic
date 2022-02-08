@@ -1,11 +1,11 @@
 <template>
-  <div class="artist-item" :id="aid">
+  <div class="artist-item" :id="aid" @click="jump">
     <div>
       <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + avatar + ');'"></div>
     </div>
 
-    <div class="text-subtitle1 text-center">{{ name }}</div>
+    <div class="text-subtitle1 text-center" style="width: 100%">{{ name }}</div>
   </div>
 </template>
 
@@ -17,6 +17,11 @@ export default {
     return {
       trueAvatar: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
     }
+  },
+  methods: {
+    jump() {
+      this.$router.push('/artist/' + this.aid)
+    },
   },
   created() {
     let src = this.avatar + '?param=500y500'
@@ -45,7 +50,7 @@ export default {
 <style lang="scss" scoped>
 .artist-item {
   position: relative;
-  width: 17%;
+  width: calc((100% - 10rem) / 5);
   margin: 1rem;
   cursor: pointer;
   user-select: none;
