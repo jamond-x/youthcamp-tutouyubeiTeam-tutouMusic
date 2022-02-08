@@ -165,18 +165,13 @@ const linksList = [
     link: '/user',
   },
   {
-    title: '拓展',
-    icon: 'fab fa-artstation',
-    link: '',
+    title: '我的歌单',
+    icon: 'fas fa-stream',
+    link: '/playlist',
   },
   {
-    title: '设置',
-    icon: 'fas fa-cog',
-    link: '',
-  },
-  {
-    title: 'XXX',
-    icon: 'fab fa-atlassian',
+    title: '个性FM',
+    icon: 'fas fa-headphones-alt',
     link: '',
   },
 ]
@@ -224,6 +219,77 @@ export default defineComponent({
     let loginFlag = ref(0)
     let showLogin = ref(false)
     let refreshing = ref(false)
+    let songIdMap = new Map()
+
+    const storeId = (param, mode) => {
+      if (typeof param === 'object') {
+        songIdMap.clear()
+        param.forEach((el, index) => {
+          songIdMap.set(el, index)
+        })
+        return
+      }
+      if (mode === 0) {
+        if (songIdMap.has(param)) {
+          let index = songsList.value.indexOf(param)
+          if (index === 0) {
+            $q.notify({
+              message: '不要重复添加至播放列表哦',
+              timeout: 2000,
+              position: 'top',
+            })
+            return true
+          }
+          nextTick(() => {
+            let spliced = songsList.value.splice(index, 1)
+            songsList.value.unshift(...spliced)
+          })
+          return true
+        } else {
+          return false
+        }
+      }
+      if (mode === 2) {
+        if (songIdMap.has(param)) {
+          let index = songsList.value.indexOf(param)
+          if (index === 1) {
+            $q.notify({
+              message: '下一首就是该歌曲不用重复添加哦',
+              timeout: 2000,
+              position: 'top',
+            })
+            return true
+          }
+          nextTick(() => {
+            let spliced = songsList.value.splice(index, 1)
+            songsList.value.splice(1, 0, ...spliced)
+          })
+          return true
+        } else {
+          return false
+        }
+      }
+      if (mode === 3) {
+        if (songIdMap.has(param)) {
+          let index = songsList.value.indexOf(param)
+          if (index === songsList.value.length - 1) {
+            $q.notify({
+              message: '已添加至播放列表',
+              timeout: 2000,
+              position: 'top',
+            })
+            return true
+          }
+          nextTick(() => {
+            let spliced = songsList.value.splice(index, 1)
+            songsList.value.push(...spliced)
+          })
+          return true
+        } else {
+          return false
+        }
+      }
+    }
     const updateLoginFlag = param => {
       loginFlag.value = param
     }
@@ -269,7 +335,10 @@ export default defineComponent({
      */
     const immediatelyBroadcast = id => {
       playMode.value = 0
+      const res = storeId(id, playMode.value)
+      if (res) return
       nextTick(() => {
+        songIdMap.set(id, 0)
         songsList.value.unshift(id)
       })
     }
@@ -281,14 +350,20 @@ export default defineComponent({
     const addSongToPlaylist = (id, order) => {
       if (order) {
         playMode.value = 2
+        const res = storeId(id, playMode.value)
+        if (res) return
         nextTick(() => {
+          songIdMap.set(id, 1)
           songsList.value.splice(1, 0, id)
         })
         return
       }
       if (!order) {
         playMode.value = 3
+        const res = storeId(id, playMode.value)
+        if (res) return
         nextTick(() => {
+          songIdMap.set(id, songsList.value.length - 1)
           songsList.value.push(id)
         })
       }
@@ -425,8 +500,14 @@ export default defineComponent({
       showLogin.value = !showLogin.value
     }
 
+    const openFM = () => {
+      broadcastPageStatus.value = true
+      store.commit('setFMStatus', true)
+    }
+
     provide('showLogin', showLogin)
     provide('toggleLoginShow', toggleLoginShow)
+    provide('openFM', openFM)
     provide('loginFlag', loginFlag)
     provide('updateLoginFlag', updateLoginFlag)
 

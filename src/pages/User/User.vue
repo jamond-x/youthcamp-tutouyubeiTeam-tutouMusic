@@ -141,15 +141,17 @@ export default defineComponent({
   methods: {
     updateData(_id) {
       let that = this
-      _id = _id || sessionStorage.getItem('uid') || 'none'
+      _id = _id || sessionStorage.getItem('uid') || localStorage.getItem('uid') || 'none'
       if (_id === 'none') {
         this.q.notify({ message: '请先登录', position: 'top' })
         this.$router.push('/')
       }
-      if (_id === sessionStorage.getItem('uid')) {
+      if (_id === sessionStorage.getItem('uid') || _id === localStorage.getItem('uid')) {
         this.self = true
         this.tab = 'album'
-        that.userdata = JSON.parse(sessionStorage.getItem('userInfo'))
+        that.userdata = JSON.parse(
+          sessionStorage.getItem('userInfo') || localStorage.getItem('userInfo')
+        )
       } else {
         this.self = false
         this.tab = 'follow'
