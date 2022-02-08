@@ -44,6 +44,11 @@ const routes = [
         props: true,
         component: () => import('pages/Artist/Artist.vue'),
       },
+      {
+        path: '/artist/:id/:type',
+        props: true,
+        component: () => import('pages/Artist/ArtistDetail.vue'),
+      },
     ],
   },
 
