@@ -101,6 +101,7 @@
             @immediatelyBroadcast="immediatelyBroadcast"
             @newPlaylist="newPlaylist"
             @addSongToPlaylist="addSongToPlaylist"
+            @addPlaylist="addPlaylist"
           />
         </keep-alive>
         <component
@@ -109,6 +110,7 @@
           @immediatelyBroadcast="immediatelyBroadcast"
           @newPlaylist="newPlaylist"
           @addSongToPlaylist="addSongToPlaylist"
+          @addPlaylist="addPlaylist"
         />
       </router-view>
     </q-page-container>
@@ -298,7 +300,6 @@ export default defineComponent({
      * @description 检查登录状态,只针对右上角显示
      */
     const checkLoginState = () => {
-      console.log('我执行了')
       // 首先检查localStorage
       let tmpLoginFlag = Number(window.localStorage.getItem('loginFlag')) || 0
       if (tmpLoginFlag) {
@@ -307,7 +308,6 @@ export default defineComponent({
         let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         nickname.value = userInfo['nickname']
         avatarUrl.value = userInfo['avatarUrl']
-        console.log(nickname.value, avatarUrl.value, userInfo)
       } else {
         // 没登陆过
         updateLoginFlag(0)
