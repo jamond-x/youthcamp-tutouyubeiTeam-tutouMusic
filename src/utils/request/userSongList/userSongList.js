@@ -21,9 +21,7 @@ export const QueryUserLikeList = async data => {
 export const QuerySongDetail = async data => {
   return await api({
     url: `/song/detail/?timestamp=${Date.parse(new Date())}`,
-    params: {
-      ids: data['ids'],
-    },
+    params: data,
   })
 }
 
