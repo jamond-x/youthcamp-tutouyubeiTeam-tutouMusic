@@ -1,10 +1,10 @@
 <template v-if="loginFlag">
   <q-item v-for="list in songList" :key="list" :to="list.link">
     <q-item-section v-if="list.icon" class="q-ml-md" avatar>
-      <q-icon :name="list.icon" />
+      <q-icon size="20px" :name="list.icon" class="q-ml-xs" />
     </q-item-section>
 
-    <q-item-section>
+    <q-item-section class="slide">
       <q-item-label class="font">{{ list.title }}</q-item-label>
     </q-item-section>
   </q-item>
@@ -41,7 +41,7 @@ export default defineComponent({
           list['tags'] = item['tags']
           list['description'] = item['description']
           list['privacy'] = item['privacy']
-          list['icon'] = list['privacy'] === 0 ? 'fas fa-coffee' : 'fas fa-lock'
+          list['icon'] = list['privacy'] === 0 ? 'queue_music' : 'lock'
           list['link'] = `/playlist/${list['id']}`
           songList.push(list)
         })
@@ -60,17 +60,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
-.font {
-  @include custom-font(16px, 900, 1px, inherit);
-  /* white-space: nowrap; */
-  /* margin-bottom: 3px; */
-  width: 100%;
-  display: -webkit-box;
-  // color: white;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  /* 文本溢出 */
-  text-overflow: ellipsis;
-  overflow: hidden;
+.slide {
+  .font {
+    @include custom-font(14px, 600, 1px, inherit);
+    /* white-space: nowrap; */
+    /* margin-bottom: 3px; */
+    width: 100%;
+    display: -webkit-box;
+    // color: white;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    /* 文本溢出 */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-left: -20px;
+  }
 }
 </style>
