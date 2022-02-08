@@ -5,7 +5,7 @@
         <img :src="trueCover" alt="title" />
         <div class="song-item-content">
           <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
-          <div class="text-subtitle2">{{ trueSinger }}</div>
+          <div class="text-subtitle2 singers">{{ trueSinger }}</div>
         </div>
       </div>
     </div>
@@ -148,12 +148,21 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 90%;
   }
 }
 
 .song-item-content {
   position: relative;
   width: calc(100% - 4.75rem);
+
+  .singers {
+    position: relative;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .song-list-item:hover {

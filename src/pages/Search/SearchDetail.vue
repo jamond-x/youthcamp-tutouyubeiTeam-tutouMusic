@@ -6,13 +6,15 @@
     <div class="content q-pt-xl">
       <div v-if="type === 'artist'">
         <q-infinite-scroll @load="update" :offset="250">
-          <ArtistItem
-            v-for="item in artists"
-            :avatar="item.img1v1Url"
-            :name="item.name"
-            :aid="item.id"
-            :key="item.id"
-          />
+          <div class="flexbox">
+            <ArtistItem
+              v-for="item in artists"
+              :avatar="item.img1v1Url"
+              :name="item.name"
+              :aid="item.id"
+              :key="item.id"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -24,14 +26,16 @@
 
       <div v-if="type === 'album'">
         <q-infinite-scroll @load="update" :offset="250">
-          <AlbumItem
-            v-for="item in albums"
-            :avatar="item.picUrl"
-            :name="item.name"
-            :aid="item.id"
-            :key="item.id"
-            @newPlaylist="playList"
-          />
+          <div class="flexbox">
+            <AlbumItem
+              v-for="item in albums"
+              :avatar="item.picUrl"
+              :name="item.name"
+              :aid="item.id"
+              :key="item.id"
+              @newPlaylist="playList"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -43,18 +47,20 @@
 
       <div v-if="type === 'song'">
         <q-infinite-scroll @load="update" :offset="250">
-          <SongListItem
-            v-for="item in songs"
-            cover="default"
-            :title="item.name"
-            :id="item.id"
-            :singer="item.artists[0].name"
-            :singers="item.artists"
-            :key="item.id"
-            :duration="item.duration"
-            :album="item.album.name"
-            @immediatelyBroadcast="play"
-          />
+          <div class="flexbox">
+            <SongListItem
+              v-for="item in songs"
+              cover="default"
+              :title="item.name"
+              :id="item.id"
+              :singer="item.artists[0].name"
+              :singers="item.artists"
+              :key="item.id"
+              :duration="item.duration"
+              :album="item.album.name"
+              @immediatelyBroadcast="play"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -66,14 +72,16 @@
 
       <div v-if="type === 'playlist'">
         <q-infinite-scroll @load="update" :offset="250">
-          <PlayListItem
-            v-for="pl in playlists"
-            :key="pl.id"
-            :avatar="pl.coverImgUrl"
-            :name="pl.name"
-            :aid="pl.id"
-            @newPlaylist="playList"
-          />
+          <div class="flexbox">
+            <PlayListItem
+              v-for="pl in playlists"
+              :key="pl.id"
+              :avatar="pl.coverImgUrl"
+              :name="pl.name"
+              :aid="pl.id"
+              @newPlaylist="playList"
+            />
+          </div>
 
           <template v-slot:loading>
             <div class="row justify-center q-my-md">
@@ -167,7 +175,7 @@ export default {
   padding: 2rem;
   box-sizing: border-box;
 
-  .content div {
+  .flexbox {
     display: flex;
     flex-wrap: wrap;
   }
