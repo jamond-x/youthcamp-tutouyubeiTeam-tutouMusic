@@ -42,7 +42,6 @@ export default {
     updateData(_id) {
       let that = this
       QueryArtistTopSong(_id).then(res => {
-        console.log(res)
         that.songs = res.songs.splice(0, 9)
         that.visible = false
       })

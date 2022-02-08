@@ -52,7 +52,6 @@ export default {
       let that = this
       QueryArtist(_id).then(res => {
         that.info = res.data
-        console.log(res.data)
         that.visible = false
       })
     },
