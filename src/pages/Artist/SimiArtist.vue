@@ -37,7 +37,6 @@ export default {
     updateData(_id) {
       let that = this
       QuerySimiArtist(_id).then(res => {
-        console.log(res)
         that.artists = res.artists
         that.visible = false
       })
