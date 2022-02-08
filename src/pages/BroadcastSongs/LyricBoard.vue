@@ -1,5 +1,5 @@
 <template>
-  <div :class="['broadcast-container', $q.dark.isActive ? 'lyric-dark' : 'lyric-light']">
+  <div :class="['broadcast-container scroll', $q.dark.isActive ? 'lyric-dark' : 'lyric-light']">
     <div class="header">
       <div class="column items-center">
         <div class="q-mt-md">
@@ -115,6 +115,7 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 import {
   GetLyric,
@@ -156,6 +157,7 @@ export default defineComponent({
   components: { Comment, Swiper, SwiperSlide },
   setup(props, context) {
     let $q = useQuasar()
+    let store = useStore()
     let lyric_ = ref()
     let lyricWithAnchor = ref([])
     let lyricMap = new Map()
@@ -296,6 +298,14 @@ export default defineComponent({
       beforeGetLyric()
     })
 
+    if (store.state.isFM) {
+      if (store.state.firstOpenFM) {
+        store.commit('setFirstOpenFM', false)
+        FM()
+      }
+      FMMode.value = true
+    }
+
     watch(
       () => props.songCurrentTime,
       time => {
@@ -322,7 +332,10 @@ export default defineComponent({
       newVal => {
         if (newVal) {
           FM()
+          return
         }
+        store.commit('setFMStatus', false)
+        store.commit('setFirstOpenFM', true)
       }
     )
 

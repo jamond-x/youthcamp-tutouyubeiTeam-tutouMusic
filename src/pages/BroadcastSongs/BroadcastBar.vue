@@ -78,6 +78,7 @@
             >
               <q-icon
                 class="song__active"
+                :class="{ 'animation-pause': !playStatus }"
                 v-if="item.id === songsList[currentSongIndex].id"
                 name="fab fa-napster"
               ></q-icon>
@@ -224,7 +225,7 @@ export default defineComponent({
             }
           } catch (err) {
             console.log(err)
-            clearTimer()
+            clearTimer(intervalTimer)
           }
         }, 100)
         audio.value.play()
@@ -462,6 +463,13 @@ export default defineComponent({
       currentSongIndex.value = 0
       // songsList.pop()
 
+      //删去多余id
+      for (let i = 0; i < props.songListToAudio.length; i++) {
+        if (songsList[i].id != props.songListToAudio[i]) {
+          songsList.splice(i, 1)
+        }
+      }
+
       /**
        * 统一获取歌曲的URL
        */
@@ -586,7 +594,8 @@ export default defineComponent({
   .tools {
     .list-card {
       height: 350px;
-      width: 380px;
+      width: 430px;
+      overflow: scroll;
       position: fixed;
       bottom: 90px;
       right: 10px;
@@ -606,7 +615,7 @@ export default defineComponent({
       }
       .song__active {
         position: absolute;
-        left: 1px;
+        left: -17px;
         top: 3px;
         animation: pointer 1s infinite;
       }
@@ -620,6 +629,10 @@ export default defineComponent({
         100% {
           transform: scale(0.8);
         }
+      }
+
+      .animation-pause {
+        animation-play-state: paused;
       }
     }
   }

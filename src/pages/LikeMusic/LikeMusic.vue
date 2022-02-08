@@ -43,7 +43,7 @@
         </div>
       </template>
       <div class="songList q-mt-md" v-if="finishLoading">
-        <q-infinite-scroll v-if="loginFlag" @load="onLoad" :offset="250" debounce="1000">
+        <q-infinite-scroll @load="onLoad" :offset="250" debounce="1000">
           <template v-for="(item, index) in finalTrack" :key="index">
             <div class="song-list-item row q-mb-xs">
               <div class="col">
@@ -90,7 +90,7 @@
 <script>
 import { defineComponent, ref, reactive, inject, toRefs } from 'vue'
 import PlaylistSkeleton from './PlaylistSkeleton.vue'
-import { QueryTrack } from 'src/utils/request/userSongList/userSongList'
+import { QuerySongDetail, QueryTrack } from 'src/utils/request/userSongList/userSongList'
 import { formatDate } from 'src/utils/time/time'
 import BackToTop from 'vue-backtotop'
 
@@ -117,10 +117,51 @@ export default defineComponent({
       creator: {},
       finalTrack: [],
     })
+    let trackIds = []
+
+    const tracksDecorate = tracks => {
+      tracks.map(item => {
+        let song = {}
+        song['name'] = item['name'].trim()
+        song['id'] = item['id']
+        song['authorList'] = item['ar']
+        song['authorStr'] = item['ar']
+          .map(ele => {
+            return ele.name
+          })
+          .join('/')
+        song['al'] = item['al']
+        song['dt'] = Number(item['dt'] / 1000)
+        song['min'] = Math.floor(song['dt'] / 60)
+        song['sec'] = Math.floor(song['dt'] % 60)
+        trackState.finalTrack.push(song)
+      })
+    }
+
     function onLoad(index, done) {
-      songTotalList.value.push(...trackState.finalTrack.slice(index - 1, index + 99))
-      console.log('加载')
-      done()
+      // *坏了 现在登录页只能请求到20首*...
+      if (0) {
+        // 已登录则分批加入
+        // console.log((index - 1) * 100, (index - 1) * 100 + 99)
+        // console.log('final', trackState.finalTrack)
+        // let batch = trackState.finalTrack.slice((index - 1) * 100, (index - 1) * 100 + 99)
+        // console.log(batch)
+        // if (batch.length != 0) {
+        //   songTotalList.value.push(...batch)
+        //   console.log(songTotalList.value)
+        // }
+        // done()
+      } else {
+        // 未登录则分批请求
+        console.log(1)
+        let trackIdsStr = trackIds.slice((index - 1) * 100, index * 100 + 99).join(',')
+        let data = { ids: trackIdsStr }
+        QuerySongDetail(data).then(res => {
+          let tracks = res.songs
+          tracksDecorate(tracks)
+          done()
+        })
+      }
     }
     const handleAddAllSong = () => {
       console.log('加歌' + props.id)
@@ -138,23 +179,17 @@ export default defineComponent({
         }
         trackState.playlist = res.playlist
         trackState.creator = res.playlist.creator
+        // 针对登录状态请求不同接口 已登录能获取所有 未登录只能获取全部id 交给onLoad分批请求
+        // *现在都只能请求到20首了*
+        let tracks
+        if (0) {
+          tracks = res.playlist.tracks
+          tracksDecorate(tracks)
+        } else {
+          trackIds = res.playlist.trackIds
+          trackIds = trackIds.map(item => item.id)
+        }
         finishLoading.value = true
-        res.playlist.tracks.map(item => {
-          let song = {}
-          song['name'] = item['name'].trim()
-          song['id'] = item['id']
-          song['authorList'] = item['ar']
-          song['authorStr'] = item['ar']
-            .map(ele => {
-              return ele.name
-            })
-            .join('/')
-          song['al'] = item['al']
-          song['dt'] = Number(item['dt'] / 1000)
-          song['min'] = Math.floor(song['dt'] / 60)
-          song['sec'] = Math.floor(song['dt'] % 60)
-          trackState.finalTrack.push(song)
-        })
       })
     }
     return {
