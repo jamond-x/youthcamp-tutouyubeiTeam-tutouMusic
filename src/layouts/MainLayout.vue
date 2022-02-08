@@ -386,6 +386,11 @@ export default defineComponent({
       })
     }
 
+    /**
+     * 在现有列表中添加子播放列表
+     * list :  string[]
+     * ['132111561','165615','4848648']
+     */
     const addPlaylist = list => {
       playMode.value = 4
       nextTick(() => {
