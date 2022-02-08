@@ -6,7 +6,7 @@
         <div class="mask">
           <img :src="state.banner.coverImgUrl" />
         </div>
-        <div class="songlistImg">
+        <div class="songlistImg" @click="itemClick">
           <img :src="state.banner.coverImgUrl" />
         </div>
         <div class="songlistDetail">
@@ -33,7 +33,13 @@
       </div>
     </div>
 
-    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250" scroll-target="body">
+    <q-infinite-scroll
+      class="col-12"
+      @load="onLoad"
+      :debounce="1200"
+      :offset="250"
+      scroll-target="body"
+    >
       <transition name="show-hide">
         <song-list :song-lists="state.songlist" />
       </transition>
@@ -43,7 +49,7 @@
         </div>
       </template>
     </q-infinite-scroll>
-    
+
     <!-- 返回顶部按钮 -->
     <back-to-top bottom="100px" right="50px" visibleoffset="600">
       <q-btn round color="primary" icon="navigation" size="lg" />
@@ -58,6 +64,8 @@ import SongList from 'components/songList/SongList'
 
 import BackToTop from 'vue-backtotop'
 
+import { useRouter } from 'vue-router'
+
 import {
   QueryQualitySongList,
   QuerySongListTags,
@@ -71,6 +79,7 @@ export default defineComponent({
     BackToTop,
   },
   setup() {
+    const router = useRouter()
     const state = reactive({
       banner: {},
       songlist: [],
@@ -103,6 +112,12 @@ export default defineComponent({
       })
     }
 
+    function itemClick() {
+      router.push({
+        path: '/playlist/' + state.banner.id,
+      })
+    }
+
     function onLoad(index, done) {
       // console.log(index)
       QuerySongListByTag(state.currTag, index * 20).then(res => {
@@ -117,6 +132,7 @@ export default defineComponent({
       state,
       GetSongListByTag,
       onLoad,
+      itemClick
     }
   },
 })
@@ -151,6 +167,9 @@ export default defineComponent({
     height: 10vw;
     margin-left: 3vw;
     z-index: 1;
+    &:hover {
+      cursor: pointer;
+    }
     img {
       width: 100%;
       height: 100%;

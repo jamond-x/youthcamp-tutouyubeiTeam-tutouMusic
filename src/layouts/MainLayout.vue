@@ -82,7 +82,10 @@
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
       <q-list>
-        <div class="logo font-GEO row justify-center q-my-xl">TT</div>
+        <div class="logo font-GEO row justify-center q-my-xl">
+          <q-tooltip :offset="[10, 10]"> 没错，这是一个会旋转的秃头！ </q-tooltip>
+          TT
+        </div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
         <keep-alive><UserSongListLink v-if="loginFlag" /></keep-alive>
@@ -121,6 +124,7 @@
         @switchSong="handleSwitchSong"
         @priorBSSong="handelPriorBSSong"
         @toggleBroadcastPage="broadcastPageStatus = !broadcastPageStatus"
+        @closePop="broadcastPageStatus = false"
       />
     </q-footer>
     <q-dialog
@@ -380,20 +384,23 @@ export default defineComponent({
     const newPlaylist = list => {
       playMode.value = 1
       nextTick(() => {
+        list.forEach(el => {
+          songIdMap.set(el, 1)
+        })
         songsList.value = list
       })
     }
 
-    // 调用示例
-    // setTimeout(() => {
-    //   immediatelyBroadcast('1293886117')
-    // }, 2000)
-    setTimeout(() => {
-      newPlaylist(['1465114465', '1293886117', '32507038'])
-    }, 1000)
-    // setTimeout(() => {
-    //   addSongToPlaylist('25787222', true)
-    // }, 15000)
+    const addPlaylist = list => {
+      playMode.value = 4
+      nextTick(() => {
+        list.forEach(el => {
+          songIdMap.set(el, 1)
+          songsList.value.push(el)
+        })
+      })
+    }
+
     //*  *************************************************
 
     const pushToList = param => {
@@ -453,7 +460,7 @@ export default defineComponent({
       $router.push('/search/' + searchKeyword.value)
     }
     // 日夜间模式切换
-    function modeToggle() {
+    const modeToggle = () => {
       $q.dark.toggle()
       // console.log($q.dark.mode)
       if (mode.value === 'light_mode') {
@@ -503,6 +510,7 @@ export default defineComponent({
     provide('openFM', openFM)
     provide('loginFlag', loginFlag)
     provide('updateLoginFlag', updateLoginFlag)
+    provide('immediatelyBroadcast', immediatelyBroadcast)
 
     return {
       essentialLinks: linksList,
@@ -514,6 +522,7 @@ export default defineComponent({
       toggleAudioPlay,
       immediatelyBroadcast,
       newPlaylist,
+      addPlaylist,
       addSongToPlaylist,
       pushToList,
       handelPriorBSSong,
@@ -552,6 +561,14 @@ export default defineComponent({
 }
 .logo {
   @include custom-font(45px, inherit, 1px, inherit);
+  transition: transform 2s;
+  &:hover {
+    transform: rotate(360deg);
+    -ms-transform: rotate(360deg); /* IE 9 */
+    -moz-transform: rotate(360deg); /* Firefox */
+    -webkit-transform: rotate(360deg); /* Safari 和 Chrome */
+    -o-transform: rotate(360deg); /* Opera */
+  }
 }
 
 .footer {

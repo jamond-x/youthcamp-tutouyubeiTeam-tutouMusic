@@ -8,7 +8,15 @@
       ></q-img>
       <div class="q-ml-md">
         <div class="song-name">{{ songsList[currentSongIndex].name }}</div>
-        <div class="singer">{{ singers }}</div>
+        <router-link
+          :class="['singer', $q.dark.isActive ? 'text-white' : 'text-black']"
+          @click="$emit('closePop')"
+          :to="`/artist/${artist.id}`"
+          v-for="(artist, index) in songsList[currentSongIndex].ar"
+          :key="index"
+          tag="span"
+          >{{ index >= 1 ? `/${artist.name}` : artist.name }}
+        </router-link>
       </div>
     </div>
     <div v-else class="flex flex-center">
@@ -150,6 +158,7 @@ export default defineComponent({
   name: 'Bar',
   emits: [
     'toggleBroadcastPage',
+    'closePop',
     'switchSong',
     'pause',
     'play',
@@ -416,14 +425,16 @@ export default defineComponent({
         songIds.value = ''
         songIds.value = songsList[0].id.toString()
       }
-      if (mode === 1) {
+      if (mode === 1 || mode === 4) {
         for (let id of props.songListToAudio) {
           ids += `,${id}`
         }
         ids = ids.split('').splice(1).join('')
         let res = await GetSongDetail({ ids })
         let { songs } = res
-        songsList.length = 0
+        if (mode === 1) {
+          songsList.length = 0
+        }
         for (let obj of songs) {
           songsList.push(obj)
         }
@@ -565,7 +576,8 @@ export default defineComponent({
       // max-width: 220px;
       user-select: none;
       white-space: nowrap;
-      overflow: scroll;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     .img {
       width: 50px;
@@ -582,6 +594,8 @@ export default defineComponent({
       @extend .pointer;
     }
     .singer {
+      text-decoration: none;
+      display: inline;
       @include custom-font(15px, 100, 1px, inherit);
       @extend .pointer;
     }
