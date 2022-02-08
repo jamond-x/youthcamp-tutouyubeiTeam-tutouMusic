@@ -83,6 +83,8 @@
             style="position: relative; cursor: pointer"
             v-for="(item, index) in similarPlaylists"
             :key="index"
+            @click="toPlaylist(item.id)"
+            v-close-popup
           >
             <q-img class="img" :src="item.coverImgUrl">
               <div class="bar absolute-bottom text-subtitle1 text-center">
@@ -125,6 +127,7 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 import {
@@ -168,6 +171,7 @@ export default defineComponent({
   setup(props, context) {
     let $q = useQuasar()
     let store = useStore()
+    let router = useRouter()
     let lyric_ = ref()
     let lyricWithAnchor = ref([])
     let lyricMap = new Map()
@@ -316,6 +320,10 @@ export default defineComponent({
       FMMode.value = true
     }
 
+    const toPlaylist = playlistId => {
+      router.push(`/playlist/${playlistId}`)
+    }
+
     watch(
       () => props.songCurrentTime,
       time => {
@@ -365,6 +373,7 @@ export default defineComponent({
       getInstance,
       changeProgress,
       isUnNull,
+      toPlaylist,
     }
   },
 })
