@@ -2,6 +2,25 @@
   <q-layout view="lHh Lpr fff">
     <q-header bordered :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
       <q-toolbar>
+        <q-btn
+          icon="keyboard_arrow_left"
+          class="q-mx-sm"
+          @click="goClick(-1)"
+          size="16px"
+          flat
+          padding="none"
+          round
+          :ripple="false"
+        />
+        <q-btn
+          icon="keyboard_arrow_right"
+          @click="goClick(1)"
+          size="16px"
+          flat
+          padding="none"
+          round
+          :ripple="false"
+        />
         <q-toolbar-title>
           <q-input
             class="q-ml-sm"
@@ -19,7 +38,7 @@
         <q-btn :icon="mode" @click="modeToggle" size="12px" round ripple />
         <q-separator vertical inset class="q-mx-md" />
         <div>
-          <q-btn-dropdown flat unelevated>
+          <q-btn-dropdown flat>
             <template v-slot:label>
               <q-avatar>
                 <img :src="avatarUrl" />
@@ -366,6 +385,15 @@ export default defineComponent({
       }
     }
 
+    /**
+     * 前进后退逻辑
+     * index :  Number
+     */
+    const goClick = index => {
+      console.log('object')
+      $router.go(index)
+    }
+
     const handleLogin = () => {
       showLogin.value = true
     }
@@ -437,6 +465,7 @@ export default defineComponent({
       handlePause,
       broadcastPageStatus,
       updateLoginFlag,
+      goClick,
     }
   },
 })

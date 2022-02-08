@@ -1,7 +1,7 @@
 <template>
   <div class="list-item" @click="itemClick">
     <div class="img-box">
-      <q-img :src="listItem.picUrl || listItem.coverImgUrl" :width="width" :height="height" />
+      <q-img :src="listItem.picUrl || listItem.coverImgUrl" :width="imgWidth" :height="imgHeight" />
       <q-icon name="play_circle" />
     </div>
     <div class="list-info">
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 
 export default defineComponent({
   name: 'SongListItem',
@@ -36,14 +36,23 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const imgWidth = computed(() => {
+      return props.width + 'vw'
+    })
+    const imgHeight = computed(() => {
+      return props.height + 'vw'
+    })
+
     function itemClick() {
       let id = this.listItem.id
       this.$router.push({
-        path: '/index/songListContent' + id,
+        path: '/playlist/' + id,
       })
     }
     return {
       itemClick,
+      imgWidth,
+      imgHeight
     }
   },
 })

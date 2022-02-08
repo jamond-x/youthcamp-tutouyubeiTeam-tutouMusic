@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="select">
-      <q-btn-toggle v-model="yuzhong" toggle-color="primary" :options="yuzhongData" />
-      <q-btn-toggle v-model="fenlei" toggle-color="primary" :options="fenleiData" />
-      <q-btn-toggle v-model="shaixuan" toggle-color="primary" :options="shaixuanData" />
+      <q-btn-toggle v-model="yuzhong" toggle-color="primary" :options="yuzhongData" flat />
+      <q-btn-toggle v-model="fenlei" toggle-color="primary" :options="fenleiData" flat />
+      <q-btn-toggle v-model="shaixuan" toggle-color="primary" :options="shaixuanData" flat />
     </div>
 
     <q-infinite-scroll @load="onLoad" :debounce="1200" :offset="250" scroll-target="body">

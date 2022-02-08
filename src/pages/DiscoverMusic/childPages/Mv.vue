@@ -6,18 +6,21 @@
         toggle-color="primary"
         :options="areaData"
         @update:model-value="areaClick"
+        flat
       />
       <q-btn-toggle
         v-model="type"
         toggle-color="primary"
         :options="typeData"
         @update:model-value="typeClick"
+        flat
       />
       <q-btn-toggle
         v-model="sort"
         toggle-color="primary"
         :options="sortData"
         @update:model-value="sortClick"
+        flat
       />
     </div>
 

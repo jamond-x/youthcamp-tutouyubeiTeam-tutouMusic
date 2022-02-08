@@ -1,6 +1,6 @@
 <template>
   <div class="row wrap justify-start">
-    <song-list-item v-for="(item, index) in songLists" :key="index" :list-item="item" :width="imgWidth" :height="imgHeight" />
+    <song-list-item v-for="(item, index) in songLists" :key="index" :list-item="item" :width="width" :height="height" />
   </div>
 </template>
 
@@ -35,17 +35,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const imgWidth = computed(() => {
-      return props.width + 'vw'
-    })
-    const imgHeight = computed(() => {
-      return props.height + 'vw'
-    })
+
 
     return {
       // songLists: props.songLists
-      imgWidth,
-      imgHeight
     }
   },
 })
