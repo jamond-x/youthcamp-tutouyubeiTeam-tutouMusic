@@ -1,8 +1,8 @@
 <template>
-  <q-card class="my-card">
-    <div class="num"><span>播放量</span>{{ numFormat(item.playCount) }}</div>
+  <q-card class="my-card" @click="itemClick">
+    <div class="num"><q-icon name="play_arrow" />{{ numFormat(item.playCount) }}</div>
     <q-img :src="item.coverImgUrl" class="img">
-      <div class="absolute-bottom text-h6">{{ item.name }}</div>
+      <div class="absolute-bottom">{{ item.name }}</div>
     </q-img>
   </q-card>
 </template>
@@ -10,6 +10,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { numFormat } from '../../utils/bigNum/bigNum'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'SmallRankItem',
@@ -23,13 +24,17 @@ export default defineComponent({
   },
 
   setup(props) {
-    const getData = async () => {
-      console.table(props)
+    const router = useRouter()
+
+    function itemClick() {
+      router.push({
+        path: '/playlist/' + props.item.id,
+      })
     }
-    getData()
 
     return {
       numFormat,
+      itemClick
     }
   },
 })
@@ -42,18 +47,23 @@ export default defineComponent({
   position: relative;
   justify-self: center;
   align-self: center;
+  font-size: 16px;
   .img {
     border-radius: 15px;
   }
   .num {
     position: absolute;
     top: 10px;
-    right: 5px;
+    right: 15px;
     z-index: 10;
-    background-color: rgba($color: #ffffff, $alpha: 0.2);
-    span {
-      font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+    color: white;
+    // background-color: rgba($color: #ffffff, $alpha: 0.2);
+    .q-icon {
+      font-size: 16px;
       margin-right: 2px;
+      margin-bottom: 3px;
     }
   }
 }
