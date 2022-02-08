@@ -57,3 +57,13 @@ export const QueryArtistTopSong = async id => {
     },
   })
 }
+
+export const QueryArtistAlbum = async (id, offset = 0) => {
+  return await api({
+    method: 'POST',
+    url: '/artist/album?limit=30&id=' + id + '&offset=' + offset,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
