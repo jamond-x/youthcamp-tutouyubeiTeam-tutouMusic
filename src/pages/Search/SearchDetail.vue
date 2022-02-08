@@ -118,26 +118,23 @@ export default {
       if (this.type === 'artist') {
         QuerySearch(this.keywords, 100, offset).then(res => {
           that.artists = that.artists.concat(res.result.artists)
-          if (res.result.artists.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(!res.result.hasMore)
         })
       } else if (this.type === 'album') {
         QuerySearch(this.keywords, 10, offset).then(res => {
           that.albums = that.albums.concat(res.result.albums)
-          if (res.result.albums.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(res.result.albums.length < 30)
         })
       } else if (this.type === 'song') {
         QuerySearch(this.keywords, 1, offset).then(res => {
           that.songs = that.songs.concat(res.result.songs)
-          if (res.result.songs.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(!res.result.hasMore)
         })
       } else {
         QuerySearch(this.keywords, 1000, offset).then(res => {
+          console.log(res)
           that.playlists = that.playlists.concat(res.result.playlists)
-          if (res.result.playlists.length < 30) finished = true
-          if (typeof done === 'function') done(finished)
+          done(!res.result.hasMore)
         })
       }
     },
