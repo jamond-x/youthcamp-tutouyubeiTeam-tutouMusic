@@ -194,6 +194,7 @@ export default defineComponent({
     const songsList = reactive(songsList_)
     let $q = useQuasar()
     let intervalTimer
+    let ajaxBar = ref(null)
 
     let clearTimer = () => {
       clearInterval(intervalTimer)
