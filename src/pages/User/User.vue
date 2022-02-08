@@ -141,17 +141,15 @@ export default defineComponent({
   methods: {
     updateData(_id) {
       let that = this
-      _id = _id || sessionStorage.getItem('uid') || localStorage.getItem('uid') || 'none'
+      _id = _id || localStorage.getItem('uid') || 'none'
       if (_id === 'none') {
         this.q.notify({ message: '请先登录', position: 'top' })
         this.$router.push('/')
       }
-      if (_id === sessionStorage.getItem('uid') || _id === localStorage.getItem('uid')) {
+      if (_id === localStorage.getItem('uid')) {
         this.self = true
         this.tab = 'album'
-        that.userdata = JSON.parse(
-          sessionStorage.getItem('userInfo') || localStorage.getItem('userInfo')
-        )
+        that.userdata = JSON.parse(localStorage.getItem('userInfo'))
       } else {
         this.self = false
         this.tab = 'follow'
@@ -199,7 +197,7 @@ export default defineComponent({
       })
     },
     updateFollowList(index, done) {
-      let _id = this.$route.params.uid || sessionStorage.getItem('uid')
+      let _id = this.$route.params.uid || localStorage.getItem('uid')
       let that = this
       let offset = index * 30
       QueryFollowList(_id, offset).then(res => {
@@ -208,7 +206,7 @@ export default defineComponent({
       })
     },
     updateFollowerList(index, done) {
-      let _id = this.$route.params.uid || sessionStorage.getItem('uid')
+      let _id = this.$route.params.uid || localStorage.getItem('uid')
       let that = this
       let offset = index * 30
       QueryFollowerList(_id, offset).then(res => {

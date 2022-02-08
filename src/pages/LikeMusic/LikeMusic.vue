@@ -265,15 +265,7 @@ export default defineComponent({
   border-radius: 15px;
   box-sizing: border-box;
   transition: background 0.2s;
-
   position: relative;
-
-  img {
-    border-radius: 15px;
-    margin-right: 1.5rem;
-    height: 4rem;
-    width: 4rem;
-  }
   .text-h6 {
     position: relative;
     margin: 0;
