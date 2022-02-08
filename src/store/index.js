@@ -29,11 +29,19 @@ export default store(function (/* { ssrContext } */) {
           'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png',
       },
       loginFlag: 0,
+      isFM: false,
+      firstOpenFM: true,
     },
     mutations: {
       setUser(state, payload) {
         state.userInfo = payload.userInfo
         state.loginFlag = payload.loginFlag
+      },
+      setFMStatus(state, payload) {
+        state.isFM = payload
+      },
+      setFirstOpenFM(state, payload) {
+        state.firstOpenFM = payload
       },
     },
     actions: {
