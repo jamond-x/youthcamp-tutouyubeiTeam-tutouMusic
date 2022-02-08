@@ -16,9 +16,26 @@
             {{ info.artist.mvSize }}个MV
           </div>
         </div>
-        <div class="text-body1 text-grey-7 desc">{{ info.artist.briefDesc }}</div>
+        <div class="text-body1 text-grey-7 desc" @click="showDesc = !showDesc">
+          {{ info.artist.briefDesc }}
+        </div>
       </div>
     </div>
+    <q-dialog v-model="showDesc">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">艺人详情</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <div class="text-body1">
+            {{ info.artist.briefDesc }}
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
     <q-inner-loading :showing="visible">
       <q-spinner-gears size="50px" color="primary" />
     </q-inner-loading>
@@ -33,6 +50,7 @@ export default {
   data() {
     return {
       visible: true,
+      showDesc: false,
       info: {
         artist: {
           name: 'Artist',
@@ -53,7 +71,6 @@ export default {
       let that = this
       QueryArtist(_id).then(res => {
         that.info = res.data
-        console.log(res.data)
         that.visible = false
       })
     },
@@ -65,6 +82,7 @@ export default {
     aid(n, o) {
       this.updateData(n)
       this.visible = true
+      this.showDesc = false
     },
   },
 }
@@ -95,6 +113,7 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        cursor: pointer;
       }
     }
   }
