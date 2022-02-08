@@ -5,7 +5,7 @@
       <div class="shadow" :style="'background-image: url(' + avatar + ');'"></div>
     </div>
 
-    <div class="text-subtitle1 text-center">{{ name }}</div>
+    <div class="text-subtitle1 text-center" style="width: 100%">{{ name }}</div>
   </div>
 </template>
 
@@ -45,7 +45,7 @@ export default {
 <style lang="scss" scoped>
 .artist-item {
   position: relative;
-  width: 17%;
+  width: calc((100% - 10rem) / 5);
   margin: 1rem;
   cursor: pointer;
   user-select: none;
