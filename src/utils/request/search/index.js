@@ -67,3 +67,13 @@ export const QueryArtistAlbum = async (id, offset = 0) => {
     },
   })
 }
+
+export const QuerySimiArtist = async id => {
+  return await api({
+    method: 'POST',
+    url: '/simi/artist?id=' + id,
+    data: {
+      cookie: ccookie,
+    },
+  })
+}
