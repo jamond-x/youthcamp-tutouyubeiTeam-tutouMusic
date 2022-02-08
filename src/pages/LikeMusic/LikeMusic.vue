@@ -284,7 +284,7 @@ export default defineComponent({
 
 .song-item-content {
   position: relative;
-  width: calc(100% - 5rem);
+  width: calc(100% - 4.75rem);
 }
 
 .song-list-item:hover {
