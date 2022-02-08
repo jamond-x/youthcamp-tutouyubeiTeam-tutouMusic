@@ -21,13 +21,18 @@ export default {
   },
   methods: {
     play() {
-      QueryAlbum(this.aid).then(res => {
-        let list = []
-        res.songs.forEach(element => {
-          list.push(element.id + '')
+      if (localStorage.getItem('album' + this.aid)) {
+        this.$emit('newPlaylist', JSON.parse(localStorage.getItem('album' + this.aid)))
+      } else {
+        QueryAlbum(this.aid).then(res => {
+          let list = []
+          res.songs.forEach(element => {
+            list.push(element.id + '')
+          })
+          localStorage.setItem('album' + this.aid, JSON.stringify(list))
+          this.$emit('newPlaylist', list)
         })
-        this.$emit('newPlaylist', list)
-      })
+      }
     },
   },
   created() {
