@@ -93,6 +93,7 @@ import PlaylistSkeleton from './PlaylistSkeleton.vue'
 import { QuerySongDetail, QueryTrack } from 'src/utils/request/userSongList/userSongList'
 import { formatDate } from 'src/utils/time/time'
 import BackToTop from 'vue-backtotop'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'LikeMusic',
@@ -103,15 +104,12 @@ export default defineComponent({
       this.$emit('immediatelyBroadcast', songId + '')
     },
     playList(list) {
-      console.log(list)
+      console.log('新播放列表')
       this.$emit('newPlaylist', list)
     },
     playMoreList(list) {
-      console.log(list)
-      list.forEach(songId => {
-        console.log(songId)
-        this.$emit('addSongToPlaylist', songId + '', false)
-      })
+      console.log('追加')
+      this.$emit('addPlaylist', list)
     },
   },
   mounted() {
@@ -124,6 +122,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const $q = useQuasar()
     const finishLoading = ref(false)
     const songTotalList = ref([])
     const loginFlag = inject('loginFlag')
@@ -182,12 +181,20 @@ export default defineComponent({
         })
       }
     }
+    const showNotify = msg => {
+      $q.notify({
+        message: msg,
+        color: 'primary',
+        position: 'top',
+      })
+    }
 
     function loadTrack(id) {
       trackState.playlist = {}
       trackState.creator = {}
       trackState.finalTrack = []
       QueryTrack({ id }).then(res => {
+        console.log(res)
         if (res.code != 200) {
           return
         }
@@ -214,6 +221,7 @@ export default defineComponent({
       finishLoading,
       ...toRefs(trackState),
       trackIds,
+      showNotify,
     }
   },
 })

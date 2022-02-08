@@ -101,6 +101,7 @@
             @immediatelyBroadcast="immediatelyBroadcast"
             @newPlaylist="newPlaylist"
             @addSongToPlaylist="addSongToPlaylist"
+            @addPlaylist="addPlaylist"
           />
         </keep-alive>
         <component
@@ -109,6 +110,7 @@
           @immediatelyBroadcast="immediatelyBroadcast"
           @newPlaylist="newPlaylist"
           @addSongToPlaylist="addSongToPlaylist"
+          @addPlaylist="addPlaylist"
         />
       </router-view>
     </q-page-container>
@@ -170,18 +172,13 @@ const linksList = [
     link: '/user',
   },
   {
-    title: '我的歌单',
-    icon: 'fas fa-stream',
-    link: '/playlist',
-  },
-  {
     title: '个性FM',
     icon: 'fas fa-headphones-alt',
     link: '',
   },
 ]
 
-import { defineComponent, ref, nextTick, provide, watchEffect } from 'vue'
+import { defineComponent, ref, nextTick, provide, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -319,12 +316,17 @@ export default defineComponent({
           'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
       }
     }
+
     /**
-     * @description 默认检查登录态
+     * @description 默认检查登录态 注意 登录后会改变loginFlag为1因此check前已经为1了
      */
-    watchEffect(() => {
-      checkLoginState()
-    })
+    watch(
+      loginFlag,
+      () => {
+        checkLoginState()
+      },
+      { immediate: true }
+    )
 
     //****************************************************
     /**
