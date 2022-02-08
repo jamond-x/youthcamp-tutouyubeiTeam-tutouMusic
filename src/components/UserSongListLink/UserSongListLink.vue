@@ -1,4 +1,4 @@
-<template>
+<template v-if="loginFlag">
   <q-item v-for="list in songList" :key="list" :to="list.link">
     <q-item-section v-if="list.icon" class="q-ml-md" avatar>
       <q-icon :name="list.icon" />
@@ -11,12 +11,16 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { QueryUserSongList } from 'src/utils/request/userSongList/userSongList'
 import { uid } from 'quasar'
 export default defineComponent({
   name: 'UserSongListLink',
   setup() {
+    const loginFlag = ref(0)
+    if (window.sessionStorage.getItem('loginFlag')) {
+      loginFlag.value = window.sessionStorage.getItem('loginFlag')
+    }
     const songList = reactive([])
     let data = {
       uid: window.sessionStorage.getItem('uid') || '',
@@ -38,7 +42,7 @@ export default defineComponent({
           list['description'] = item['description']
           list['privacy'] = item['privacy']
           list['icon'] = list['privacy'] === 0 ? 'fas fa-lock' : 'fas fa-coffee'
-          list['link'] = `/userSongList/${list['id']}`
+          list['link'] = `/playlist/${list['id']}`
           songList.push(list)
         })
         let songListStr = JSON.stringify(songList)
@@ -48,6 +52,7 @@ export default defineComponent({
 
     return {
       songList,
+      loginFlag,
     }
   },
 })
@@ -56,6 +61,16 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
 .font {
-  @include custom-font(16px, 900, 3px, inherit);
+  @include custom-font(16px, 900, 1px, inherit);
+  /* white-space: nowrap; */
+  /* margin-bottom: 3px; */
+  width: 100%;
+  display: -webkit-box;
+  // color: white;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  /* 文本溢出 */
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

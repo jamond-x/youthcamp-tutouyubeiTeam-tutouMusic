@@ -50,7 +50,7 @@ export default {
 <style lang="scss" scoped>
 .user-item {
   position: relative;
-  width: 17%;
+  width: calc((100% - 10rem) / 5);
   margin: 1rem;
   cursor: pointer;
   user-select: none;

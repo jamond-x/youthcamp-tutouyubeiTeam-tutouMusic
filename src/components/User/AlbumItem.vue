@@ -5,7 +5,7 @@
       <div class="shadow" :style="'background-image: url(' + trueAvatar + ');'"></div>
     </div>
 
-    <div class="text-subtitle1 text-center">{{ name }}</div>
+    <div class="text-subtitle1 text-center" style="width: 100%">{{ name }}</div>
   </div>
 </template>
 
@@ -31,7 +31,7 @@ export default {
     },
   },
   created() {
-    let src = this.avatar
+    let src = this.avatar + '?param=500y500'
     let that = this
     new Promise((rs, rj) => {
       let img = new Image()
@@ -53,7 +53,7 @@ export default {
 <style lang="scss" scoped>
 .album-item {
   position: relative;
-  width: 17%;
+  width: calc((100% - 10rem) / 5);
   margin: 1rem;
   cursor: pointer;
   user-select: none;

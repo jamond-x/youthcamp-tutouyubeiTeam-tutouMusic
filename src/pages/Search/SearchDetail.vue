@@ -173,7 +173,6 @@ export default {
   .content div {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
   }
 }
 </style>

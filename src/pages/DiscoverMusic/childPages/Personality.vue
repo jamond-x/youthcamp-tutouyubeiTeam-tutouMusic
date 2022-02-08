@@ -11,7 +11,7 @@
       control-color="grey-6"
       navigation
       arrows
-      height="27vw"
+      height="25vw"
       class="rounded-borders col-12"
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
@@ -29,7 +29,7 @@
       推荐歌单
       <q-icon name="chevron_right" />
     </p>
-    <song-list :song-lists="state.songlist" />
+    <song-list class="col-12" :song-lists="state.songlist" :width="13" :height="13" />
   </div>
 </template>
 
@@ -98,14 +98,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .bannerImage {
-  width: 80%;
+  width: 74%;
 }
 .title {
   font-weight: bold;
   font-size: 20px;
   // margin-top: .1vh;
   margin-left: 1.5vw;
-  margin-bottom: 10px;
+  margin-bottom: 1vw;
   .q-icon {
     margin-left: -4px;
   }
