@@ -9,7 +9,7 @@
           <div class="topBanner">
             <img :src="playlist.coverImgUrl" />
           </div>
-          <q-separator vertical inset class="q-mx-lg" />
+          <q-separator vertical inset spaced="2vw" />
           <div class="flex column justify-between">
             <div class="text-h6 text-weight-bold row">{{ playlist.name }}</div>
             <div class="row flex items-center">
@@ -175,8 +175,10 @@ export default defineComponent({
   overflow: hidden;
   img {
     height: 100%;
+    border-radius: 8px;
   }
 }
+
 .Wrapper {
   width: 100%;
   border-top-left-radius: 0.5rem;

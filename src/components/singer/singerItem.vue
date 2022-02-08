@@ -1,13 +1,13 @@
 <template>
   <q-card class="my-card">
-    <q-img :src="item.img1v1Url" class="img">
+    <q-img :src="picUrl" class="img">
       <div class="absolute-bottom text-h6 name">{{ item.name ? item.name : item.trans }}</div>
     </q-img>
   </q-card>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 
 export default defineComponent({
   name: 'SingerItem',
@@ -21,10 +21,12 @@ export default defineComponent({
   },
 
   setup(props) {
-    const getData = async () => {}
-    getData()
-
-    return {}
+    const picUrl = computed(() => {
+      return props.item.picUrl + '?param=200y200'
+    })
+    return {
+      picUrl
+    }
   },
 })
 </script>
