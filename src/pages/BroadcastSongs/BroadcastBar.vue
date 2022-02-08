@@ -78,6 +78,7 @@
             >
               <q-icon
                 class="song__active"
+                :class="{ 'animation-pause': !playStatus }"
                 v-if="item.id === songsList[currentSongIndex].id"
                 name="fab fa-napster"
               ></q-icon>
@@ -462,6 +463,13 @@ export default defineComponent({
       currentSongIndex.value = 0
       // songsList.pop()
 
+      //删去多余id
+      for (let i = 0; i < props.songListToAudio.length; i++) {
+        if (songsList[i].id != props.songListToAudio[i]) {
+          songsList.splice(i, 1)
+        }
+      }
+
       /**
        * 统一获取歌曲的URL
        */
@@ -621,6 +629,10 @@ export default defineComponent({
         100% {
           transform: scale(0.8);
         }
+      }
+
+      .animation-pause {
+        animation-play-state: paused;
       }
     }
   }

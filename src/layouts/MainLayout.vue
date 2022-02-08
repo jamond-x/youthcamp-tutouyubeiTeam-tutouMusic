@@ -221,9 +221,80 @@ export default defineComponent({
     })
     let showLogin = ref(false)
     let refreshing = ref(false)
+    let songIdMap = new Map()
     watch([loginFlag, username], () => {
       console.log('登录状态变化')
     })
+
+    const storeId = (param, mode) => {
+      if (typeof param === 'object') {
+        songIdMap.clear()
+        param.forEach((el, index) => {
+          songIdMap.set(el, index)
+        })
+        return
+      }
+      if (mode === 0) {
+        if (songIdMap.has(param)) {
+          let index = songsList.value.indexOf(param)
+          if (index === 0) {
+            $q.notify({
+              message: '不要重复添加至播放列表哦',
+              timeout: 2000,
+              position: 'top',
+            })
+            return true
+          }
+          nextTick(() => {
+            let spliced = songsList.value.splice(index, 1)
+            songsList.value.unshift(...spliced)
+          })
+          return true
+        } else {
+          return false
+        }
+      }
+      if (mode === 2) {
+        if (songIdMap.has(param)) {
+          let index = songsList.value.indexOf(param)
+          if (index === 1) {
+            $q.notify({
+              message: '下一首就是该歌曲不用重复添加哦',
+              timeout: 2000,
+              position: 'top',
+            })
+            return true
+          }
+          nextTick(() => {
+            let spliced = songsList.value.splice(index, 1)
+            songsList.value.splice(1, 0, ...spliced)
+          })
+          return true
+        } else {
+          return false
+        }
+      }
+      if (mode === 3) {
+        if (songIdMap.has(param)) {
+          let index = songsList.value.indexOf(param)
+          if (index === songsList.value.length - 1) {
+            $q.notify({
+              message: '已添加至播放列表',
+              timeout: 2000,
+              position: 'top',
+            })
+            return true
+          }
+          nextTick(() => {
+            let spliced = songsList.value.splice(index, 1)
+            songsList.value.push(...spliced)
+          })
+          return true
+        } else {
+          return false
+        }
+      }
+    }
     //****************************************************
     /**
      * @description 调用该方法可以直接开或关播放器（前提是播放列表有歌曲）
@@ -238,7 +309,10 @@ export default defineComponent({
      */
     const immediatelyBroadcast = id => {
       playMode.value = 0
+      const res = storeId(id, playMode.value)
+      if (res) return
       nextTick(() => {
+        songIdMap.set(id, 0)
         songsList.value.unshift(id)
       })
     }
@@ -250,14 +324,20 @@ export default defineComponent({
     const addSongToPlaylist = (id, order) => {
       if (order) {
         playMode.value = 2
+        const res = storeId(id, playMode.value)
+        if (res) return
         nextTick(() => {
+          songIdMap.set(id, 1)
           songsList.value.splice(1, 0, id)
         })
         return
       }
       if (!order) {
         playMode.value = 3
+        const res = storeId(id, playMode.value)
+        if (res) return
         nextTick(() => {
+          songIdMap.set(id, songsList.value.length - 1)
           songsList.value.push(id)
         })
       }
