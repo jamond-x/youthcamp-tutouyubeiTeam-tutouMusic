@@ -17,7 +17,7 @@
 
     <q-list class="right">
       <div v-for="(item, index) in data.songList" :key="item.id">
-        <q-item v-if="flag" lickable v-ripple class="songItem">
+        <q-item v-if="flag" clickable v-ripple class="songItem" @click="immediatelyBroadcast(item.id + '')">
           <div class="num">{{ index + 1 }}</div>
 
           <q-item-section avatar>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, inject } from 'vue'
 import { DetailRank } from '../../utils/request/rank/rank'
 import { formatDate } from '../../utils/time/time'
 import { useRouter } from 'vue-router'
@@ -83,8 +83,14 @@ export default defineComponent({
     const demo = async () => {
       const res = await DetailRank(id)
       const temp = res.playlist.tracks.slice(0, 10)
+      // trackIds里面的id才能播放音乐
+      const realIds = res.playlist.trackIds.slice(0, 10)
       data.songList = temp.map(item => item.al)
       data.bannerImage = data.songList[0].picUrl
+      data.songList = data.songList.map((item,index) => {
+        item.id = realIds[index].id
+        return item
+      })
       const temp2 = temp.map(item => item.ar)
       const temp3 = []
       temp2.forEach(element => {
@@ -101,7 +107,7 @@ export default defineComponent({
     }
     demo()
 
-    function itemClick() {
+    const itemClick = () => {
       router.push({
         path: '/playlist/' + id,
       })
@@ -111,12 +117,16 @@ export default defineComponent({
       return url + '?param=200y200'
     }
 
+    const immediatelyBroadcast = inject('immediatelyBroadcast')
+
+
     return {
       formatDate,
       data,
       flag,
       resPicUrl,
-      itemClick
+      itemClick,
+      immediatelyBroadcast
     }
   },
 })

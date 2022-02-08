@@ -82,7 +82,10 @@
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
       <q-list>
-        <div class="logo font-GEO row justify-center q-my-xl">TT</div>
+        <div class="logo font-GEO row justify-center q-my-xl">
+          <q-tooltip :offset="[10, 10]"> 没错，这是一个会旋转的秃头！ </q-tooltip>
+          TT
+        </div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
         <keep-alive><UserSongListLink v-if="loginFlag" /></keep-alive>
@@ -452,7 +455,7 @@ export default defineComponent({
       $router.push('/search/' + searchKeyword.value)
     }
     // 日夜间模式切换
-    function modeToggle() {
+    const modeToggle = () => {
       $q.dark.toggle()
       // console.log($q.dark.mode)
       if (mode.value === 'light_mode') {
@@ -512,6 +515,7 @@ export default defineComponent({
     provide('openFM', openFM)
     provide('loginFlag', loginFlag)
     provide('updateLoginFlag', updateLoginFlag)
+    provide('immediatelyBroadcast', immediatelyBroadcast)
 
     return {
       essentialLinks: linksList,
@@ -562,6 +566,14 @@ export default defineComponent({
 }
 .logo {
   @include custom-font(45px, inherit, 1px, inherit);
+  transition: transform 2s;
+  &:hover {
+    transform: rotate(360deg);
+    -ms-transform: rotate(360deg); /* IE 9 */
+    -moz-transform: rotate(360deg); /* Firefox */
+    -webkit-transform: rotate(360deg); /* Safari 和 Chrome */
+    -o-transform: rotate(360deg); /* Opera */
+  }
 }
 
 .footer {
