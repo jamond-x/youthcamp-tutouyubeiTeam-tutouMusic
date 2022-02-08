@@ -198,7 +198,7 @@ export default defineComponent({
     const store = useStore()
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
-    // $q.dark.set(true)
+    $q.dark.set('auto')
     let songsList = ref([])
     let currentSongId = ref('')
     // 测试环境
@@ -406,7 +406,7 @@ export default defineComponent({
     const pushToList = param => {
       addSongToPlaylist(param, false)
     }
-
+    
     const handlePlay = songDetail => {
       const { id } = songDetail
       let idStr = id.toString()
