@@ -114,7 +114,6 @@ export default {
     update(index = 0, done) {
       let that = this
       let offset = (index - 1) * 30
-      let finished = false
       if (this.type === 'artist') {
         QuerySearch(this.keywords, 100, offset).then(res => {
           that.artists = that.artists.concat(res.result.artists)

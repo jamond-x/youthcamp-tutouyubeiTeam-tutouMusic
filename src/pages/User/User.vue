@@ -185,43 +185,35 @@ export default defineComponent({
     updateSubArtist(index, done) {
       let that = this
       let offset = index * 30
-      let finished = false
       QuerySubArtist(offset).then(res => {
         that.subArtists = that.subArtists.concat(res.data)
-        if (res.data.length < 30) finished = true
-        if (typeof done === 'function') done(finished)
+        done(res.data.length < 30)
       })
     },
     updateSubAlbum(index, done) {
       let that = this
       let offset = index * 30
-      let finished = false
       QuerySubAlbum(offset).then(res => {
         that.subAlbums = that.subAlbums.concat(res.data)
-        if (res.data.length < 30) finished = true
-        if (typeof done === 'function') done(finished)
+        done(res.data.length < 30)
       })
     },
     updateFollowList(index, done) {
       let _id = this.$route.params.uid || sessionStorage.getItem('uid')
       let that = this
       let offset = index * 30
-      let finished = false
       QueryFollowList(_id, offset).then(res => {
         that.followList = that.followList.concat(res.follow)
-        if (!res.hasMore) finished = true
-        if (typeof done === 'function') done(finished)
+        done(!res.hasMore)
       })
     },
     updateFollowerList(index, done) {
       let _id = this.$route.params.uid || sessionStorage.getItem('uid')
       let that = this
       let offset = index * 30
-      let finished = false
       QueryFollowerList(_id, offset).then(res => {
         that.followerList = that.followerList.concat(res.followeds)
-        if (!res.hasMore) finished = true
-        if (typeof done === 'function') done(finished)
+        done(!res.hasMore)
       })
     },
   },
