@@ -5,7 +5,7 @@
         <img :src="trueCover" alt="title" />
         <div class="song-item-content">
           <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
-          <div class="text-subtitle2">{{ singer }}</div>
+          <div class="text-subtitle2 singers">{{ trueSinger }}</div>
         </div>
       </div>
     </div>
@@ -36,11 +36,12 @@ import { QueryPlayList, AddFavorSong } from 'src/utils/request/user'
 import { useQuasar } from 'quasar'
 export default {
   name: 'SongListItem',
-  props: ['id', 'cover', 'title', 'singer', 'album', 'duration'],
+  props: ['id', 'cover', 'title', 'singer', 'album', 'duration', 'singers'],
   data() {
     return {
       trueCover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
       length: '0:00',
+      trueSinger: '',
     }
   },
   methods: {
@@ -51,25 +52,25 @@ export default {
       this.$emit('immediatelyBroadcast', this.id)
     },
     addFavor() {
-      console.log('yo')
-      if (sessionStorage.getItem('uid')) {
+      if (sessionStorage.getItem('uid') || localStorage.getItem('uid')) {
+        let that = this
         QueryPlayList(sessionStorage.getItem('uid')).then(res => {
           AddFavorSong(this.id, res.playlist[0].id)
             .then(r => {
-              this.$q.notify({
+              that.$q.notify({
                 message: '收藏成功',
                 position: 'top',
               })
             })
             .catch(error => {
-              this.$q.notify({
+              that.$q.notify({
                 message: '哎呀，出了点问题',
                 position: 'top',
               })
             })
         })
       } else {
-        this.$q.notify({
+        this.qua.notify({
           message: '请先登录！',
           position: 'top',
         })
@@ -93,6 +94,13 @@ export default {
     this.length = this.duration / 1000
     this.length =
       Math.floor(this.length / 60) + ':' + this.PrefixZero(Math.floor(this.length % 60), 2)
+    if (this.singers) {
+      let singerList = []
+      this.singers.forEach(element => {
+        singerList.push(element.name)
+      })
+      this.trueSinger = singerList.join(' / ')
+    } else this.trueSinger = this.singer
   },
 }
 </script>
@@ -140,12 +148,21 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 90%;
   }
 }
 
 .song-item-content {
   position: relative;
   width: calc(100% - 4.75rem);
+
+  .singers {
+    position: relative;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .song-list-item:hover {

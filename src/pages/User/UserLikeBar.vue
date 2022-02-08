@@ -21,6 +21,7 @@
           :cover="song.al.picUrl"
           :title="song.name"
           :singer="song.ar[0].name"
+          :singers="song.ar"
           :id="song.id"
           @immediatelyBroadcast="play"
         />
