@@ -76,7 +76,7 @@
     <q-drawer
       :breakpoint="600"
       show-if-above
-      :width="230"
+      :width="250"
       bordered
       class="shadow-3"
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
