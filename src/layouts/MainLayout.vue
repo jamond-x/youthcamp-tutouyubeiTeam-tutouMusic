@@ -395,10 +395,6 @@ export default defineComponent({
       })
     }
 
-    setTimeout(() => {
-      addPlaylist(['36496695', '19293014', '29572506', '1906281210'])
-    }, 5000)
-
     //*  *************************************************
 
     const pushToList = param => {
