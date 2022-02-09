@@ -23,12 +23,14 @@ export const createApi = (api = axios) => {
       // if()...
       const msg = error.response.data.msg
       if (!isUnNull(msg)) {
-        Notify.create({
-          message: error.response.data.msg,
-          color: 'warning',
-          position: 'top',
-          timeout: 2000,
-        })
+        if (msg.length >= 2) {
+          Notify.create({
+            message: msg,
+            color: 'warning',
+            position: 'top',
+            timeout: 2000,
+          })
+        }
       }
       return '请求出错了！'
     }
