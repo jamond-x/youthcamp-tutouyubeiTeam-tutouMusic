@@ -103,12 +103,12 @@ export default defineComponent({
       this.$emit('immediatelyBroadcast', songId + '')
     },
     playList(list) {
-      console.log('新播放列表')
-      this.$emit('newPlaylist', list)
+      let newList = list.map(item => item + '')
+      this.$emit('newPlaylist', newList)
     },
     playMoreList(list) {
-      console.log('追加')
-      this.$emit('addPlaylist', list)
+      let newList = list.map(item => item + '')
+      this.$emit('addPlaylist', newList)
     },
   },
   mounted() {
