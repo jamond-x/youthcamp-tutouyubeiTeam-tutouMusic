@@ -1,6 +1,6 @@
 <h1 align="center" >秃头音乐</h1>
 
-<p align="center"><img width="200" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/Avatar/0f3343128279fc902d6ffd30121bd400_hd.jpg"></img></p>
+<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/img/image.png"></img></p>
 
 <p align="center" >前端秃头预备选手专属音乐APP</p>
 
