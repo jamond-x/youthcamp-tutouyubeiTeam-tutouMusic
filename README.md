@@ -1,6 +1,8 @@
 <h1 align="center" >秃头音乐</h1>
 
-<p align="center" >秃头预备选手专属音乐APP</p>
+<p align="center"><img width="200" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/Avatar/0f3343128279fc902d6ffd30121bd400_hd.jpg"></img></p>
+
+<p align="center" >前端秃头预备选手专属音乐APP</p>
 
 ### 运行项目
 
@@ -37,17 +39,26 @@ See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 node app.js
 ```
 
+本地测试环境时所有请求自动请求到本地，可以从终端查看请求详细
+
 具体信息查看[官网](https://neteasecloudmusicapi.vercel.app/#/)
 
-#### 或者部署至服务器？
+#### 部署至服务器
 
-待定
+通过vercel部署至线上，线上版本会自动请求线上接口地址
+
+### 协作流程及规范
+
+项目采用vercel部署。在分支上开发完一个功能后将最新的`dev`分支合并到该分支，无冲突后`pr`到`dev`分支。此时vercel会自动部署检测是否有错误，若部署失败出现错误则继续修改，直到没有错误。
+
+具体分支规范、git提交规范查看飞书文档。
 
 ### 技术栈
 
 - [Vue3](https://v3.cn.vuejs.org/guide/introduction.html)
 - [Vuex](https://next.vuex.vuejs.org/zh/index.html)
 - [Vue Router](https://next.router.vuejs.org/zh/index.html)
+- [Axios](http://www.axios-js.com/)
 - [Sass](https://www.sass.hk/guide/)
 - [Quasar2](https://quasar.dev/vue-components/ajax-bar)
 - [Quasar1中文文档](http://www.quasarchs.com/)
