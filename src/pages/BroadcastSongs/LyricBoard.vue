@@ -22,7 +22,13 @@
       </div>
       <div class="fm">
         <div class="font text-black q-px-sm q-ml-sm">私人FM</div>
-        <q-toggle v-model="FMMode" icon="fas fa-blog" size="50px" color="red" />
+        <q-toggle
+          v-model="FMMode"
+          @update:model-value="beforeOpenFM"
+          icon="fas fa-blog"
+          size="50px"
+          color="red"
+        />
       </div>
     </div>
     <div class="left-side">
@@ -324,6 +330,20 @@ export default defineComponent({
       router.push(`/playlist/${playlistId}`)
     }
 
+    const beforeOpenFM = (newVal, evt) => {
+      if (newVal === true) {
+        if (store.state.loginFlag === 0) {
+          $q.notify({
+            message: '请先登录',
+            color: 'warning',
+            position: 'top',
+            timeout: 2000,
+          })
+          FMMode.value = false
+        }
+      }
+    }
+
     watch(
       () => props.songCurrentTime,
       time => {
@@ -349,7 +369,9 @@ export default defineComponent({
       () => FMMode.value,
       newVal => {
         if (newVal) {
-          FM()
+          if (store.state.loginFlag === 1) {
+            FM()
+          }
           return
         }
         store.commit('setFMStatus', false)
@@ -374,6 +396,7 @@ export default defineComponent({
       changeProgress,
       isUnNull,
       toPlaylist,
+      beforeOpenFM,
     }
   },
 })

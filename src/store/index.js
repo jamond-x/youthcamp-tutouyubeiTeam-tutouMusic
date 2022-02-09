@@ -28,7 +28,7 @@ export default store(function (/* { ssrContext } */) {
         avatarUrl:
           'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png',
       },
-      loginFlag: 0,
+      loginFlag: 0, // 已经登录是1
       isFM: false,
       firstOpenFM: true,
     },

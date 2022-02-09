@@ -12,6 +12,8 @@
 
 <script>
 import { defineComponent, inject } from 'vue'
+import { useStore } from 'vuex'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -37,10 +39,21 @@ export default defineComponent({
     },
   },
   setup() {
+    const store = useStore()
+    const $q = useQuasar()
     const openFM = inject('openFM')
     const beforeOpenFM = type => {
       if (type === '个性FM') {
-        openFM()
+        if (store.state.loginFlag === 1) {
+          openFM()
+        } else {
+          $q.notify({
+            message: '请先登录',
+            color: 'warning',
+            position: 'top',
+            timeout: 2000,
+          })
+        }
       }
     }
     return {

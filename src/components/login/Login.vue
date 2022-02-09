@@ -11,6 +11,7 @@
     <div>
       <div class="login_font">登录</div>
     </div>
+    <div class="q-px-xl font__declared">*所有的数据来自网易云音乐，请用网易云账号登录</div>
     <div class="InputBox">
       <q-input
         rounded
@@ -130,11 +131,14 @@ export default defineComponent({
 @import 'src/css/common.scss';
 .cardWrapper {
   width: 470px;
-  height: 350px;
+  height: 400px;
   border-radius: 30px;
+  .font__declared {
+    opacity: 0.6;
+  }
 }
 .login_font {
-  @include custom-font(35px, 600, 8px, inherit);
+  @include custom-font(35px, 600, 30px, inherit);
 }
 .InputBox {
   min-width: 370px;
