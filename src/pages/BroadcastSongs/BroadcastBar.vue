@@ -250,7 +250,7 @@ export default defineComponent({
         if (isUnNull(intervalTimer)) {
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
             $q.notify({
-              message: '该歌曲没有版权或资源链接无效',
+              message: '资源链接无效(该歌曲没有版权或者需要登录)',
               timeout: 2000,
               position: 'top',
             })
