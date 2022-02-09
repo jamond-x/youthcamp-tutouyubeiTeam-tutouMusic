@@ -9,38 +9,7 @@
       <MVLikesItem v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MVLikesItem>
     </div>
 
-    <div class="card">
-      <q-card class="my-card">
-        <q-img :src="Url" fit="fill"> </q-img>
-      </q-card>
 
-      <!-- 第一列 -->
-      <q-list separator>
-        <q-item v-ripple>
-          <q-item-section>MV名称：{{ data.data.name }}</q-item-section>
-          <q-item-section avatar>
-            <q-btn flat round color="red" icon="favorite" />
-          </q-item-section>
-          <q-item-section>(点赞数量：{{ numFormat(info.info.likedCount) }})</q-item-section>
-        </q-item>
-
-        <q-item v-ripple>
-          <q-item-section>作者名：{{ data.data.artistName }}</q-item-section>
-          <q-item-section avatar>
-            <q-btn flat round color="accent" icon="bookmark" />
-          </q-item-section>
-          <q-item-section>(评论数量：{{ numFormat(info.info.commentCount) }})</q-item-section>
-        </q-item>
-
-        <q-item v-ripple>
-          <q-item-section>{{ data.data.desc === '' ? '暂无描述' : data.data.desc }}</q-item-section>
-          <q-item-section avatar>
-            <q-btn flat round color="primary" icon="share" />
-          </q-item-section>
-          <q-item-section>(分享数量：{{ numFormat(info.info.shareCount) }})</q-item-section>
-        </q-item>
-      </q-list>
-    </div>
   </div>
 </template>
 <script>
@@ -136,7 +105,7 @@ export default defineComponent({
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
-    margin-top: -20px;
+    // margin-top: -20px;
     .my-card {
       width: 200px;
       border-radius: 10px;
