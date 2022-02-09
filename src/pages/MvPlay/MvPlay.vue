@@ -21,7 +21,7 @@ import {
   QuerySongerCover,
 } from 'src/utils/request/mv/mvdetail'
 import { defineComponent, ref, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+// import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'MvPlay',
@@ -29,17 +29,15 @@ export default defineComponent({
     // MvRecommend,
   },
   setup() {
-    const {
-      params: { mvid },
-    } = useRoute()
+    // const {
+    //   params: { mvid },
+    // } = useRoute()
     let mvUrl = ref('')
     let Url = ref('')
     const state = reactive({
       mvdata: {},
     })
-    const info = reactive({
-      info: {},
-    })
+
     const MVLikes = reactive({
       MVLikes: [],
     })
@@ -57,7 +55,6 @@ export default defineComponent({
 
     //   mvUrl.value = data1.url
     //   state.mvdata = data2
-    //   info.info = MVInfo
     // }
     // mvMounted()
 
