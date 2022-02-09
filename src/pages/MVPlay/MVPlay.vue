@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="video">
-      <div class="title">{{ state.mvdata.name }}播放中~~</div>
+      <div class="title q-my-lg">{{ state.mvdata.name }}播放中~~</div>
       <q-video :ratio="16 / 9" :src="mvUrl" />
     </div>
     <div class="list">

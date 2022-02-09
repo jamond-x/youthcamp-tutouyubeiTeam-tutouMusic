@@ -81,6 +81,7 @@
             <li
               v-for="(item, index) in songsList"
               :key="index"
+              v-ripple
               class="cursor__pointer song-list__line font-weight-sm q-mt-sm"
               @click="$emit('priorBSSong', item)"
             >
