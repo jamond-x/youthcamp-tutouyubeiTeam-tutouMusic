@@ -24,7 +24,13 @@
       />
     </div>
 
-    <q-infinite-scroll class="col-12" @load="onLoad" :debounce="1200" :offset="250" scroll-target="body">
+    <q-infinite-scroll
+      class="col-12"
+      @load="onLoad"
+      :debounce="1200"
+      :offset="250"
+      scroll-target="body"
+    >
       <transition name="show-hide">
         <mv-list :mv-lists="state.mvList" />
       </transition>
@@ -132,6 +138,11 @@ export default defineComponent({
 
     function QueryMV() {
       QueryMv(choose.area, choose.type, choose.order, choose.index * 20).then(res => {
+        console.log(
+          '%c 🍯 res.data: ',
+          'font-size:20px;background-color: #42b983;color:#fff;',
+          res.data
+        )
         if (!choose.index) {
           state.mvList = res.data
         } else {
@@ -144,6 +155,11 @@ export default defineComponent({
       console.log('执行' + index)
       choose.index = index - 1
       QueryMv(choose.area, choose.type, choose.order, choose.index * 20).then(res => {
+        console.log(
+          '%c 🍯 res.data: ',
+          'font-size:20px;background-color: #42b983;color:#fff;',
+          res.data
+        )
         if (!choose.index) {
           state.mvList = res.data
         } else {
@@ -164,7 +180,7 @@ export default defineComponent({
       areaClick,
       typeClick,
       sortClick,
-      onLoad
+      onLoad,
     }
   },
 })

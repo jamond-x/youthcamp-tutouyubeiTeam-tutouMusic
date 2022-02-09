@@ -11,33 +11,32 @@
           </div>
           <q-separator vertical inset spaced="2vw" />
           <div class="flex column justify-between">
-            <div class="text-h6 text-weight-bold row">{{ playlist.name }}</div>
-            <div class="row flex items-center">
-              <q-btn round class="q-mr-md">
-                <q-avatar size="40px">
-                  <img class="listHeadImg" :src="creator.avatarUrl" />
-                </q-avatar>
-              </q-btn>
-              <div class="text-subtitle1">
-                {{ creator.nickname }} {{ formatDate(playlist.createTime) }}创建
-              </div>
-            </div>
+            <div class="text-h3 text-weight-bold row">{{ playlist.name }}</div>
             <div class="row q-mt-sm">
-              <q-btn-group class="q-mr-md">
+              <q-btn-group class="q-mr-md" rounded>
                 <q-btn @click="playList(trackIds)">
-                  <q-icon name="fas fa-chevron-right" size="16px" />
-                  播放全部
+                  <q-icon name="fas fa-play" size="16px" />
+                  <span class="q-ml-md">播放全部</span>
                 </q-btn>
                 <q-btn @click="playMoreList(trackIds)">
-                  <q-icon name="fas fa-plus" size="16px" />
+                  <q-icon name="fas fa-heart" size="16px" />
                 </q-btn>
               </q-btn-group>
-              <q-btn label="收藏">({{ playlist.subscribedCount }})</q-btn>
+              <q-btn label="收藏" rounded>({{ playlist.subscribedCount }})</q-btn>
             </div>
-
-            <div class="row q-mt-sm">
-              <p class="text-subtitle2 q-mr-md">歌曲: {{ playlist.trackCount }}</p>
-              <p class="text-subtitle2">播放: {{ playlist.playCount }}</p>
+            <div class="row">
+              <div class="row flex items-center">
+                <q-avatar size="25px" class="cursor__pointer q-mr-sm">
+                  <img class="listHeadImg" :src="creator.avatarUrl" />
+                </q-avatar>
+                <div class="text-subtitle2">
+                  {{ creator.nickname }} {{ formatDate(playlist.createTime) }}创建
+                </div>
+                <div class="row q-mt-md q-ml-lg">
+                  <p class="text-subtitle2 q-mr-md">歌曲: {{ playlist.trackCount }}</p>
+                  <p class="text-subtitle2">播放: {{ playlist.playCount }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -104,12 +103,12 @@ export default defineComponent({
       this.$emit('immediatelyBroadcast', songId + '')
     },
     playList(list) {
-      console.log('新播放列表')
-      this.$emit('newPlaylist', list)
+      let newList = list.map(item => item + '')
+      this.$emit('newPlaylist', newList)
     },
     playMoreList(list) {
-      console.log('追加')
-      this.$emit('addPlaylist', list)
+      let newList = list.map(item => item + '')
+      this.$emit('addPlaylist', newList)
     },
   },
   mounted() {

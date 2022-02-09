@@ -25,9 +25,13 @@
               <img :src="resPicUrl(item.picUrl)" />
             </q-avatar>
           </q-item-section>
-          <q-item-section>{{ item.name }}</q-item-section>
+          <q-item-section
+            class="name"
+            :class="[$q.dark.mode ? 'body-text-light' : 'body-text-dark']"
+            >{{ item.name }}</q-item-section
+          >
 
-          <q-item-section>
+          <q-item-section :class="[$q.dark.mode ? 'body-item-light' : 'body-text-dark']">
             <div v-for="(name, i) in data.author[index].slice(0, 2)" :key="i" class="rightText">
               {{ name }}
             </div>
@@ -87,7 +91,7 @@ export default defineComponent({
       const realIds = res.playlist.trackIds.slice(0, 10)
       data.songList = temp.map(item => item.al)
       data.bannerImage = data.songList[0].picUrl
-      data.songList = data.songList.map((item,index) => {
+      data.songList = data.songList.map((item, index) => {
         item.id = realIds[index].id
         return item
       })
@@ -133,6 +137,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/common.scss';
 .bigBox {
   position: absolute;
   top: 0;
@@ -179,7 +184,6 @@ export default defineComponent({
       .text {
         font-size: 22px;
         font-weight: 700;
-        color: white;
         filter: none;
         z-index: 200;
       }
@@ -229,8 +233,7 @@ export default defineComponent({
         border-radius: 5px;
         margin-right: 25px;
         margin-left: -5px;
-        background-color: #ffffff;
-        color: black;
+        /* background-color: #ffffff; */
       }
     }
   }

@@ -35,40 +35,45 @@
             </template>
           </q-input>
         </q-toolbar-title>
-        <q-btn :icon="mode" @click="modeToggle" size="12px" round ripple />
+        <q-btn :icon="mode" @click="modeToggle" size="12px" flat round ripple />
         <q-separator vertical inset class="q-mx-md" />
         <div>
           <q-btn-dropdown flat>
             <template v-slot:label>
-              <q-avatar>
+              <q-avatar size="27px">
                 <img :src="avatarUrl" />
               </q-avatar>
             </template>
-            <div class="row no-wrap q-pa-lg z-top">
-              <div class="column items-center">
-                <q-avatar size="64px">
-                  <img :src="avatarUrl" />
-                </q-avatar>
-                <div class="text-subtitle1 q-mt-md q-mb-xs">{{ nickname }}</div>
+            <q-parallax :src="userBackgroundUrl" class="parallax__user" :height="180">
+              <q-avatar size="64px" class="q-mb-md">
+                <img :src="avatarUrl" />
+              </q-avatar>
+              <div class="column">
+                <div class="q-mb-md">{{ userSignature }}</div>
                 <q-btn
                   @click="handleLogout"
                   v-if="loginFlag"
-                  color="purple"
-                  label="登出"
+                  color="grey-4"
+                  text-color="black"
+                  glossy
+                  unelevated
+                  label="登 出"
                   size="md"
                   v-close-popup
                 />
                 <q-btn
                   @click="handleLogin"
                   v-else
-                  color="purple"
-                  label="登录"
-                  push
+                  color="grey-4"
+                  text-color="black"
+                  glossy
+                  unelevated
+                  label="登 录"
                   size="md"
                   v-close-popup
                 />
               </div>
-            </div>
+            </q-parallax>
           </q-btn-dropdown>
         </div>
       </q-toolbar>
@@ -76,7 +81,7 @@
     <q-drawer
       :breakpoint="600"
       show-if-above
-      :width="250"
+      :width="260"
       bordered
       class="shadow-3"
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
@@ -87,8 +92,8 @@
           TT
         </div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
-        <q-separator class="q-mx-lg q-mt-lg" />
-        <keep-alive><UserSongListLink v-if="loginFlag" /></keep-alive>
+        <q-separator class="q-mx-lg q-my-lg" />
+        <keep-alive><UserSongListLink v-if="loginFlag" class="q-mt-xl" /></keep-alive>
       </q-list>
     </q-drawer>
     <q-page-container :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
@@ -198,7 +203,7 @@ export default defineComponent({
     const store = useStore()
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
-    $q.dark.set('auto')
+    $q.dark.set(false)
     let songsList = ref([])
     let currentSongId = ref('')
     // 测试环境
@@ -216,6 +221,10 @@ export default defineComponent({
       'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
     )
     let nickname = ref('秃头预备')
+    let userSignature = ref('这个人很懒，什么都留下了')
+    let userBackgroundUrl = ref(
+      'https://images.unsplash.com/photo-1643944398479-0fd9eaee5cbc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1174&q=80'
+    )
     let loginFlag = ref(0)
     let showLogin = ref(false)
     let refreshing = ref(false)
@@ -308,6 +317,8 @@ export default defineComponent({
         let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         nickname.value = userInfo['nickname']
         avatarUrl.value = userInfo['avatarUrl']
+        userBackgroundUrl.value = userInfo['backgroundUrl']
+        userSignature.value = userInfo['signature']
       } else {
         // 没登陆过
         updateLoginFlag(0)
@@ -411,7 +422,7 @@ export default defineComponent({
     const pushToList = param => {
       addSongToPlaylist(param, false)
     }
-    
+
     const handlePlay = songDetail => {
       const { id } = songDetail
       let idStr = id.toString()
@@ -480,7 +491,7 @@ export default defineComponent({
      * index :  Number
      */
     const goClick = index => {
-      console.log('object')
+      // console.log('object')
       $router.go(index)
     }
 
@@ -543,6 +554,8 @@ export default defineComponent({
       mode,
       avatarUrl,
       nickname,
+      userSignature,
+      userBackgroundUrl,
       loginFlag,
       showLogin,
       refreshing,
@@ -576,6 +589,11 @@ export default defineComponent({
   }
 }
 
+.parallax__user {
+  width: 300px;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
 .footer {
   z-index: 2001;
   height: 80px;

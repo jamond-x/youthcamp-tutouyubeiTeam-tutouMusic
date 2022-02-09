@@ -1,8 +1,8 @@
 <template>
-  <div class="box">
+  <div class="box" :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
     <div class="mian">
       <h2 class="title">官方榜单</h2>
-      <div class="line"></div>
+      <div class="line" :class="[$q.dark.mode ? 'body--light' : 'body--dark']"></div>
       <!-- quasar组件 -->
 
       <q-carousel
@@ -34,7 +34,7 @@
     </div>
 
     <div class="title">全球榜单</div>
-    <div class="line"></div>
+    <div class="line" :class="[$q.dark.mode ? 'body--light' : 'body--dark']"></div>
     <div class="smallRank">
       <smallRankItem
         v-for="item in data.restList"
@@ -81,6 +81,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/common.scss';
+
 .box {
   background-size: 22px 22px;
 
@@ -94,7 +96,7 @@ export default defineComponent({
     margin-top: 30px;
     border-radius: 20px;
     text-align: center;
-    margin-bottom:15px;
+    margin-bottom: 15px;
     .title {
       font-size: 32px;
       // color: white;

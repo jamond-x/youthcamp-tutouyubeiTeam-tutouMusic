@@ -16,7 +16,7 @@ export default {
   props: ['avatar', 'aid', 'name'],
   data() {
     return {
-      trueAvatar: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+      trueAvatar: 'https://cdn.exia.xyz/img/ttlogo.png',
     }
   },
   methods: {
