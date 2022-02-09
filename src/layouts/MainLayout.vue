@@ -54,7 +54,7 @@
                   @click="handleLogout"
                   v-if="loginFlag"
                   color="grey-4"
-                  text-color="purple"
+                  text-color="black"
                   glossy
                   unelevated
                   label="登 出"
@@ -65,7 +65,7 @@
                   @click="handleLogin"
                   v-else
                   color="grey-4"
-                  text-color="purple"
+                  text-color="black"
                   glossy
                   unelevated
                   label="登 录"
