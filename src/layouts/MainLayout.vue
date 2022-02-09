@@ -203,7 +203,7 @@ export default defineComponent({
     const store = useStore()
     const leftDrawerOpen = ref(false)
     const $q = useQuasar()
-    $q.dark.set('auto')
+    $q.dark.set(false)
     let songsList = ref([])
     let currentSongId = ref('')
     // 测试环境

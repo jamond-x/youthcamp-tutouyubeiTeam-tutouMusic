@@ -33,15 +33,14 @@ export const Search = async data => {
  * @param { Object } data{id: '33894312'} 歌曲id
  * @returns
  */
-export const GetSongUrl = async data => {
+export const GetSongUrl = async id => {
   return await api({
     method: 'POST',
     url: `${BROADCAST.GET_URL}?timestamp=${new Date().getTime()}`,
-    data,
-    // data: {
-    //   id,
-    //   cookie,
-    // },
+    data: {
+      id,
+      cookie,
+    },
   })
 }
 

@@ -250,7 +250,7 @@ export default defineComponent({
         if (isUnNull(intervalTimer)) {
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
             $q.notify({
-              message: '该歌曲没有版权或资源链接无效',
+              message: '资源链接无效(该歌曲没有版权或者需要登录)',
               timeout: 2000,
               position: 'top',
             })
@@ -348,16 +348,6 @@ export default defineComponent({
       }
     )
 
-    let singers = computed(() => {
-      let singers = ''
-      for (let artist of songsList[currentSongIndex.value].ar) {
-        singers += `/${artist.name}`
-      }
-      let temp = singers.split('')
-      temp.shift()
-      return temp.join('')
-    })
-
     let autoplayMode_ = computed(() => {
       if (autoplayMode.value.val === 'listLoop') {
         return '列表循环'
@@ -394,7 +384,7 @@ export default defineComponent({
     })
 
     const queryUrls = async id => {
-      const { data } = await GetSongUrl({ id })
+      const { data } = await GetSongUrl(id)
       if (isUnNull(data)) return
       for (let obj of data) {
         for (let j of songsList) {
@@ -539,7 +529,6 @@ export default defineComponent({
       songDuration,
       currentTime_,
       currentTime,
-      singers,
       isReady,
       autoplayMode_,
       autoplayModeForBtnSwitch,
