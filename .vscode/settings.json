@@ -4,12 +4,7 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-<<<<<<< HEAD
-  "git.fetchOnPull": true,
-  "git.autofetchPeriod": 86400
-=======
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
->>>>>>> feat-discover_music
 }
