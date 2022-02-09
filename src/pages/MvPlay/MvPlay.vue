@@ -15,7 +15,6 @@
 import MvRecommend from 'src/components/mvRecommend/MvRecommend.vue'
 import {
   QueryMvDetail,
-  QueryMVInfo,
   QueryMVLikes,
   QueryMvPlay,
   QuerySongerCover,
@@ -45,7 +44,6 @@ export default defineComponent({
       const { data: data2 } = await QueryMvDetail(props.mvid)
       const { mvs } = await QueryMVLikes(props.mvid)
       MVLikes.MVLikes = mvs
-      const MVInfo = await QueryMVInfo(props.mvid)
       if (data2) {
         const { data } = await QuerySongerCover(data2.artists[0].id)
         Url.value = data.artist.cover
