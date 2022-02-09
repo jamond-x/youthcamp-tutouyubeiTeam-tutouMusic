@@ -16,6 +16,11 @@ const routes = [
         },
       },
       {
+        path: '/mvplay/:mvid',
+        props: true,
+        component: () => import('pages/MVPlay/MVPlay.vue'),
+      },
+      {
         path: '/user/:uid',
         props: true,
         component: () => import('pages/User/User.vue'),
