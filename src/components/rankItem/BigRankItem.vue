@@ -5,32 +5,30 @@
       <q-img class="img" :src="item.coverImgUrl"> </q-img>
     </div>
 
-    <q-img class="img" :src="item.coverImgUrl">
+    <q-img class="img" :src="item.coverImgUrl" @click="itemClick">
       <div class="over">
         <div class="text">→点击前往{{ item.name }}</div>
       </div>
-      <div class="absolute-bottom text-subtitle1 text-center">
+      <div class="absolute-bottom text-center">
         <div class="updateTime">更新于{{ formatDate(item.updateTime) }}</div>
         <div class="description">{{ item.updateFrequency }}</div>
       </div>
     </q-img>
 
-    <q-list bordered class="right">
+    <q-list class="right">
       <div v-for="(item, index) in data.songList" :key="item.id">
         <q-item
           v-if="flag"
-          lickable
+          clickable
           v-ripple
           class="songItem"
-          :class="[$q.dark.mode ? 'body-item-dark' : 'body-item-light']"
+          @click="immediatelyBroadcast(item.id + '')"
         >
-          <div class="num" :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
-            {{ index + 1 }}
-          </div>
+          <div class="num">{{ index + 1 }}</div>
 
           <q-item-section avatar>
             <q-avatar rounded>
-              <img :src="item.picUrl" />
+              <img :src="resPicUrl(item.picUrl)" />
             </q-avatar>
           </q-item-section>
           <q-item-section
@@ -68,9 +66,10 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, inject } from 'vue'
 import { DetailRank } from '../../utils/request/rank/rank'
 import { formatDate } from '../../utils/time/time'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'BigRankItem',
@@ -83,17 +82,25 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const router = useRouter()
     const data = reactive({
       songList: [],
       author: [],
+      bannerImage: '',
     })
     const flag = ref(false)
+    const id = props.item.id ? props.item.id : 3778678
     const demo = async () => {
-      const id = props.item.id ? props.item.id : 19723756
       const res = await DetailRank(id)
       const temp = res.playlist.tracks.slice(0, 10)
+      // trackIds里面的id才能播放音乐
+      const realIds = res.playlist.trackIds.slice(0, 10)
       data.songList = temp.map(item => item.al)
-
+      data.bannerImage = data.songList[0].picUrl
+      data.songList = data.songList.map((item, index) => {
+        item.id = realIds[index].id
+        return item
+      })
       const temp2 = temp.map(item => item.ar)
       const temp3 = []
       temp2.forEach(element => {
@@ -110,10 +117,25 @@ export default defineComponent({
     }
     demo()
 
+    const itemClick = () => {
+      router.push({
+        path: '/playlist/' + id,
+      })
+    }
+
+    const resPicUrl = url => {
+      return url + '?param=200y200'
+    }
+
+    const immediatelyBroadcast = inject('immediatelyBroadcast')
+
     return {
       formatDate,
       data,
       flag,
+      resPicUrl,
+      itemClick,
+      immediatelyBroadcast,
     }
   },
 })
@@ -132,14 +154,15 @@ export default defineComponent({
   justify-content: center;
   flex-direction: row;
   box-sizing: border-box;
-  padding-left: 60px;
+  // padding-left: 60px;
+  color: black;
   .mask {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    filter: blur(35px) brightness(0.8);
+    filter: blur(35px) brightness(0.9);
     .img {
       width: 100%;
       height: 100%;
@@ -147,27 +170,24 @@ export default defineComponent({
     }
   }
   .img {
-    width: 300px;
-    height: 300px;
+    width: 15.5vw;
+    height: 15.5vw;
     border-radius: 15px;
+    margin-right: 20px;
   }
   .over {
     display: none;
   }
   .img:hover {
-    transition: 0.6s;
-    filter: contrast(1.5);
-    transform: scale(1.02);
-  }
-  .img:hover {
+    cursor: pointer;
     .over {
       display: block;
-      width: 300px;
-      height: 300px;
+      width: 15.5vw;
+      height: 15.5vw;
       text-align: center;
       line-height: 200px;
       .text {
-        font-size: 32px;
+        font-size: 22px;
         font-weight: 700;
         filter: none;
         z-index: 200;
@@ -175,7 +195,7 @@ export default defineComponent({
     }
   }
   .updateTime {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
   }
   .description {
@@ -191,9 +211,10 @@ export default defineComponent({
     flex-direction: column;
     justify-content: center;
     align-content: center;
-    gap: 6px;
+    // gap: 6px;
     margin-right: 10px;
     .songItem {
+      // background-color: rgba($color: #121212, $alpha: 0.6);
       border-radius: 10px;
       width: 360px;
       height: 55px;
@@ -201,19 +222,21 @@ export default defineComponent({
       justify-content: flex-start;
       align-items: center;
       overflow: hidden;
-
+      &:hover {
+        cursor: pointer;
+      }
       .rightText {
-        /* background-color: white; */
+        // background-color: white;
+        // color: black;
         margin: 2px;
-        display: inline-block;
-        border-radius: 10px;
+        border-radius: 5px;
       }
 
       .num {
         width: 20px;
         height: 20px;
         border-radius: 5px;
-        margin-right: 10px;
+        margin-right: 25px;
         margin-left: -5px;
         /* background-color: #ffffff; */
       }

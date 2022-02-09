@@ -21,15 +21,20 @@ export const QueryUserLikeList = async data => {
 export const QuerySongDetail = async data => {
   return await api({
     url: `/song/detail/?timestamp=${Date.parse(new Date())}`,
-    params: {
-      ids: data['ids'],
-    },
+    params: data,
   })
 }
 
 export const QueryUserSongList = async data => {
   return await api({
     url: `/user/playlist?timestamp=${Date.parse(new Date())}`,
+    params: data,
+  })
+}
+
+export const QueryTrack = async data => {
+  return await api({
+    url: `/playlist/detail?timestamp=${Date.parse(new Date())}`,
     params: data,
   })
 }

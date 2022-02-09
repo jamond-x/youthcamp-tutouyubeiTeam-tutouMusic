@@ -6,18 +6,21 @@
         toggle-color="primary"
         :options="areaData"
         @update:model-value="areaClick"
+        flat
       />
       <q-btn-toggle
         v-model="type"
         toggle-color="primary"
         :options="typeData"
         @update:model-value="typeClick"
+        flat
       />
       <q-btn-toggle
         v-model="sort"
         toggle-color="primary"
         :options="sortData"
         @update:model-value="sortClick"
+        flat
       />
     </div>
 
@@ -149,6 +152,7 @@ export default defineComponent({
     }
 
     function onLoad(index, done) {
+      console.log('执行' + index)
       choose.index = index - 1
       QueryMv(choose.area, choose.type, choose.order, choose.index * 20).then(res => {
         console.log(

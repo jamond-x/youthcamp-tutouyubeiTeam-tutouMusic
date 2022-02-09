@@ -12,12 +12,20 @@
             最新评论
           </span>
           <div>
-            <q-btn class="pen" icon="fas fa-pen" flat rounded size="10px" />
+            <q-btn
+              class="pen"
+              icon="fas fa-pen"
+              flat
+              rounded
+              size="10px"
+              @click="replyCommentType = 1"
+            />
             <q-popup-edit
               @save="sendComment_"
               class="bg-brown-7 text-white"
               color="white"
               buttons
+              v-model="useless"
               v-slot="scope"
               label-set="发送"
               label-cancel="取消"
@@ -41,47 +49,102 @@
             </q-popup-edit>
           </div>
         </div>
-        <div class="each-comment q-my-md" v-for="(item, index) in currentComment" :key="index">
-          <div class="column">
-            <q-avatar class="q-mt-xs">
-              <img :src="item.user.avatarUrl" />
-            </q-avatar>
-            <q-badge class="badge" rounded color="orange" label="v" />
+        <div v-if="isUnNull(currentComment) || currentComment.length === 0">
+          <div class="each-comment q-my-md" v-for="item in 10" :key="item">
+            <q-skeleton type="QAvatar" />
+            <q-skeleton type="QSlider" />
           </div>
-          <div class="column justify-center">
-            <div class="name">{{ item.user.nickname }} :{{ item.content }}</div>
-            <div v-if="item.beReplied.length > 0" class="comment-replied q-my-sm q-py-xs q-pl-sm">
-              @{{ item.beReplied[0].user.nickname }}： {{ item.beReplied[0].content }}
+        </div>
+
+        <div v-else>
+          <div class="each-comment q-my-md" v-for="(item, index) in currentComment" :key="index">
+            <div class="column">
+              <router-link :to="`/user/${item.user.userId}`">
+                <q-avatar
+                  :class="['q-mt-xs', $q.dark.isActive ? 'user-avatar' : 'user-avatar__dark']"
+                  v-close-popup
+                >
+                  <img :src="item.user.avatarUrl" />
+                </q-avatar>
+              </router-link>
+              <q-badge
+                v-if="item.user.authStatus === 1"
+                class="badge"
+                rounded
+                color="orange"
+                label="v"
+              />
             </div>
-            <div class="bar q-mt-sm">
-              <div class="time">{{ item.timeStr }}</div>
-              <div class="row reverse">
-                <span class="liked-count">{{ item.likedCount }}</span>
-                <q-btn
-                  v-if="!item.liked"
-                  @click="like(id, item.commentId, 1, 0), (item.liked = true)"
-                  size="10px"
-                  rounded
-                  flat
-                  icon="far fa-heart"
-                />
-                <q-btn
-                  v-else
-                  size="10px"
-                  @click="like(id, item.commentId, 0, 0), (item.liked = false)"
-                  rounded
-                  flat
-                  color="red"
-                  icon="fas fa-heart"
-                />
-                <q-btn
-                  class="comment-replay"
-                  @click="replayComment, (popupEdit = true)"
-                  icon="far fa-comment"
-                  size="10px"
-                  rounded
-                  flat
-                />
+            <div class="column justify-center">
+              <div class="name">
+                <span class="cursor__pointer">{{ item.user.nickname }}</span> :{{ item.content }}
+              </div>
+              <div
+                v-if="item.beReplied.length > 0"
+                :class="[$q.dark.isActive ? 'comment-replied__dark' : 'comment-replied']"
+                class="q-my-sm q-py-xs q-pl-sm"
+              >
+                @{{ item.beReplied[0].user.nickname }}： {{ item.beReplied[0].content }}
+              </div>
+              <div class="bar q-mt-sm">
+                <div class="time">{{ item.timeStr }}</div>
+                <div class="row reverse">
+                  <span class="liked-count">{{ item.likedCount }}</span>
+                  <q-btn
+                    v-if="!item.liked"
+                    @click="like(id, item.commentId, 1, 0), (item.liked = true)"
+                    size="10px"
+                    rounded
+                    flat
+                    icon="far fa-heart"
+                  />
+                  <q-btn
+                    v-else
+                    size="10px"
+                    @click="like(id, item.commentId, 0, 0), (item.liked = false)"
+                    rounded
+                    flat
+                    color="red"
+                    icon="fas fa-heart"
+                  />
+                  <div>
+                    <q-btn
+                      class="comment-replay"
+                      @click=";(replyCommentType = 2), (replyCommentId = item.commentId)"
+                      icon="far fa-comment"
+                      size="10px"
+                      rounded
+                      flat
+                    />
+                    <q-popup-edit
+                      @save="sendComment_"
+                      class="bg-brown-7 text-white"
+                      color="white"
+                      buttons
+                      v-slot="scope"
+                      v-model="useless"
+                      label-set="发送"
+                      label-cancel="取消"
+                      title="回复评论"
+                      max-width="500px"
+                    >
+                      <q-input
+                        dark
+                        type="textarea"
+                        color="white"
+                        v-model="scope.value"
+                        dense
+                        autofocus
+                        counter
+                        @keyup.enter="scope.set"
+                      >
+                        <template v-slot:append>
+                          <q-icon name="edit" />
+                        </template>
+                      </q-input>
+                    </q-popup-edit>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -94,40 +157,42 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
-import { GetComment, LikeComment, SendComment } from 'src/utils/request/broadcastSong/broadcast'
+import {
+  GetComment,
+  GetHotComment,
+  LikeComment,
+  SendComment,
+} from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
+import { useQuasar } from 'quasar'
+
 export default defineComponent({
   name: 'Comment',
   components: {},
   props: {
     id: {
-      type: Number,
+      type: String,
     },
   },
   setup(props) {
-    // TODO: 评论是否为回复评论
     // TODO: 认证用户图标
-    // TODO: 点击用户头像跳转至用户主页
     let currentComment = ref([])
     let hotComment_ = ref([])
     let comment_ = ref([])
     let commentMode = ref(true)
     let commentAmount = ref(20)
+    let hotCommentAmount = ref(15)
+    let replyCommentType = ref(1) // 1: 发送   2: 回复
+    let replyCommentId = ref('')
+    let $q = useQuasar()
+
     const get = async id => {
       if (isUnNull(id)) return
-      // let res = await GetComment({ id })
       let res = await GetComment(id)
       const { hotComments, comments } = res
-      // hotComments.forEach(el => {
-      //   comment.push(el)
-      // })
       hotComment_.value = hotComments
       comment_.value = comments
-      console.log(hotComments)
       currentComment.value = hotComments
-      // const { hotComments } = JSON.parse(window.localStorage.getItem('comment'))
-      // comment = hotComments
-      // console.log(comment)
     }
     get(props.id)
     const initCommentData = () => {
@@ -159,12 +224,20 @@ export default defineComponent({
         let { comments } = await GetComment(props.id, (commentAmount.value += 20))
         comment_.value = comments
         currentComment.value = comment_.value
+        return
       }
-      // TODO: 解决加载给多热门评论问题
+      let { hotComments } = await GetHotComment(props.id, 0, (hotCommentAmount.value += 15))
+      hotComment_.value = hotComments
+      currentComment.value = hotComment_.value
     }
-
     const sendComment_ = async comment => {
-      let res = await SendComment(1, 0, props.id, comment)
+      let res = await SendComment(
+        replyCommentType.value,
+        0,
+        props.id,
+        comment,
+        replyCommentId.value
+      )
       if (res.code === 200) {
         const { comment } = res
         comment.beReplied = []
@@ -173,11 +246,11 @@ export default defineComponent({
         comment.likedCount = 0
         comment_.value.unshift(comment)
       }
-      // TODO:  处理失败
-    }
-
-    const replayComment = () => {
-      console.log('work')
+      $q.notify({
+        message: '评论失败，请刷新重试',
+        color: 'purple',
+        position: 'top',
+      })
     }
 
     watch(
@@ -191,12 +264,14 @@ export default defineComponent({
     return {
       currentComment,
       commentMode,
-      popupEdit: ref(false),
+      replyCommentType,
+      replyCommentId,
+      useless: ref(''),
       changeComment,
       loadMoreComment,
       like,
       sendComment_,
-      replayComment,
+      isUnNull,
     }
   },
 })
@@ -234,6 +309,14 @@ export default defineComponent({
       display: grid;
       grid-template-columns: 1fr 5fr;
       position: relative;
+      .user-avatar {
+        cursor: pointer;
+      }
+      .user-avatar__dark {
+        cursor: pointer;
+        box-shadow: 8px 8px 16px #797979, -8px -8px 16px #ffffff;
+      }
+
       .badge {
         width: 15px;
         height: 15px;
@@ -241,11 +324,18 @@ export default defineComponent({
         top: 5px;
         left: 35px;
       }
-      .comment-replied {
+      .comment-replied__dark {
         width: 320px;
         opacity: 0.4;
         background-color: #165156;
         border-radius: 5px;
+      }
+      .comment-replied {
+        width: 320px;
+        background-color: black;
+        opacity: 0.5;
+        border-radius: 5px;
+        color: white;
       }
       .bar {
         display: grid;

@@ -10,11 +10,10 @@
         swipeable
         animated
         control-type="unelevated"
-        control-color="red"
         padding
         arrows
         height="324px"
-        class="bg-white shadow-2 myCarousel"
+        class="shadow-2 myCarousel"
       >
         <q-carousel-slide name="style" class="column no-wrap flex-center">
           <BigRankItem :item="data.list[0]"></BigRankItem>
@@ -66,8 +65,9 @@ export default defineComponent({
     })
     const ctrated = async () => {
       const res = await AllRank()
-      data.list = res.list.slice(0, 4)
-      data.restList = res.list.slice(4)
+      data.list = res.list.slice(0, 4).reverse()
+      console.log(data.list)
+      data.restList = res.list.slice(4, 29)
     }
 
     ctrated()
@@ -84,7 +84,6 @@ export default defineComponent({
 @import 'src/css/common.scss';
 
 .box {
-  opacity: 0.8;
   background-size: 22px 22px;
 
   display: flex;
@@ -97,15 +96,16 @@ export default defineComponent({
     margin-top: 30px;
     border-radius: 20px;
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 15px;
     .title {
       font-size: 32px;
+      // color: white;
       font-weight: bolder;
-      margin-top: 10px;
     }
     .line {
       width: 200px;
       height: 4px;
+      // background-color: #fff;
       margin: -35px auto 11px;
     }
     .myCarousel {
@@ -115,13 +115,15 @@ export default defineComponent({
   }
   .title {
     font-size: 32px;
+    // color: white;
     font-weight: bolder;
     margin-top: 10px;
   }
   .line {
     width: 200px;
     height: 4px;
-    margin: 5px auto 20px;
+    // background-color: #fff;
+    margin: 5px auto 5px;
   }
 
   .smallRank {
@@ -135,18 +137,17 @@ export default defineComponent({
     .item {
       justify-items: center;
       align-items: center;
-      filter: brightness(0.9) saturate(1) contrast(0.8);
+      text-align: center;
+      // filter: saturate(1);
     }
     .item:hover {
       transform: scale(1.05) translateZ(0);
-      filter: contrast(1.2) brightness(1.2);
+      // filter: brightness(1.2);
       transition: 0.6s;
       z-index: 10;
       overflow: hidden;
+      cursor: pointer;
     }
-  }
-  .smallRank:hover .item:not(:hover) {
-    filter: brightness(0.9) saturate(1) contrast(0.8);
   }
 }
 </style>

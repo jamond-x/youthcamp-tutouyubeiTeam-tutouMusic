@@ -1,9 +1,9 @@
 <template>
-  <div class="song-item">
+  <div class="song-item" @click="play">
     <img :src="trueCover" alt="title" />
     <div class="song-item-content">
       <h5 class="text-h6 text-weight-bold">{{ title }}</h5>
-      <div class="text-subtitle2">{{ singer }}</div>
+      <div class="text-subtitle2 singers">{{ trueSinger }}</div>
     </div>
   </div>
 </template>
@@ -12,21 +12,33 @@
 import { QuerySong } from 'src/utils/request/search'
 export default {
   name: 'SongItem',
-  props: ['id', 'cover', 'title', 'singer'],
+  props: ['id', 'cover', 'title', 'singer', 'singers'],
   data() {
     return {
-      trueCover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+      trueCover: 'https://cdn.exia.xyz/img/ttlogo.png',
+      trueSinger: '',
     }
   },
-  methods: {},
+  methods: {
+    play() {
+      this.$emit('immediatelyBroadcast', this.id + '')
+    },
+  },
   created() {
     if (this.cover == 'default') {
       QuerySong(this.id).then(res => {
-        this.trueCover = res.songs[0].al.picUrl
+        this.trueCover = res.songs[0].al.picUrl + '?param=200y200'
       })
     } else {
-      this.trueCover = this.cover
+      this.trueCover = this.cover + '?param=200y200'
     }
+    if (this.singers) {
+      let singerList = []
+      this.singers.forEach(element => {
+        singerList.push(element.name)
+      })
+      this.trueSinger = singerList.join(' / ')
+    } else this.trueSinger = this.singer
   },
 }
 </script>
@@ -57,7 +69,8 @@ export default {
   width: 4rem;
 }
 
-.text-h6 {
+.text-h6,
+.singers {
   position: relative;
   margin: 0;
   overflow: hidden;

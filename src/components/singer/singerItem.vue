@@ -1,13 +1,14 @@
 <template>
-  <q-card class="my-card">
-    <q-img :src="item.img1v1Url" class="img">
+  <q-card class="my-card" @click="itemClick">
+    <q-img :src="picUrl" class="img">
       <div class="absolute-bottom text-h6 name">{{ item.name ? item.name : item.trans }}</div>
     </q-img>
   </q-card>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'SingerItem',
@@ -21,10 +22,20 @@ export default defineComponent({
   },
 
   setup(props) {
-    const getData = async () => {}
-    getData()
+    const router = useRouter()
+    const picUrl = computed(() => {
+      return props.item.picUrl + '?param=200y200'
+    })
 
-    return {}
+    function itemClick() {
+      router.push({
+        path: '/artist/' + props.item.id,
+      })
+    }
+    return {
+      picUrl,
+      itemClick
+    }
   },
 })
 </script>
@@ -36,6 +47,9 @@ export default defineComponent({
   position: relative;
   justify-self: center;
   align-self: center;
+  &:hover {
+    cursor: pointer;
+  }
   .name {
     text-align: center;
   }

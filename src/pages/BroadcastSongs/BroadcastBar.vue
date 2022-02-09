@@ -8,9 +8,16 @@
       ></q-img>
       <div class="q-ml-md">
         <div class="song-name">{{ songsList[currentSongIndex].name }}</div>
-        <div class="singer">{{ singers }}</div>
+        <router-link
+          :class="['singer', $q.dark.isActive ? 'text-white' : 'text-black']"
+          @click="$emit('closePop')"
+          :to="`/artist/${artist.id}`"
+          v-for="(artist, index) in songsList[currentSongIndex].ar"
+          :key="index"
+          tag="span"
+          >{{ index >= 1 ? `/${artist.name}` : artist.name }}
+        </router-link>
       </div>
-      <div class="album offset-2">{{ songsList[currentSongIndex].al.name }}</div>
     </div>
     <div v-else class="flex flex-center">
       <div>列表暂无播放歌曲~</div>
@@ -51,7 +58,7 @@
           @mouseleave="slidePointThumb = true"
           thumb-size="15px"
           class="slider-progress col-10 q-px-sm"
-          color="white"
+          :color="sliderColor"
           v-model="currentTime"
           :min="0"
           :max="songDuration"
@@ -68,14 +75,36 @@
     </div>
     <div class="tools row reverse items-center">
       <q-card class="list-card" v-show="songsListLayerStatus">
-        <q-table
-          title="播放列表"
-          :columns="columns"
-          :rows="songListLayer"
-          row-key="name"
-          dark
-          color="amber"
-        />
+        <q-markup-table separator="horizontal" flat bordered>
+          <div class="font-weight-sm q-ml-xl q-mt-lg q-mb-sm">播放列表</div>
+          <div v-if="!isUnNull(songsList)" class="column items-center">
+            <li
+              v-for="(item, index) in songsList"
+              :key="index"
+              class="cursor__pointer song-list__line font-weight-sm q-mt-sm"
+              @click="$emit('priorBSSong', item)"
+            >
+              <q-icon
+                class="song__active"
+                :class="{ 'animation-pause': !playStatus }"
+                v-if="item.id === songsList[currentSongIndex].id"
+                name="fas fa-music"
+              ></q-icon>
+              <span class="cell">{{ item.name }}</span>
+              <span class="cell" style="opacity: 0.7">
+                {{ item.ar.length === 1 ? item.ar[0].name : `${item.ar[0].name}...` }}
+              </span>
+              <span class="cell" style="opacity: 0.7">
+                {{ item.al.name }}
+              </span>
+            </li>
+          </div>
+          <div v-else>
+            <tr v-for="item in 5" :key="item">
+              <q-skeleton type="QSlider" />
+            </tr>
+          </div>
+        </q-markup-table>
       </q-card>
       <q-btn
         @click="songsListLayerStatus = !songsListLayerStatus"
@@ -91,8 +120,8 @@
         v-model="volume"
         size="30px"
         :thickness="0.3"
-        color="teal"
-        track-color="grey-3"
+        :color="qKnobColor"
+        :track-color="qKnobTrackColor"
         class="q-mr-md"
       >
         <q-icon name="volume_up" />
@@ -103,23 +132,15 @@
 
 <script>
 import { defineComponent, ref, reactive, watch, computed } from 'vue'
-import { throttle, Cookies } from 'quasar'
-// import { useQuasar } from 'quasar'
-
-import {
-  GetSongUrl,
-  GetSongDetail,
-  Check_Music,
-  Search,
-  Login,
-} from 'src/utils/request/broadcastSong/broadcast'
-// TODO: class 的思想抽出方法！
+import { throttle } from 'quasar'
+import { useQuasar } from 'quasar'
+import { GetSongUrl, GetSongDetail } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 
 let hello = {
   al: {
     id: 18905,
-    name: 'Hey，尽情享受音乐吧',
+    name: '享受这一刻',
     picUrl:
       'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01a6335c643c5ea801203d2250753c.jpg%401280w_1l_2o_100sh.jpg&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1645283402&t=cbda9c0a58289845c521f96121138dd6',
     tns: Array(0),
@@ -129,51 +150,21 @@ let hello = {
   id: 186016,
   mv: 504177,
   name: 'HELLO!',
-  no: 1,
-  publishTime: 1059580800000,
 }
 
 let songsList_ = [hello]
-
-const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: '歌曲名称',
-    align: 'left',
-    sortable: true,
-  },
-  { name: 'singer', align: 'center', label: '歌手', sortable: true },
-  { name: 'album', label: '专辑', sortable: true },
-]
-
-const songListLayer_ = [
-  {
-    name: '安静',
-    singer: '周杰伦',
-    album: 'jay',
-  },
-  {
-    name: '安静',
-    singer: '周杰伦',
-    album: 'jay',
-  },
-  {
-    name: '安静',
-    singer: '周杰伦',
-    album: 'jay',
-  },
-]
 
 export default defineComponent({
   name: 'Bar',
   emits: [
     'toggleBroadcastPage',
+    'closePop',
     'switchSong',
     'pause',
     'play',
     'updateCurrentTime',
     'updateDuration',
+    'priorBSSong',
   ],
   props: {
     songListToAudio: {
@@ -192,25 +183,24 @@ export default defineComponent({
   },
   components: {},
   setup(props, context) {
-    // let $q = useQuasar()
-    // let togglePlay = () => {
-    //   $q.notify({
-    //     spinner: true,
-    //     message: '歌曲加载中...',
-    //     timeout: 2000,
-    //   })
-    // }
-    //TODO: $q is not a function
     const audio = ref()
     let volume = ref(0)
     let songIds = ref('')
-    let currentTime = ref()
+    let currentTime = ref(0)
     let songDuration = ref()
     let playStatus = ref(false)
     let currentSongIndex = ref(0)
     let isReady = ref(false)
     const songsList = reactive(songsList_)
-    const songListLayer = ref(songListLayer_)
+    let $q = useQuasar()
+    let intervalTimer
+    let ajaxBar = ref(null)
+
+    let clearTimer = () => {
+      clearInterval(intervalTimer)
+      intervalTimer = null
+    }
+
     let modeListObj = [
       {
         val: 'random',
@@ -227,14 +217,6 @@ export default defineComponent({
     })
     modeListObj[2].next = modeListObj[0]
     let autoplayMode = ref(modeListObj[0])
-
-    // TODO: 手动清除定时器？
-    let intervalTimer
-
-    let clearTimer = () => {
-      clearInterval(intervalTimer)
-      intervalTimer = null
-    }
 
     const listenProgress = url => {
       let audioObj = new Audio(url)
@@ -253,7 +235,7 @@ export default defineComponent({
             }
           } catch (err) {
             console.log(err)
-            clearTimer()
+            clearTimer(intervalTimer)
           }
         }, 100)
         audio.value.play()
@@ -263,12 +245,15 @@ export default defineComponent({
     }
 
     //TODO: 缓缓暂停、播放
-    //TODO: 添加键盘控制播放功能
     const togglePlay = throttle(async () => {
       if (audio.value.paused) {
         if (isUnNull(intervalTimer)) {
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
-            alert('该歌曲没有版权')
+            $q.notify({
+              message: '资源链接无效(该歌曲没有版权或者需要登录)',
+              timeout: 2000,
+              position: 'top',
+            })
             autoSwitchSong(autoplayMode.value.val)
             return
           }
@@ -363,16 +348,6 @@ export default defineComponent({
       }
     )
 
-    let singers = computed(() => {
-      let singers = ''
-      for (let artist of songsList[currentSongIndex.value].ar) {
-        singers += `/${artist.name}`
-      }
-      let temp = singers.split('')
-      temp.shift()
-      return temp.join('')
-    })
-
     let autoplayMode_ = computed(() => {
       if (autoplayMode.value.val === 'listLoop') {
         return '列表循环'
@@ -382,6 +357,7 @@ export default defineComponent({
       }
       return '随机播放'
     })
+
     let autoplayModeForBtnSwitch = computed(() => {
       if (autoplayMode.value.val === 'listLoop' || autoplayMode.value.val === 'selfLoop') {
         return 0
@@ -404,12 +380,11 @@ export default defineComponent({
       let s = temp % 60
       if (m < 10) m = `0${m}`
       if (s < 10) s = `0${s}`
-
       return `${m}:${s}`
     })
 
     const queryUrls = async id => {
-      const { data } = await GetSongUrl({ id })
+      const { data } = await GetSongUrl(id)
       if (isUnNull(data)) return
       for (let obj of data) {
         for (let j of songsList) {
@@ -421,50 +396,7 @@ export default defineComponent({
       isReady.value = true
     }
 
-    const Search_ = async keywords => {
-      /**
-       * 从关键词获取歌曲数据
-       * 按理说这个歌曲数据应该是直接从其他组件传入
-       */
-      // songsList.pop()
-      // const {
-      //   result: { songs },
-      // } = await Search({ keywords })
-      // console.log(songs)
-      // for (let i of songs) {
-      //   songsList.push(i)
-      // }
-
-      /**
-       * 这里暂时将获取的歌曲数据存入localStorage 后续开发时直接从本地读取
-       */
-      // window.localStorage.setItem('songs2', JSON.stringify(songs))
-      // console.log(songsList[currentSongIndex.value].al.picUrl)
-
-      /**
-       * 从本地读取
-       */
-      // songsList.pop()
-      // for (let i of JSON.parse(window.localStorage.getItem('songs2'))) {
-      //   songsList.push(i)
-      // }
-
-      /**
-       * 统一获取歌曲的URL
-       */
-      songsList.forEach(el => {
-        songIds.value += `,${el.id}`
-      })
-      let arr = songIds.value.split('')
-      arr.shift()
-      songIds.value = arr.join('')
-      queryUrls(songIds.value)
-    }
-    // Search_('李荣浩')
     // TODO: 播放列表
-
-    const handleNextSong = () => {}
-
     //songsList.pop() // 删除第一个占位元素
     /**
      *
@@ -475,7 +407,6 @@ export default defineComponent({
       let ids = ''
       if (mode === 0) {
         ids = props.songListToAudio[0]
-        // 直接解构会报错！？？
         let res = await GetSongDetail({ ids })
         const { songs } = res
         // if (isUnNull(songs)) return
@@ -485,14 +416,16 @@ export default defineComponent({
         songIds.value = ''
         songIds.value = songsList[0].id.toString()
       }
-      if (mode === 1) {
+      if (mode === 1 || mode === 4) {
         for (let id of props.songListToAudio) {
           ids += `,${id}`
         }
         ids = ids.split('').splice(1).join('')
         let res = await GetSongDetail({ ids })
         let { songs } = res
-        songsList.length = 0
+        if (mode === 1) {
+          songsList.length = 0
+        }
         for (let obj of songs) {
           songsList.push(obj)
         }
@@ -532,6 +465,13 @@ export default defineComponent({
       currentSongIndex.value = 0
       // songsList.pop()
 
+      //删去多余id
+      for (let i = 0; i < props.songListToAudio.length; i++) {
+        if (songsList[i].id != props.songListToAudio[i]) {
+          songsList.splice(i, 1)
+        }
+      }
+
       /**
        * 统一获取歌曲的URL
        */
@@ -549,16 +489,37 @@ export default defineComponent({
     // init()
     watch(
       () => props.songListToAudio,
-      newVal => {
+      () => {
         init(props.playMode)
       },
       {
         deep: true,
       }
     )
+    // 直接在template中 $q.dark.isActive ? 'white' : 'black' 就好  但是给出一堆warn
+    // 所以才有以下笨方法
+    let sliderColor = ref($q.dark.isActive ? 'white' : 'black')
+    let qKnobColor = ref($q.dark.isActive ? 'teal' : 'white')
+    let qKnobTrackColor = ref($q.dark.isActive ? 'grey-3' : 'black')
+    watch(
+      () => $q.dark.isActive,
+      newVal => {
+        if (newVal) {
+          sliderColor.value = 'white'
+          qKnobColor.value = 'teal'
+          qKnobTrackColor.value = 'grey-3'
+          return
+        }
+        sliderColor.value = 'black'
+        qKnobColor.value = 'white'
+        qKnobTrackColor.value = 'black'
+      }
+    )
     return {
+      $q,
       audio,
       togglePlay,
+      isUnNull,
       playStatus,
       volume,
       songsListLayerStatus: ref(false),
@@ -568,15 +529,15 @@ export default defineComponent({
       songDuration,
       currentTime_,
       currentTime,
-      singers,
       isReady,
       autoplayMode_,
       autoplayModeForBtnSwitch,
       changMode,
       switchSong,
       changeProgressBySlide,
-      columns,
-      songListLayer,
+      sliderColor,
+      qKnobColor,
+      qKnobTrackColor,
     }
   },
 })
@@ -584,6 +545,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
+::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
 .bar {
   // background-color: #2c1919;
 
@@ -595,8 +563,11 @@ export default defineComponent({
   .song-detail {
     .pointer {
       cursor: pointer;
-      max-width: 170px;
+      // max-width: 220px;
       user-select: none;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     .img {
       width: 50px;
@@ -613,6 +584,8 @@ export default defineComponent({
       @extend .pointer;
     }
     .singer {
+      text-decoration: none;
+      display: inline;
       @include custom-font(15px, 100, 1px, inherit);
       @extend .pointer;
     }
@@ -624,11 +597,47 @@ export default defineComponent({
 
   .tools {
     .list-card {
-      width: 400px;
       height: 350px;
+      width: 430px;
+      overflow: scroll;
       position: fixed;
-      bottom: 50px;
+      bottom: 90px;
       right: 10px;
+      .song-list__line {
+        position: relative;
+        width: 350px;
+        list-style: none;
+        font-size: 13px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .cell {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: center;
+      }
+      .song__active {
+        position: absolute;
+        left: -17px;
+        top: 3px;
+        animation: pointer 1s infinite;
+      }
+      @keyframes pointer {
+        0% {
+          transform: scale(0.8);
+        }
+        50% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0.8);
+        }
+      }
+
+      .animation-pause {
+        animation-play-state: paused;
+      }
     }
   }
 }

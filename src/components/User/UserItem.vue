@@ -1,7 +1,7 @@
 <template>
   <div class="user-item" :id="aid" @click="jump">
     <div>
-      <img :src="avatar" />
+      <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + avatar + ');'"></div>
     </div>
 
@@ -14,11 +14,38 @@ export default {
   name: 'UserItem',
   props: ['avatar', 'aid', 'name'],
   data() {
-    return {}
+    return {
+      trueAvatar: 'https://cdn.exia.xyz/img/ttlogo.png',
+    }
   },
   methods: {
     jump() {
       this.$router.push('/user/' + this.aid)
+    },
+    updateData() {
+      let src = this.avatar + '?param=500y500'
+      let that = this
+      new Promise((rs, rj) => {
+        let img = new Image()
+        img.onload = function () {
+          rs(img.width == img.height ? img.src : 'https://cdn.exia.xyz/img/ttdefault.png')
+        }
+        img.src = src
+      })
+        .then(success => {
+          that.trueAvatar = success
+        })
+        .catch(error => {
+          console.log('加载失败', error)
+        })
+    },
+  },
+  mounted() {
+    this.updateData()
+  },
+  watch: {
+    avatar(n, o) {
+      this.updateData()
     },
   },
 }
@@ -27,7 +54,7 @@ export default {
 <style lang="scss" scoped>
 .user-item {
   position: relative;
-  width: 17%;
+  width: calc((100% - 10rem) / 5);
   margin: 1rem;
   cursor: pointer;
   user-select: none;

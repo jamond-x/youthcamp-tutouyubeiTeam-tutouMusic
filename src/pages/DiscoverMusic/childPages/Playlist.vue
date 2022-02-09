@@ -6,7 +6,7 @@
         <div class="mask">
           <img :src="state.banner.coverImgUrl" />
         </div>
-        <div class="songlistImg">
+        <div class="songlistImg" @click="itemClick">
           <img :src="state.banner.coverImgUrl" />
         </div>
         <div class="songlistDetail">
@@ -64,6 +64,8 @@ import SongList from 'components/songList/SongList'
 
 import BackToTop from 'vue-backtotop'
 
+import { useRouter } from 'vue-router'
+
 import {
   QueryQualitySongList,
   QuerySongListTags,
@@ -77,6 +79,7 @@ export default defineComponent({
     BackToTop,
   },
   setup() {
+    const router = useRouter()
     const state = reactive({
       banner: {},
       songlist: [],
@@ -109,6 +112,12 @@ export default defineComponent({
       })
     }
 
+    function itemClick() {
+      router.push({
+        path: '/playlist/' + state.banner.id,
+      })
+    }
+
     function onLoad(index, done) {
       // console.log(index)
       QuerySongListByTag(state.currTag, index * 20).then(res => {
@@ -123,6 +132,7 @@ export default defineComponent({
       state,
       GetSongListByTag,
       onLoad,
+      itemClick
     }
   },
 })
@@ -157,6 +167,9 @@ export default defineComponent({
     height: 10vw;
     margin-left: 3vw;
     z-index: 1;
+    &:hover {
+      cursor: pointer;
+    }
     img {
       width: 100%;
       height: 100%;

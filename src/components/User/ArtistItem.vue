@@ -1,11 +1,11 @@
 <template>
-  <div class="artist-item" :id="aid">
+  <div class="artist-item" :id="aid" @click="jump">
     <div>
       <img :src="trueAvatar" />
       <div class="shadow" :style="'background-image: url(' + avatar + ');'"></div>
     </div>
 
-    <div class="text-subtitle1 text-center">{{ name }}</div>
+    <div class="text-subtitle1 text-center" style="width: 100%">{{ name }}</div>
   </div>
 </template>
 
@@ -15,25 +15,38 @@ export default {
   props: ['avatar', 'aid', 'name'],
   data() {
     return {
-      trueAvatar: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+      trueAvatar: 'https://cdn.exia.xyz/img/ttlogo.png',
     }
   },
-  created() {
-    let src = this.avatar
-    let that = this
-    new Promise((rs, rj) => {
-      let img = new Image()
-      img.onload = function () {
-        rs(img.src)
-      }
-      img.src = src
-    })
-      .then(success => {
-        that.trueAvatar = success
+  methods: {
+    jump() {
+      this.$router.push('/artist/' + this.aid)
+    },
+    updateData() {
+      let src = this.avatar + '?param=500y500'
+      let that = this
+      new Promise((rs, rj) => {
+        let img = new Image()
+        img.onload = function () {
+          rs(img.width == img.height ? img.src : 'https://cdn.exia.xyz/img/ttdefault.png')
+        }
+        img.src = src
       })
-      .catch(error => {
-        console.log('加载失败', error)
-      })
+        .then(success => {
+          that.trueAvatar = success
+        })
+        .catch(error => {
+          console.log('加载失败', error)
+        })
+    },
+  },
+  mounted() {
+    this.updateData()
+  },
+  watch: {
+    avatar(n, o) {
+      this.updateData()
+    },
   },
 }
 </script>
@@ -41,7 +54,7 @@ export default {
 <style lang="scss" scoped>
 .artist-item {
   position: relative;
-  width: 17%;
+  width: calc((100% - 10rem) / 5);
   margin: 1rem;
   cursor: pointer;
   user-select: none;
