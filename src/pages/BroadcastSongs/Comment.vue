@@ -67,7 +67,13 @@
                   <img :src="item.user.avatarUrl" />
                 </q-avatar>
               </router-link>
-              <q-badge class="badge" rounded color="orange" label="v" />
+              <q-badge
+                v-if="item.user.authStatus === 1"
+                class="badge"
+                rounded
+                color="orange"
+                label="v"
+              />
             </div>
             <div class="column justify-center">
               <div class="name">

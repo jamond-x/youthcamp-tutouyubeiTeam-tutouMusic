@@ -1,18 +1,13 @@
 import axios from 'axios'
 import { createApi } from '..'
 import { REQUEST_BASE_URL, BROADCAST } from 'src/utils/const'
+import { isUnNull } from 'src/utils'
 
-import { Cookies } from 'quasar'
+let cookie = window.localStorage.getItem('cookie')
+if (isUnNull(cookie)) {
+  cookie = ''
+}
 
-//  这里会获取下cookie
-
-let cookie = Cookies.get('user')
-
-// if (!cookie) {
-//   cookie = JSON.parse(window.localStorage.getItem('cookie'))
-// }
-
-// let { cookie } = JSON.parse(window.localStorage.getItem('user'))
 const api = createApi(
   axios.create({
     baseURL: REQUEST_BASE_URL,

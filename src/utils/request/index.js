@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import { CodeDictionary } from '../const'
-import { useQuasar } from 'quasar'
-let $q = useQuasar()
+import { Notify } from 'quasar'
+import { isUnNull } from '..'
 
 export const createApi = (api = axios) => {
   return async config => {
@@ -21,10 +21,15 @@ export const createApi = (api = axios) => {
       //if (error.response.status === 401) {
       //}
       // if()...
-      $q.notify({
-        message: '请求出错了！',
-        color: purple,
-      })
+      const msg = error.response.data.msg
+      if (!isUnNull(msg)) {
+        Notify.create({
+          message: error.response.data.msg,
+          color: 'warning',
+          position: 'top',
+          timeout: 2000,
+        })
+      }
       return '请求出错了！'
     }
   }
