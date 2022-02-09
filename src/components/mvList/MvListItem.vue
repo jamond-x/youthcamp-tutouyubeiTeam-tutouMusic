@@ -27,7 +27,7 @@ export default defineComponent({
     function itemClick() {
       let id = this.listItem.id
       this.$router.push({
-        path: '/index/songListContent' + id,
+        path: '/index/' + id,
       })
     }
     return {
