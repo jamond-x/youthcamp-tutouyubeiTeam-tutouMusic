@@ -13,6 +13,10 @@ const routes = [
         component: () => import('pages/DiscoverMusic/Discover.vue'),
       },
       {
+        path: '/mvplay/:mvid',
+        component: () => import('pages/MVplay/MVplay.vue'),
+      },
+      {
         path: '/user/:uid',
         props: true,
         component: () => import('pages/User/User.vue'),

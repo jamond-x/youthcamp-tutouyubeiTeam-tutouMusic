@@ -80,7 +80,7 @@
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
       <q-list>
-        <div class="logo font-GEO row justify-center q-my-xl">TT</div>
+        <div class="logo font-GEO row justify-center q-my-xl">Music</div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         <q-separator class="q-mx-lg q-mt-lg" />
         <UserSongListLink />

@@ -1,0 +1,63 @@
+@charset "UTF-8";
+@font-face {
+  font-family: GEO;
+  src: url(https://cdn.jsdelivr.net/gh/jamond-x/public-resources/fonts/GEO.otf);
+}
+
+.font-GEO {
+  font-family: GEO;
+}
+
+.body--light {
+  background: #fafafa !important;
+  color: black !important;
+}
+
+.body-text-light {
+  color: black !important;
+}
+
+.body-item-dark {
+  background-color: rgba(250, 250, 250, 0.3);
+}
+
+.body--dark {
+  background: black !important;
+  color: #fafafa !important;
+}
+
+.body-item-light {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.body-text-dark {
+  color: #fafafa !important;
+}
+
+.scroll ul::-webkit-scrollbar {
+  width: 4px;
+  scrollbar-arrow-color: darkgreen;
+}
+
+.scroll ul::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 4px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 4px;
+  scrollbar-arrow-color: red;
+}
+
+.scroll ul::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+  scrollbar-arrow-color: red;
+}
+
+.scroll ul::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+}

@@ -1,8 +1,8 @@
 <template>
-  <div class="box">
+  <div class="box" :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
     <div class="mian">
       <h2 class="title">官方榜单</h2>
-      <div class="line"></div>
+      <div class="line" :class="[$q.dark.mode ? 'body--light' : 'body--dark']"></div>
       <!-- quasar组件 -->
 
       <q-carousel
@@ -10,7 +10,7 @@
         swipeable
         animated
         control-type="unelevated"
-        control-color="blue"
+        control-color="red"
         padding
         arrows
         height="324px"
@@ -35,7 +35,7 @@
     </div>
 
     <div class="title">全球榜单</div>
-    <div class="line"></div>
+    <div class="line" :class="[$q.dark.mode ? 'body--light' : 'body--dark']"></div>
     <div class="smallRank">
       <smallRankItem
         v-for="item in data.restList"
@@ -68,11 +68,6 @@ export default defineComponent({
       const res = await AllRank()
       data.list = res.list.slice(0, 4)
       data.restList = res.list.slice(4)
-      console.log(
-        '%c 🥝 res.list.slice(4): ',
-        'font-size:20px;background-color: #3F7CFF;color:#fff;',
-        res.list.slice(4)[0]
-      )
     }
 
     ctrated()
@@ -86,10 +81,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/common.scss';
+
 .box {
-  background-color: #121212;
   opacity: 0.8;
-  // background-image: radial-gradient(#9fc5f9 1.1px, #121212 1.1px);
   background-size: 22px 22px;
 
   display: flex;
@@ -99,22 +94,18 @@ export default defineComponent({
   .mian {
     width: 92%;
     height: 400px;
-    background-color: #121212;
     margin-top: 30px;
     border-radius: 20px;
-    // box-shadow: 6px 6px 8px #ffffff, -6px -6px 8px #ffffff;
     text-align: center;
     margin-bottom: 40px;
     .title {
       font-size: 32px;
-      color: white;
       font-weight: bolder;
       margin-top: 10px;
     }
     .line {
       width: 200px;
       height: 4px;
-      background-color: #fff;
       margin: -35px auto 11px;
     }
     .myCarousel {
@@ -124,14 +115,12 @@ export default defineComponent({
   }
   .title {
     font-size: 32px;
-    color: white;
     font-weight: bolder;
     margin-top: 10px;
   }
   .line {
     width: 200px;
     height: 4px;
-    background-color: #fff;
     margin: 5px auto 20px;
   }
 

@@ -17,17 +17,29 @@
 
     <q-list bordered class="right">
       <div v-for="(item, index) in data.songList" :key="item.id">
-        <q-item v-if="flag" lickable v-ripple class="songItem">
-          <div class="num">{{ index + 1 }}</div>
+        <q-item
+          v-if="flag"
+          lickable
+          v-ripple
+          class="songItem"
+          :class="[$q.dark.mode ? 'body-item-dark' : 'body-item-light']"
+        >
+          <div class="num" :class="[$q.dark.mode ? 'body--dark' : 'body--light']">
+            {{ index + 1 }}
+          </div>
 
           <q-item-section avatar>
             <q-avatar rounded>
               <img :src="item.picUrl" />
             </q-avatar>
           </q-item-section>
-          <q-item-section>{{ item.name }}</q-item-section>
+          <q-item-section
+            class="name"
+            :class="[$q.dark.mode ? 'body-text-light' : 'body-text-dark']"
+            >{{ item.name }}</q-item-section
+          >
 
-          <q-item-section>
+          <q-item-section :class="[$q.dark.mode ? 'body-item-light' : 'body-text-dark']">
             <div v-for="(name, i) in data.author[index].slice(0, 2)" :key="i" class="rightText">
               {{ name }}
             </div>
@@ -108,6 +120,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import 'src/css/common.scss';
 .bigBox {
   position: absolute;
   top: 0;
@@ -120,7 +133,6 @@ export default defineComponent({
   flex-direction: row;
   box-sizing: border-box;
   padding-left: 60px;
-  color: black;
   .mask {
     position: absolute;
     top: 0;
@@ -157,7 +169,6 @@ export default defineComponent({
       .text {
         font-size: 32px;
         font-weight: 700;
-        color: white;
         filter: none;
         z-index: 200;
       }
@@ -183,7 +194,6 @@ export default defineComponent({
     gap: 6px;
     margin-right: 10px;
     .songItem {
-      background-color: rgba($color: #121212, $alpha: 0.6);
       border-radius: 10px;
       width: 360px;
       height: 55px;
@@ -191,11 +201,12 @@ export default defineComponent({
       justify-content: flex-start;
       align-items: center;
       overflow: hidden;
+
       .rightText {
-        background-color: white;
-        color: black;
+        /* background-color: white; */
         margin: 2px;
-        border-radius: 4px;
+        display: inline-block;
+        border-radius: 10px;
       }
 
       .num {
@@ -204,8 +215,7 @@ export default defineComponent({
         border-radius: 5px;
         margin-right: 10px;
         margin-left: -5px;
-        background-color: #ffffff;
-        color: black;
+        /* background-color: #ffffff; */
       }
     }
   }

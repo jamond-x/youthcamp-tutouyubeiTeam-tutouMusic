@@ -6,7 +6,13 @@
       <q-btn-toggle v-model="shaixuan" toggle-color="primary" :options="shaixuanData" />
     </div>
 
-    <q-infinite-scroll @load="onLoad" :debounce="1000" :offset="250" class="box" scroll-target="body">
+    <q-infinite-scroll
+      @load="onLoad"
+      :debounce="1000"
+      :offset="250"
+      class="box"
+      scroll-target="body"
+    >
       <singerItem v-for="item in data.list" :key="item.id" :item="item"></singerItem>
     </q-infinite-scroll>
 
@@ -47,11 +53,6 @@ export default defineComponent({
 
     let count = 0
     let onLoad = async (index, done) => {
-      console.log(
-        '%c 🥩  老的onLoad执行: ',
-        'font-size:20px;background-color: #F5CE50;color:#fff;',
-        ' 老的onLoad执行'
-      )
       let url = [(count += 30), data.newData[0], data.newData[1], 30, data.newData[2]]
 
       const { artists } = await SingerList(...url)
@@ -140,9 +141,7 @@ export default defineComponent({
 .container {
   bottom: 0;
   padding: 0 20px;
-  background-color: #121212;
   opacity: 0.8;
-  // background-image: radial-gradient(#9fc5f9 1.1px, #121212 1.1px);
   background-size: 22px 22px;
   .select {
     display: flex;
