@@ -9,7 +9,6 @@
       <MVLikesItem v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MVLikesItem>
     </div>
 
-
   </div>
 </template>
 <script>
@@ -22,7 +21,7 @@ import {
   QueryMvPlay,
   QuerySongerCover,
 } from 'src/utils/request/mv/mvdetail'
-import { defineComponent, ref, reactive, watch } from 'vue'
+import { defineComponent, ref, reactive, provide } from 'vue'
 import { useRoute } from 'vue-router'
 export default defineComponent({
   name: 'MVplay',
@@ -46,7 +45,7 @@ export default defineComponent({
       MVLikes: [],
     })
 
-    const mounted = async () => {
+    const mvMounted = async () => {
       const { data: data1 } = await QueryMvPlay(mvid)
       const { data: data2 } = await QueryMvDetail(mvid)
       const { mvs } = await QueryMVLikes(mvid)
@@ -61,7 +60,9 @@ export default defineComponent({
       data.data = data2
       info.info = MVInfo
     }
-    mounted()
+    mvMounted()
+
+    provide('mvMounted', mvMounted)
 
     return { mvUrl, data, Url, info, numFormat, MVLikes }
   },

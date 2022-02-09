@@ -34,10 +34,10 @@
 </template>
 <script>
 import { numFormat } from 'src/utils/bigNum/bigNum'
-import { defineComponent } from 'vue'
+import { defineComponent, inject, watch } from 'vue'
 import { useRouter } from 'vue-router'
 export default defineComponent({
-  name: 'MVItem',
+  name: 'MVLikesItem',
   props: {
     data: {
       type: Object,
@@ -47,13 +47,20 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const Router = useRouter()
+    const router = useRouter()
+
+    const mvMounted = inject('mvMounted')
 
     function handleClick() {
-      Router.push(`/mvplay/${props.data.id}`)
+      // mvMounted()
+      router.push(`/`)
+      setTimeout(() => {
+        router.push(`/mvplay/${props.data.id}`)
+      }, 10)
       // Router.replace(`/mvplay/${props.data.id}`)
       // window.location.reload()
     }
+
     return {
       numFormat,
       handleClick,

@@ -491,7 +491,7 @@ export default defineComponent({
      * index :  Number
      */
     const goClick = index => {
-      console.log('object')
+      // console.log('object')
       $router.go(index)
     }
 
