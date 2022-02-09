@@ -44,22 +44,22 @@ export default defineComponent({
       MVLikes: [],
     })
 
-    const mvMounted = async () => {
-      const { data: data1 } = await QueryMvPlay(mvid)
-      const { data: data2 } = await QueryMvDetail(mvid)
-      const { mvs } = await QueryMVLikes(mvid)
-      MVLikes.MVLikes = mvs
-      const MVInfo = await QueryMVInfo(mvid)
-      if (data2) {
-        const { data } = await QuerySongerCover(data2.artists[0].id)
-        Url.value = data.artist.cover
-      }
+    // const mvMounted = async () => {
+    //   const { data: data1 } = await QueryMvPlay(mvid)
+    //   const { data: data2 } = await QueryMvDetail(mvid)
+    //   const { mvs } = await QueryMVLikes(mvid)
+    //   MVLikes.MVLikes = mvs
+    //   const MVInfo = await QueryMVInfo(mvid)
+    //   if (data2) {
+    //     const { data } = await QuerySongerCover(data2.artists[0].id)
+    //     Url.value = data.artist.cover
+    //   }
 
-      mvUrl.value = data1.url
-      state.mvdata = data2
-      info.info = MVInfo
-    }
-    mvMounted()
+    //   mvUrl.value = data1.url
+    //   state.mvdata = data2
+    //   info.info = MVInfo
+    // }
+    // mvMounted()
 
 
     return { mvUrl, state, MVLikes }
