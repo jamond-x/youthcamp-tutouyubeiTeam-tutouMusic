@@ -35,7 +35,7 @@
 
 <script>
 import { numFormat } from 'src/utils/bigNum/bigNum'
-import { defineComponent, inject, watch } from 'vue'
+import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -51,7 +51,6 @@ export default defineComponent({
   setup(props) {
     const router = useRouter()
 
-    const mvMounted = inject('mvMounted')
 
     function handleClick() {
       // mvMounted()

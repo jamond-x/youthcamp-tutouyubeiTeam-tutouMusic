@@ -21,7 +21,7 @@ import {
   QueryMvPlay,
   QuerySongerCover,
 } from 'src/utils/request/mv/mvdetail'
-import { defineComponent, ref, reactive, provide } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
@@ -62,7 +62,6 @@ export default defineComponent({
     }
     mvMounted()
 
-    provide('mvMounted', mvMounted)
 
     return { mvUrl, data, Url, info, numFormat, MVLikes }
   },
