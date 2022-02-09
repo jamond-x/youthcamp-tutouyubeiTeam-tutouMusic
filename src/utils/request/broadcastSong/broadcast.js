@@ -2,11 +2,10 @@ import axios from 'axios'
 import { createApi } from '..'
 import { REQUEST_BASE_URL, BROADCAST } from 'src/utils/const'
 import { isUnNull } from 'src/utils'
-import { Cookies } from 'quasar'
 
-let cookie = Cookies.get('user')
+let cookie = window.localStorage.getItem('cookie')
 if (isUnNull(cookie)) {
-  cookie = JSON.parse(window.localStorage.getItem('cookie'))
+  cookie = ''
 }
 
 const api = createApi(
@@ -79,9 +78,6 @@ export const GetLyric = async data => {
  * @returns
  */
 export const GetComment = async (id, limit) => {
-  if (isUnNull(cookie)) {
-    cookie = ''
-  }
   return await api({
     method: 'POST',
     url: `${BROADCAST.GET_COMMENT}?timestamp=${new Date().getTime()}`,
