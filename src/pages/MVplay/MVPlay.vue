@@ -8,7 +8,6 @@
       <div class="title">相关MV推荐</div>
       <MVLikesItem v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MVLikesItem>
     </div>
-
   </div>
 </template>
 <script>
