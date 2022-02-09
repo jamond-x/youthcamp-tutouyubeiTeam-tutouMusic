@@ -15,11 +15,11 @@ const routes = [
           keepAlive: true,
         },
       },
-      {
-        path: '/mvplay/:mvid',
-        props: true,
-        component: () => import('pages/Mvplay/Mvplay.vue'),
-      },
+      // {
+      //   path: '/mvplay/:mvid',
+      //   props: true,
+      //   component: () => import('pages/Mvplay/Mvplay.vue'),
+      // },
       {
         path: '/user/:uid',
         props: true,
