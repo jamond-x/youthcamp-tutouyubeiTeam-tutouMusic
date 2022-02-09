@@ -15,7 +15,7 @@ export default {
   props: ['id', 'cover', 'title', 'singer', 'singers'],
   data() {
     return {
-      trueCover: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+      trueCover: 'https://cdn.exia.xyz/img/ttlogo.png',
       trueSinger: '',
     }
   },

@@ -15,7 +15,7 @@ export default {
   props: ['avatar', 'aid', 'name'],
   data() {
     return {
-      trueAvatar: 'https://www.tupians.top/imgs/2022/02/e1ee4b35916d1b57.png',
+      trueAvatar: 'https://cdn.exia.xyz/img/ttlogo.png',
     }
   },
   methods: {
@@ -29,11 +29,7 @@ export default {
     new Promise((rs, rj) => {
       let img = new Image()
       img.onload = function () {
-        rs(
-          img.width == img.height
-            ? img.src
-            : 'https://img.gejiba.com/images/aa2ee58648295652ba10be5ec1b5b0ea.png'
-        )
+        rs(img.width == img.height ? img.src : 'https://cdn.exia.xyz/img/ttdefault.png')
       }
       img.src = src
     })
