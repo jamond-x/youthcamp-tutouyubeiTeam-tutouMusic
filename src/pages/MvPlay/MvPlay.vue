@@ -1,13 +1,13 @@
 <template>
   <div class="box">
-    <div class="video">
-      <!-- <div class="title">{{ state.mvdata.name }}播放中~~</div> -->
-      <q-video :ratio="16 / 9" :src="mvUrl" />
+    <!-- <div class="video">
+      <div class="title">{{ state.mvdata.name }}播放中~~</div>
+      <q-video :ratio="16/9" :src="mvUrl" />
     </div>
     <div class="list">
       <div class="title">相关MV推荐</div>
-      <!-- <MvRecommend v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MvRecommend> -->
-    </div>
+      <MvRecommend v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MvRecommend>
+    </div> -->
   </div>
 </template>
 
@@ -28,7 +28,39 @@ export default defineComponent({
   components: {
     // MvRecommend,
   },
+  setup() {
+    const {
+      params: { mvid },
+    } = useRoute()
+    let mvUrl = ref('')
+    let Url = ref('')
+    const state = reactive({
+      mvdata: {},
+    })
 
+    const MVLikes = reactive({
+      MVLikes: [],
+    })
+
+    const mvMounted = async () => {
+      const { data: data1 } = await QueryMvPlay(mvid)
+      const { data: data2 } = await QueryMvDetail(mvid)
+      const { mvs } = await QueryMVLikes(mvid)
+      MVLikes.MVLikes = mvs
+      const MVInfo = await QueryMVInfo(mvid)
+      if (data2) {
+        const { data } = await QuerySongerCover(data2.artists[0].id)
+        Url.value = data.artist.cover
+      }
+
+      mvUrl.value = data1.url
+      state.mvdata = data2
+    }
+    mvMounted()
+
+
+    return { mvUrl, state, MVLikes }
+  },
 })
 </script>
 
