@@ -13,7 +13,6 @@
 
 <script>
 import MvRecommend from 'src/components/mvRecommend/MvRecommend.vue'
-import { numFormat } from 'src/utils/bigNum/bigNum'
 import {
   QueryMvDetail,
   QueryMVInfo,
@@ -63,7 +62,7 @@ export default defineComponent({
     mvMounted()
 
 
-    return { mvUrl, data, Url, info, numFormat, MVLikes }
+    return { mvUrl, data, MVLikes }
   },
 })
 </script>
