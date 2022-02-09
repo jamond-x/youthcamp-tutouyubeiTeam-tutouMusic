@@ -14,8 +14,8 @@
     <div class="InputBox">
       <q-input
         rounded
-        filled
         v-model="phone"
+        standout
         label="手机号"
         :rules="[
           val => (val && val.length > 0 && /^1[35789]\d{9}$/.test(val)) || '请输入正确手机号',
@@ -29,7 +29,7 @@
     <div class="InputBox">
       <q-input
         rounded
-        filled
+        standout
         :type="isPwd ? 'password' : 'text'"
         v-model="password"
         label="密码"
@@ -50,8 +50,8 @@
     <div class="row justify-center">
       <q-btn
         :loading="isLoading"
-        color="grey-4"
-        text-color="black"
+        :color="$q.dark.isActive ? 'grey-4' : 'black'"
+        :text-color="$q.dark.isActive ? 'black' : 'white'"
         glossy
         unelevated
         label="登 录"
