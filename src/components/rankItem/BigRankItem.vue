@@ -17,13 +17,7 @@
 
     <q-list class="right">
       <div v-for="(item, index) in data.songList" :key="item.id">
-        <q-item
-          v-if="flag"
-          clickable
-          v-ripple
-          class="songItem"
-          @click="immediatelyBroadcast(item.id + '')"
-        >
+        <q-item v-if="flag" clickable v-ripple class="songItem" @click="immediatelyBroadcast(item.id + '')">
           <div class="num">{{ index + 1 }}</div>
 
           <q-item-section avatar>
@@ -129,13 +123,14 @@ export default defineComponent({
 
     const immediatelyBroadcast = inject('immediatelyBroadcast')
 
+
     return {
       formatDate,
       data,
       flag,
       resPicUrl,
       itemClick,
-      immediatelyBroadcast,
+      immediatelyBroadcast
     }
   },
 })
