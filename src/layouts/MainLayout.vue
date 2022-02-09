@@ -44,7 +44,7 @@
                 <img :src="avatarUrl" />
               </q-avatar>
             </template>
-            <q-parallax :src="userBackgroundUrl" class="parallax__user q-mt-sm" :height="180">
+            <q-parallax :src="userBackgroundUrl" class="parallax__user" :height="180">
               <q-avatar size="64px" class="q-mb-md">
                 <img :src="avatarUrl" />
               </q-avatar>
@@ -74,31 +74,6 @@
                 />
               </div>
             </q-parallax>
-            <!-- <div class="row no-wrap q-pa-lg z-top">
-              <div class="column items-center">
-                <q-avatar size="64px">
-                  <img :src="avatarUrl" />
-                </q-avatar>
-                <div class="text-subtitle1 q-mt-md q-mb-xs">{{ nickname }}</div>
-                <q-btn
-                  @click="handleLogout"
-                  v-if="loginFlag"
-                  color="purple"
-                  label="登出"
-                  size="md"
-                  v-close-popup
-                />
-                <q-btn
-                  @click="handleLogin"
-                  v-else
-                  color="purple"
-                  label="登录"
-                  push
-                  size="md"
-                  v-close-popup
-                />
-              </div>
-            </div> -->
           </q-btn-dropdown>
         </div>
       </q-toolbar>
