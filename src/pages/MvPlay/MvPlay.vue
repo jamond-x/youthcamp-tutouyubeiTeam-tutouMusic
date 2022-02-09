@@ -6,13 +6,13 @@
     </div>
     <div class="list">
       <div class="title">相关MV推荐</div>
-      <MvRecommend v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MvRecommend>
+      <!-- <MvRecommend v-for="item in MVLikes.MVLikes" :key="item.id" :data="item"></MvRecommend> -->
     </div>
   </div>
 </template>
 
 <script>
-import MvRecommend from 'src/components/mvRecommend/MvRecommend.vue'
+// import MvRecommend from 'src/components/mvRecommend/MvRecommend.vue'
 import {
   QueryMvDetail,
   QueryMVInfo,
@@ -26,7 +26,7 @@ import { useRoute } from 'vue-router'
 export default defineComponent({
   name: 'MvPlay',
   components: {
-    MvRecommend,
+    // MvRecommend,
   },
   setup() {
     const {
