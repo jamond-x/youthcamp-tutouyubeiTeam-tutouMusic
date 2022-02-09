@@ -88,7 +88,7 @@
                 class="song__active"
                 :class="{ 'animation-pause': !playStatus }"
                 v-if="item.id === songsList[currentSongIndex].id"
-                name="fab fa-napster"
+                name="fas fa-music"
               ></q-icon>
               <span class="cell">{{ item.name }}</span>
               <span class="cell" style="opacity: 0.7">
