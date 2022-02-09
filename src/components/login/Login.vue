@@ -1,31 +1,42 @@
 <template>
-  <q-card class="cardWrapper column items-center">
-    <q-btn @click="toggleLoginShow" class="closeBtn" size="md" icon="fas fa-times" />
-    <q-card-section>
-      <div>欢迎登录</div>
-    </q-card-section>
-    <q-card-section class="InputBox">
+  <q-card class="cardWrapper column items-center justify-evenly">
+    <q-btn
+      @click="toggleLoginShow"
+      class="closeBtn q-mr-md"
+      size="md"
+      flat
+      round
+      icon="fas fa-times"
+    />
+    <div>
+      <div class="login_font">登录</div>
+    </div>
+    <div class="InputBox">
       <q-input
-        dense
-        outlined
+        rounded
+        filled
         v-model="phone"
-        placeholder="手机号"
+        label="手机号"
         :rules="[
           val => (val && val.length > 0 && /^1[35789]\d{9}$/.test(val)) || '请输入正确手机号',
         ]"
-      />
-    </q-card-section>
-    <q-card-section class="InputBox">
+      >
+        <template v-slot:prepend>
+          <q-icon name="fas fa-mobile" />
+        </template>
+      </q-input>
+    </div>
+    <div class="InputBox">
       <q-input
-        dense
-        outlined
+        rounded
+        filled
         :type="isPwd ? 'password' : 'text'"
         v-model="password"
-        placeholder="密码"
+        label="密码"
         :rules="[val => (val && val.length > 0) || '请输入密码']"
       >
         <template v-slot:prepend>
-          <q-icon name="lock" />
+          <q-icon name="fas fa-ellipsis-h" />
         </template>
         <template v-slot:append>
           <q-icon
@@ -35,17 +46,19 @@
           />
         </template>
       </q-input>
-    </q-card-section>
-    <q-card-section>
+    </div>
+    <div class="row justify-center">
       <q-btn
         :loading="isLoading"
-        type="submit"
-        color="primary"
-        label="登录"
+        color="grey-4"
+        text-color="black"
+        glossy
+        unelevated
+        label="登 录"
         class="q-mb-md InputBox"
         @click="onSubmit"
       />
-    </q-card-section>
+    </div>
   </q-card>
 </template>
 <script>
@@ -115,12 +128,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import 'src/css/common.scss';
+.cardWrapper {
+  width: 470px;
+  height: 350px;
+  border-radius: 30px;
+}
+.login_font {
+  @include custom-font(35px, 600, 8px, inherit);
+}
 .InputBox {
   min-width: 370px;
 }
 .closeBtn {
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 30px;
+  top: 25px;
 }
 </style>
