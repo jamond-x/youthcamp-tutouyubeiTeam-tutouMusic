@@ -52,7 +52,7 @@ export default {
         that.trueAvatar = success
       })
       .catch(error => {
-        console.log('加载失败', error)
+        console.log('加载失败惹！', error)
       })
   },
 }
