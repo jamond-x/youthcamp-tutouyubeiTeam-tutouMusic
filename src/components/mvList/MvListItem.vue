@@ -26,7 +26,7 @@ export default defineComponent({
   setup() {
     function itemClick() {
       let mvid = this.listItem.id
-      this.$router.push(`/mvplay/${mvid}`)
+      this.$router.push('/mvplay/' + mvid)
     }
     return {
       itemClick,

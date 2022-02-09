@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="video">
-      <div class="title">{{ data.data.name }}播放中~~</div>
+      <div class="title">{{ state.mvdata.name }}播放中~~</div>
       <q-video :ratio="16 / 9" :src="mvUrl" />
     </div>
     <div class="list">
@@ -13,7 +13,6 @@
 
 <script>
 import MvRecommend from 'src/components/mvRecommend/MvRecommend.vue'
-import { numFormat } from 'src/utils/bigNum/bigNum'
 import {
   QueryMvDetail,
   QueryMVInfo,
@@ -35,12 +34,10 @@ export default defineComponent({
     } = useRoute()
     let mvUrl = ref('')
     let Url = ref('')
-    const data = reactive({
-      data: {},
+    const state = reactive({
+      mvdata: {},
     })
-    const info = reactive({
-      info: {},
-    })
+
     const MVLikes = reactive({
       MVLikes: [],
     })
@@ -57,12 +54,11 @@ export default defineComponent({
       }
 
       mvUrl.value = data1.url
-      data.data = data2
-      info.info = MVInfo
+      state.mvdata = data2
     }
     mvMounted()
 
-    return { mvUrl, data, Url, info, numFormat, MVLikes }
+    return { mvUrl, state, MVLikes }
   },
 })
 </script>

@@ -56,10 +56,8 @@ export default defineComponent({
       // mvMounted()
       router.push(`/`)
       setTimeout(() => {
-        router.push(`/mvplay/${props.data.id}`)
+        router.push('/mvplay/' + props.data.id)
       }, 10)
-      // Router.replace(`/mvplay/${props.data.id}`)
-      // window.location.reload()
     }
 
     return {
