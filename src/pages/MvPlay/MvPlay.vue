@@ -21,17 +21,15 @@ import {
   QuerySongerCover,
 } from 'src/utils/request/mv/mvdetail'
 import { defineComponent, ref, reactive } from 'vue'
-import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'MvPlay',
+  props: ['mvid'],
   components: {
     MvRecommend,
   },
-  setup() {
-    const {
-      params: { mvid },
-    } = useRoute()
+  setup(props) {
+
     let mvUrl = ref('')
     let Url = ref('')
     const state = reactive({
@@ -43,11 +41,11 @@ export default defineComponent({
     })
 
     const mvMounted = async () => {
-      const { data: data1 } = await QueryMvPlay(mvid)
-      const { data: data2 } = await QueryMvDetail(mvid)
-      const { mvs } = await QueryMVLikes(mvid)
+      const { data: data1 } = await QueryMvPlay(props.mvid)
+      const { data: data2 } = await QueryMvDetail(props.mvid)
+      const { mvs } = await QueryMVLikes(props.mvid)
       MVLikes.MVLikes = mvs
-      const MVInfo = await QueryMVInfo(mvid)
+      const MVInfo = await QueryMVInfo(props.mvid)
       if (data2) {
         const { data } = await QuerySongerCover(data2.artists[0].id)
         Url.value = data.artist.cover
