@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="video">
-      <div class="title">{{ data.data.name }}播放中~~</div>
+      <div class="title">{{ state.mvdata.name }}播放中~~</div>
       <q-video :ratio="16 / 9" :src="mvUrl" />
     </div>
     <div class="list">
@@ -34,8 +34,8 @@ export default defineComponent({
     } = useRoute()
     let mvUrl = ref('')
     let Url = ref('')
-    const data = reactive({
-      data: {},
+    const state = reactive({
+      mvdata: {},
     })
     const info = reactive({
       info: {},
@@ -56,13 +56,13 @@ export default defineComponent({
       }
 
       mvUrl.value = data1.url
-      data.data = data2
+      state.mvdata = data2
       info.info = MVInfo
     }
     mvMounted()
 
 
-    return { mvUrl, data, MVLikes }
+    return { mvUrl, state, MVLikes }
   },
 })
 </script>
