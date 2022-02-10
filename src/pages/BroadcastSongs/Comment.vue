@@ -92,7 +92,7 @@
                   <span class="liked-count">{{ item.likedCount }}</span>
                   <q-btn
                     v-if="!item.liked"
-                    @click="like(id, item.commentId, 1, 0), (item.liked = true)"
+                    @click="like(id, item.commentId, 1, type), (item.liked = true)"
                     size="10px"
                     rounded
                     flat
@@ -101,7 +101,7 @@
                   <q-btn
                     v-else
                     size="10px"
-                    @click="like(id, item.commentId, 0, 0), (item.liked = false)"
+                    @click="like(id, item.commentId, 0, type), (item.liked = false)"
                     rounded
                     flat
                     color="red"
@@ -162,6 +162,7 @@ import {
   GetHotComment,
   LikeComment,
   SendComment,
+  GetMVComment,
 } from 'src/utils/request/broadcastSong/broadcast'
 import { isUnNull } from 'src/utils'
 import { useQuasar } from 'quasar'
@@ -173,9 +174,11 @@ export default defineComponent({
     id: {
       type: String,
     },
+    type: {
+      type: Number, // 0 歌曲  1 mv  5 视频
+    },
   },
   setup(props) {
-    // TODO: 认证用户图标
     let currentComment = ref([])
     let hotComment_ = ref([])
     let comment_ = ref([])
@@ -188,7 +191,13 @@ export default defineComponent({
 
     const get = async id => {
       if (isUnNull(id)) return
-      let res = await GetComment(id)
+      let res
+      if (props.type === 0) {
+        res = await GetComment(id)
+      }
+      if (props.type === 1) {
+        res = await GetMVComment(id)
+      }
       const { hotComments, comments } = res
       hotComment_.value = hotComments
       comment_.value = comments
@@ -221,19 +230,30 @@ export default defineComponent({
 
     const loadMoreComment = async () => {
       if (!commentMode.value) {
-        let { comments } = await GetComment(props.id, (commentAmount.value += 20))
+        let res
+        if (props.type === 0) {
+          res = await GetComment(props.id, (commentAmount.value += 20))
+        }
+        if (props.type === 1) {
+          res = await GetMVComment(props.id, (commentAmount.value += 20))
+        }
+        let { comments } = res
         comment_.value = comments
         currentComment.value = comment_.value
         return
       }
-      let { hotComments } = await GetHotComment(props.id, 0, (hotCommentAmount.value += 15))
+      let { hotComments } = await GetHotComment(
+        props.id,
+        props.type,
+        (hotCommentAmount.value += 15)
+      )
       hotComment_.value = hotComments
       currentComment.value = hotComment_.value
     }
     const sendComment_ = async comment => {
       let res = await SendComment(
         replyCommentType.value,
-        0,
+        props.type,
         props.id,
         comment,
         replyCommentId.value
@@ -245,6 +265,12 @@ export default defineComponent({
         comment.liked = false
         comment.likedCount = 0
         comment_.value.unshift(comment)
+        $q.notify({
+          message: '评论成功！',
+          color: 'purple',
+          position: 'top',
+        })
+        return
       }
       $q.notify({
         message: '评论失败，请刷新重试',

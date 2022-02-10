@@ -5,7 +5,7 @@
         <div class="video-name q-my-sm">{{ state.mvData.name }}</div>
         <q-video :ratio="16 / 9" :src="mvUrl" />
       </div>
-      <div class="video-info q-my-md">
+      <div class="video-info q-my-md q-ml-lg">
         <q-badge
           class="q-mr-sm q-mt-sm"
           color="cyan-2"
@@ -28,7 +28,7 @@
       </div>
 
       <div>
-        <Comment />
+        <Comment :id="mvid" :type="1" />
       </div>
     </div>
     <div class="list">
@@ -49,7 +49,8 @@ import {
 } from 'src/utils/request/mv/mvdetail'
 import { defineComponent, ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
-import { Comment } from 'src/pages/BroadcastSongs/Comment.vue'
+import Comment from 'src/pages/BroadcastSongs/Comment.vue'
+
 export default defineComponent({
   name: 'MVPlay',
   components: {
@@ -92,7 +93,7 @@ export default defineComponent({
       state.mvData = data2
     }
     mvMounted()
-    return { mvUrl, state, MVLikes, playCount, publishTime, videoGroup, videoArtists }
+    return { mvid, mvUrl, state, MVLikes, playCount, publishTime, videoGroup, videoArtists }
   },
 })
 </script>
