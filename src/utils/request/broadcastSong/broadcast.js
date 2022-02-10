@@ -89,6 +89,24 @@ export const GetComment = async (id, limit) => {
 }
 
 /**
+ *@description 获取Mv评论
+ * @param { String } id: '186016' MV id
+ * @param { String } limit: 评论数量
+ * @returns
+ */
+export const GetMVComment = async (id, limit) => {
+  return await api({
+    method: 'POST',
+    url: `/comment/mv?timestamp=${new Date().getTime()}`,
+    data: {
+      id,
+      cookie,
+      limit,
+    },
+  })
+}
+
+/**
  *@description 获取歌曲热门评论
  * @param { String } id: '186016' 歌曲id
  * @param { Number } type: 0: 歌曲

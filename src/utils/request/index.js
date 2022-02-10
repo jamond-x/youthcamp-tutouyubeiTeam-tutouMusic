@@ -7,21 +7,21 @@ export const createApi = (api = axios) => {
   return async config => {
     try {
       const headers = config.headers
-      // 这里配置一些header
       const res = await api.request({
         ...config,
         headers,
       })
-
-      // if (res.data.code !== CodeDictionary.SUCCESS) {
-      // }
-
       return res.data
     } catch (error) {
-      //if (error.response.status === 401) {
-      //}
-      // if()...
-      const msg = error.response.data.msg
+      if (isUnNull(error.response)) {
+        return '请求出错'
+      }
+      let msg
+      if (!isUnNull(error.response.data)) {
+        msg = error.response.data.msg
+      } else {
+        return '请求出错！'
+      }
       if (!isUnNull(msg)) {
         if (msg.length >= 2) {
           Notify.create({
@@ -32,7 +32,7 @@ export const createApi = (api = axios) => {
           })
         }
       }
-      return '请求出错了！'
+      return '请求出错！'
     }
   }
 }

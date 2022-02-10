@@ -40,4 +40,9 @@ export const BROADCAST = {
 
 export const DISCOVER = {
   MV: '/mv/all',
+  MV_PLAY: '/mv/url',
+  MV_DERAIl: '/mv/detail',
+  SONGER_DERAIl: '/artist/detail',
+  MV_INFO: '/mv/detail/info',
+  MV_LIKES: '/simi/mv',
 }

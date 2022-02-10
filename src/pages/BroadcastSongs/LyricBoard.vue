@@ -127,7 +127,7 @@
         </li>
       </ul>
     </div>
-    <Comment :id="songId" />
+    <Comment :id="songId" :type="0" />
   </div>
 </template>
 
