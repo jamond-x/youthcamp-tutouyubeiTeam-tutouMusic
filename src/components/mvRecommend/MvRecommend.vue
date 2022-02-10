@@ -1,36 +1,16 @@
 <template>
-  <q-card class="my-card" flat bordered>
-    <q-card-section horizontal>
-      <q-img class="col" :src="data.cover" @click="handleClick">
-        <q-btn class="icon" size="xl" flat round color="red" icon="share" />
-      </q-img>
-
-      <q-list separator>
-        <q-item v-ripple>
-          <q-item-section
-            ><q-item-label overline>播放量：</q-item-label
-            >{{ numFormat(data.playCount) }}</q-item-section
-          >
-        </q-item>
-
-        <q-item v-ripple>
-          <q-item-section>
-            <q-item-section class="MVName"
-              ><q-item-label overline>MV名称</q-item-label>{{ data.name }}</q-item-section
-            >
-          </q-item-section>
-        </q-item>
-
-        <q-item v-ripple>
-          <q-item-section>
-            <q-item-section
-              ><q-item-label overline>作者:</q-item-label>{{ data.artistName }}</q-item-section
-            >
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-card-section>
-  </q-card>
+  <div class="card q-ma-md">
+    <q-img class="img" :src="data.cover" @click="handleClick" />
+    <div class="info column q-ml-md">
+      <div class="song-name">
+        {{ data.name }}
+      </div>
+      <div class="row opacity q-mt-md">
+        <div class="artistName col-12">By {{ data.artistName }}</div>
+        <div>{{ numFormat(data.playCount) }}播放</div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -65,34 +45,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.my-card {
-  .MVName {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+.card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 300px;
+  .img {
+    border-radius: 5px;
+    cursor: pointer;
   }
-  border-radius: 10px;
-  .col {
-    min-width: 200px;
-    max-width: 200px;
-    max-height: 158px;
-    .icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
+  .info {
+    .song-name {
+      font-size: 20;
+      font-weight: 900;
+      word-spacing: 2px;
     }
-  }
-  .col:hover {
-    transform: scale(1.05);
-    filter: contrast(1.2);
-    z-index: 10;
-    .icon {
-      transition: 0.6s;
-      opacity: 1;
+    .opacity {
+      opacity: 0.7;
     }
   }
 }

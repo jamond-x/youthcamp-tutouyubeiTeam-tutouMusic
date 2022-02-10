@@ -1,8 +1,35 @@
 <template>
   <div class="box">
     <div class="video">
-      <div class="title q-my-lg">{{ state.mvdata.name }}播放中~~</div>
-      <q-video :ratio="16 / 9" :src="mvUrl" />
+      <div>
+        <div class="video-name q-my-sm">{{ state.mvData.name }}</div>
+        <q-video :ratio="16 / 9" :src="mvUrl" />
+      </div>
+      <div class="video-info q-my-md">
+        <q-badge
+          class="q-mr-sm q-mt-sm"
+          color="cyan-2"
+          v-for="(item, index) in videoGroup"
+          :key="index"
+        >
+          {{ item.name }}
+        </q-badge>
+        <span class="opacity">播放：{{ playCount }}</span>
+        <span class="opacity">发布：{{ publishTime }}</span>
+
+        <div class="q-mt-sm">
+          <q-chip v-for="(item, index) in videoArtists" :key="index">
+            <q-avatar>
+              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            </q-avatar>
+            {{ item.name }}
+          </q-chip>
+        </div>
+      </div>
+
+      <div>
+        <Comment />
+      </div>
     </div>
     <div class="list">
       <div class="title">相关MV推荐</div>
@@ -22,10 +49,12 @@ import {
 } from 'src/utils/request/mv/mvdetail'
 import { defineComponent, ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
+import { Comment } from 'src/pages/BroadcastSongs/Comment.vue'
 export default defineComponent({
   name: 'MVPlay',
   components: {
     MvRecommend,
+    Comment,
   },
   setup() {
     const {
@@ -33,15 +62,25 @@ export default defineComponent({
     } = useRoute()
     let mvUrl = ref('')
     let Url = ref('')
+    let playCount = ref('0')
+    let publishTime = ref('')
+    let videoGroup = ref([])
+    let videoArtists = ref([])
     const state = reactive({
-      mvdata: {},
+      mvData: {},
     })
     const MVLikes = reactive({
       MVLikes: [],
     })
     const mvMounted = async () => {
       const { data: data1 } = await QueryMvPlay(mvid)
-      const { data: data2 } = await QueryMvDetail(mvid)
+      const res = await QueryMvDetail(mvid)
+      console.log(res)
+      const { data: data2 } = res
+      playCount.value = res.data.playCount
+      publishTime.value = res.data.publishTime
+      videoGroup.value = res.data.videoGroup
+      videoArtists.value = res.data.artists
       const { mvs } = await QueryMVLikes(mvid)
       MVLikes.MVLikes = mvs
       const MVInfo = await QueryMVInfo(mvid)
@@ -50,15 +89,18 @@ export default defineComponent({
         Url.value = data.artist.cover
       }
       mvUrl.value = data1.url
-      state.mvdata = data2
+      state.mvData = data2
     }
     mvMounted()
-    return { mvUrl, state, MVLikes }
+    return { mvUrl, state, MVLikes, playCount, publishTime, videoGroup, videoArtists }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.opacity {
+  opacity: 0.7;
+}
 .box {
   .title {
     font-size: 22px;
@@ -69,37 +111,22 @@ export default defineComponent({
   width: 100%;
   /* min-height: 100vh; */
   display: grid;
-  grid-template:
-    'a a a b'
-    'a a a b'
-    'a a a b'
-    'c c c b';
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: 5fr 2fr;
   gap: 10px;
   .video {
-    grid-area: a;
+    .video-name {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .video-info {
+      font-size: 13px;
+    }
   }
   .list {
-    grid-area: b;
     .title {
       font-size: 20px;
       font-weight: 700;
       text-align: center;
-    }
-  }
-  .card {
-    border-radius: 10px;
-    grid-area: c;
-    display: flex;
-    gap: 20px;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    // margin-top: -20px;
-    .my-card {
-      width: 200px;
-      border-radius: 10px;
     }
   }
 }
