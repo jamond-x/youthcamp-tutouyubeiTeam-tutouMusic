@@ -19,9 +19,7 @@
 
         <div class="q-mt-sm">
           <q-chip v-for="(item, index) in videoArtists" :key="index">
-            <q-avatar>
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
+            <q-avatar> src/utils/request/mv/mvDetailuasar.dev/img/boy-avatar.png" /> </q-avatar>
             {{ item.name }}
           </q-chip>
         </div>
@@ -46,7 +44,7 @@ import {
   QueryMVLikes,
   QueryMvPlay,
   QuerySongerCover,
-} from 'src/utils/request/mv/mvdetail'
+} from 'src/utils/request/mv/mvDetail'
 import { defineComponent, ref, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 import Comment from 'src/pages/BroadcastSongs/Comment.vue'
