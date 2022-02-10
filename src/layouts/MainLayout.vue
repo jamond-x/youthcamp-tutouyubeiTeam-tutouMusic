@@ -87,8 +87,8 @@
       :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
     >
       <q-list>
-        <div class="logo font-GEO row justify-center q-my-xl">
-          <q-tooltip :offset="[10, 10]"> 没错，这是一个会旋转的秃头！ </q-tooltip>
+        <div class="logo font-GEO row justify-center q-my-xl" @click="goHome">
+          <q-tooltip :offset="[10, 10]"> 点击回到首页 </q-tooltip>
           TT
         </div>
         <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
@@ -521,6 +521,10 @@ export default defineComponent({
       store.commit('setFMStatus', true)
     }
 
+    const goHome = () => {
+      $router.push('/')
+    }
+
     provide('showLogin', showLogin)
     provide('toggleLoginShow', toggleLoginShow)
     provide('openFM', openFM)
@@ -566,6 +570,7 @@ export default defineComponent({
       updateLoginFlag,
       goClick,
       checkLoginState,
+      goHome
     }
   },
 })
@@ -581,6 +586,7 @@ export default defineComponent({
   @include custom-font(45px, inherit, 1px, inherit);
   transition: transform 2s;
   &:hover {
+    cursor: pointer;
     transform: rotate(360deg);
     -ms-transform: rotate(360deg); /* IE 9 */
     -moz-transform: rotate(360deg); /* Firefox */
