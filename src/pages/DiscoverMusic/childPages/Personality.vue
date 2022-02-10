@@ -7,7 +7,7 @@
       transition-prev="slide-right"
       transition-next="slide-left"
       infinite
-      :autoplay="4900"
+      :autoplay="4000"
       control-color="grey-6"
       navigation
       arrows
@@ -24,6 +24,7 @@
         <img class="bannerImage" :src="item.imageUrl" alt="" />
       </q-carousel-slide>
     </q-carousel>
+    <q-skeleton v-show="!finishLoading" width="100%" height="25vw" class="skeleton" />
 
     <p class="title">
       推荐歌单
@@ -60,6 +61,8 @@ export default defineComponent({
       songlist: [],
     })
 
+    const finishLoading = ref(false)
+
     watchEffect(() => {
       if (loginFlag.value === 1) {
         QueryRecommendSongList('recommend/resource').then(res => {
@@ -76,6 +79,10 @@ export default defineComponent({
 
     QueryBanner().then(res => {
       state.banners = res.banners.splice(0, 4)
+      // console.log(state.banners)
+      setTimeout(() => {
+        finishLoading.value = true
+      }, 4000)
     })
 
     // QueryRecommendSongList().then(res => {
@@ -91,12 +98,18 @@ export default defineComponent({
       // ...toRefs(state),
       state,
       slide: ref('style'),
+      finishLoading,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.skeleton {
+  position: absolute;
+  z-index: 1;
+  background-color: #dcdcdc;
+}
 .bannerImage {
   width: 74%;
 }
@@ -105,7 +118,8 @@ export default defineComponent({
   font-size: 20px;
   // margin-top: .1vh;
   margin-left: 1.5vw;
-  margin-bottom: 1vw;
+  margin-top: 0.4vw;
+  margin-bottom: 0.4vw;
   .q-icon {
     margin-left: -4px;
   }

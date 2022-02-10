@@ -2,7 +2,7 @@
   <div class="row">
     <!-- 上方的banner -->
     <div class="col-12 q-mt-md row justify-center">
-      <div class="imgBox col-9 row items-center no-wrap">
+      <div class="imgBox col-9 row items-center no-wrap" v-if="finishLoading">
         <div class="mask">
           <img :src="state.banner.coverImgUrl" />
         </div>
@@ -14,6 +14,8 @@
           <p>{{ state.banner.copywriter }}</p>
         </div>
       </div>
+
+      <q-skeleton width="75%" height="14vw" class="skeleton" v-else />
     </div>
 
     <div class="row col-12 justify-between items-center tag">
@@ -58,7 +60,7 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 
 import SongList from 'components/songList/SongList'
 
@@ -86,11 +88,13 @@ export default defineComponent({
       tags: [],
       currTag: '华语',
     })
+    const finishLoading = ref(false)
 
     // 获取精品歌单
     QueryQualitySongList().then(res => {
       // console.log(res.playlists)
       state.banner = res.playlists[0]
+      finishLoading.value = true
     })
 
     QuerySongListByTag(state.currTag, 0).then(res => {
@@ -132,13 +136,17 @@ export default defineComponent({
       state,
       GetSongListByTag,
       onLoad,
-      itemClick
+      itemClick,
+      finishLoading,
     }
   },
 })
 </script>
 
 <style lang="scss" scoped>
+.skeleton {
+  border-radius: 15px;
+}
 .imgBox {
   position: relative;
   height: 14vw;
