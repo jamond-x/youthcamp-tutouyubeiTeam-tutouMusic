@@ -1,8 +1,21 @@
 <h1 align="center" >秃头音乐</h1>
 
-<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/img/image.png"></img></p>
+<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/TTMusic/屏幕截图 2022-02-11 184516.png"></img></p>
 
-<p align="center" >前端秃头预备选手专属音乐APP</p>
+
+<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/TTMusic/屏幕截图 2022-02-11 183906.png"></img></p>
+
+
+<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/TTMusic/image-20220211182143674.png"></img></p>
+
+
+<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/TTMusic/屏幕截图 2022-02-11 183714.png"></img></p>
+
+
+
+<p align="center"><img width="500" style="border-radius:50%" src="https://cdn.jsdelivr.net/gh/jamond-x/public-resources/TTMusic/屏幕截图 2022-02-11 183527.png"></img></p>
+
+
 
 ### 运行项目
 
