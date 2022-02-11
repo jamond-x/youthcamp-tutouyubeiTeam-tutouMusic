@@ -6,7 +6,19 @@ const routes = [
       {
         path: '',
         // component: () => import('pages/Index.vue'),
-        redirect: '/discover',
+        redirect: '/rooms-page',
+      },
+      {
+        path: '/rooms-page',
+        component: () => import('pages/Rooms/RoomsPage.vue'),
+        meta: {
+          keepAlive: true,
+        },
+      },
+      {
+        path: '/room/:id',
+        props: true,
+        component: () => import('pages/Rooms/Rooms.vue'),
       },
       {
         path: '/discover',

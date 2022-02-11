@@ -31,6 +31,7 @@ export default store(function (/* { ssrContext } */) {
       loginFlag: 0, // 已经登录是1
       isFM: false,
       firstOpenFM: true,
+      currentRoom: {},
     },
     mutations: {
       setUser(state, payload) {
@@ -42,6 +43,9 @@ export default store(function (/* { ssrContext } */) {
       },
       setFirstOpenFM(state, payload) {
         state.firstOpenFM = payload
+      },
+      setCurrentRoom(state, payload) {
+        state.currentRoom = payload
       },
     },
     actions: {

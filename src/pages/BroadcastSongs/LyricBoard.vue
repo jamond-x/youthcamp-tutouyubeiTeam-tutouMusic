@@ -17,10 +17,10 @@
           </router-link>
         </div>
       </div>
-      <div class="row reverse items-center">
+      <div v-if="!room" class="row reverse items-center">
         <q-btn class="q-mr-xl" icon="fas fa-angle-down" v-close-popup flat round />
       </div>
-      <div class="fm">
+      <div v-if="!room" class="fm">
         <div class="font text-black q-px-sm q-ml-sm">私人FM</div>
         <q-toggle
           v-model="FMMode"
@@ -170,6 +170,9 @@ export default defineComponent({
     songCurrentTime: {
       type: Number,
       required: true,
+    },
+    room: {
+      type: Boolean,
     },
   },
   emits: ['changeProgress', 'changeSong', 'changePlaylist', 'addSongToList'],

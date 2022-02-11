@@ -149,6 +149,7 @@
         :songId="currentSongId"
         :songDetail="currentSongDetail"
         :songCurrentTime="currentTime"
+        :room="false"
         @changeSong="immediatelyBroadcast"
         @changePlaylist="newPlaylist"
         @addSongToList="pushToList"
@@ -570,7 +571,7 @@ export default defineComponent({
       updateLoginFlag,
       goClick,
       checkLoginState,
-      goHome
+      goHome,
     }
   },
 })
