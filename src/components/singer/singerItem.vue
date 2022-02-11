@@ -34,7 +34,7 @@ export default defineComponent({
     }
     return {
       picUrl,
-      itemClick
+      itemClick,
     }
   },
 })
@@ -47,15 +47,17 @@ export default defineComponent({
   position: relative;
   justify-self: center;
   align-self: center;
+  transition: all 0.4s;
+  // transition: filter 1.4s;
   &:hover {
     cursor: pointer;
+    filter: contrast(110%);
+    transform: scale(1.05);
   }
   .name {
     text-align: center;
   }
-  .img {
-    border-radius: 15px;
-  }
+
   .num {
     position: absolute;
     top: 10px;
