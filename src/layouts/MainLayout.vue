@@ -147,7 +147,6 @@
         class="broadcast-panel scroll"
       >
         <LyricBoard
-          v-if="currentSongId"
           :songId="currentSongId"
           :songDetail="currentSongDetail"
           :songCurrentTime="currentTime"
@@ -329,6 +328,9 @@ export default defineComponent({
         nickname.value = '秃头预备'
         avatarUrl.value =
           'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+        userSignature.value = '这个人很懒，什么都留下了'
+        userBackgroundUrl.value =
+          'https://images.unsplash.com/photo-1643944398479-0fd9eaee5cbc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1174&q=80'
       }
     }
 
