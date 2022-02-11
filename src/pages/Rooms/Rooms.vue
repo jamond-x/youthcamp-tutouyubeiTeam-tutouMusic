@@ -33,7 +33,7 @@
     </div>
     <div class="chat column">
       <div class="header q-mt-lg">实时聊天</div>
-      <div>
+      <div class="msg-box">
         <q-chat-message label="Sunday, 19th" />
         <q-chat-message
           :name="msg.name"
@@ -45,9 +45,9 @@
           :key="index"
         />
       </div>
-      <div class="row justify-center">
+      <div class="input__msg row justify-start">
         <q-input
-          class="col-7"
+          class="col-6"
           v-model="msgBeEdited"
           filled
           clearable
@@ -56,18 +56,21 @@
           label="编辑文本内容"
           hint="编辑你想说的话发送至聊天框"
         />
-        <q-btn class="col-2" @click="sendMsgToRoom"> 发送</q-btn>
+        <div class="col-2 row justify-center items-start">
+          <q-btn class="" size="12px" @click="sendMsgToRoom">发送</q-btn>
+        </div>
       </div>
     </div>
   </q-page>
 </template>
 
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 import { PersonalFM, GetSongUrl } from 'src/utils/request/broadcastSong/broadcast'
 import socket from 'src/utils/socket'
+import { debounce } from 'quasar'
 export default defineComponent({
   name: 'Rooms',
   components: {},
@@ -214,39 +217,46 @@ export default defineComponent({
         stamp: '刚刚',
       },
     ]
-    let groupMsg = ref(temp)
+    let groupMsg = ref([])
     let msgBeEdited = ref('')
+
+    onUnmounted(() => {
+      socket.emit('leave room', room.value.id)
+    })
 
     socket.on('joined', msg => {
       console.log(msg)
     })
 
     socket.on('group msg', msg => {
-      console.log(msg)
-      if (msg.name === socket.id) {
-        msg.name = '我'
+      if (msg.id === socket.id) {
+        // msg.name = '我'
         msg.sent = true
       } else {
-        msg.name += `用户${msg.name}`
+        // msg.name += `用户${msg.name}`
         msg.sent = false
       }
       groupMsg.value.push(msg)
     })
 
-    const sendMsgToRoom = () => {
+    const sendMsgToRoomCallback = () => {
       socket.emit('to room', {
         roomId: room.value.id,
         eventType: 'group msg',
         msg: {
+          id: socket.id,
           name: socket.id,
           avatar:
             'https://cdn.jsdelivr.net/gh/jamond-x/public-resources/Avatar/Avatar-Maker%20(1).png',
           text: [msgBeEdited.value],
-          sent: true,
+          sent: false,
           stamp: '刚刚',
         },
       })
+      msgBeEdited.value = ''
     }
+
+    const sendMsgToRoom = debounce(sendMsgToRoomCallback, 1000)
 
     return {
       audio,
@@ -292,8 +302,20 @@ export default defineComponent({
     }
   }
   .chat {
+    position: relative;
     .header {
       @include custom-font(28px, 900, inherit, inherit);
+    }
+    .msg-box {
+      max-width: 450px;
+      max-height: 470px;
+      overflow-y: scroll;
+    }
+    .input__msg {
+      width: 130%;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
     }
   }
 }
