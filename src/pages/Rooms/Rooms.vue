@@ -1,14 +1,50 @@
 <template>
   <q-page class="room_main">
     <div class="song">
-      <div class="song__info">
-        <div>{{ room.name }}</div>
-        <div>{{ room.info }}</div>
-        <q-toggle v-model="randomMode" icon="alarm" />
-        <q-btn @click="changeSong">换歌曲</q-btn>
+      <div class="song__info q-ml-lg q-mb-xl">
+        <div class="name q-mt-lg q-mb-sm">{{ room.name }}</div>
+        <div class="info">{{ room.info }}</div>
+
+        <div style="width: 200px; height: 200px; margin-top: 70px" class="q-ml-xl q-mt-lg">
+          <swiper
+            mousewheel
+            :speed="500"
+            :effect="'cards'"
+            :cards-effect="{ slideShadows: false }"
+            loop
+          >
+            <swiper-slide style="position: relative; cursor: pointer">
+              <q-img
+                class="img"
+                src="https://p1.music.126.net/6CB6Jsmb7k7qiJqfMY5Row==/109951164260234943.jpg"
+              >
+                <div class="bar absolute-bottom text-subtitle1 text-center">The Man</div>
+              </q-img>
+            </swiper-slide>
+            <swiper-slide style="position: relative; cursor: pointer">
+              <q-img
+                class="img"
+                src="https://p2.music.126.net/_d1i74E6x-zTTnEmdVjEwA==/109951165835207944.jpg"
+              >
+                <div class="bar absolute-bottom text-subtitle1 text-center">Peaches</div>
+              </q-img>
+            </swiper-slide>
+            <swiper-slide style="position: relative; cursor: pointer">
+              <q-img
+                class="img"
+                src="https://p1.music.126.net/e5cvcdgeosDKTDrkTfZXnQ==/109951166155165682.jpg"
+              >
+                <div class="bar absolute-bottom text-subtitle1 text-center">The Man</div>
+              </q-img>
+            </swiper-slide>
+          </swiper>
+        </div>
+        <q-toggle class="q-mt-xl" v-model="randomMode" label="随机单曲" icon="fas fa-random" />
+        <!-- <q-btn @click="changeSong">换歌曲</q-btn> -->
       </div>
-      <div class="song__control row justify-center">
-        <div class="box row">
+      <div class="song__control q-ml-md row justify-center">
+        <div class="box row justify-center">
+          <q-btn color="white" icon="fas fa-step-backward" size="10px" flat rounded />
           <q-btn
             @click="play, emitPlay"
             v-if="audioStatus"
@@ -27,14 +63,15 @@
             flat
             rounded
           />
+          <q-btn color="white" icon="fas fa-step-forward" size="10px" flat rounded />
           <audio class="audio" id="audio" ref="audio" :src="songUrl"></audio>
         </div>
       </div>
     </div>
     <div class="chat column">
-      <div class="header q-mt-lg">实时聊天</div>
+      <div class="header q-mt-lg">聊天气泡</div>
       <div class="msg-box">
-        <q-chat-message label="Sunday, 19th" />
+        <q-chat-message label="2月11日下午" />
         <q-chat-message
           :name="msg.name"
           :avatar="msg.avatar"
@@ -71,9 +108,16 @@ import { useQuasar } from 'quasar'
 import { PersonalFM, GetSongUrl } from 'src/utils/request/broadcastSong/broadcast'
 import socket from 'src/utils/socket'
 import { debounce } from 'quasar'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import SwiperCore, { Mousewheel, FreeMode, EffectCards, EffectCube } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/free-mode'
+import 'swiper/css/effect-cards'
+import 'swiper/css/effect-cube'
+SwiperCore.use([FreeMode, Mousewheel, EffectCards, EffectCube])
 export default defineComponent({
   name: 'Rooms',
-  components: {},
+  components: { Swiper, SwiperSlide },
   props: {
     id: {
       type: String,
@@ -217,7 +261,7 @@ export default defineComponent({
         stamp: '刚刚',
       },
     ]
-    let groupMsg = ref([])
+    let groupMsg = ref(temp)
     let msgBeEdited = ref('')
 
     onUnmounted(() => {
@@ -287,6 +331,15 @@ export default defineComponent({
   .song {
     display: grid;
     grid-template-rows: 6fr 1fr;
+    .song__info {
+      .name {
+        font-size: 22px;
+        font-weight: 900;
+      }
+      .img {
+        border-radius: 25px;
+      }
+    }
     .song__control {
       max-width: 350px;
       .box {
@@ -304,7 +357,7 @@ export default defineComponent({
   .chat {
     position: relative;
     .header {
-      @include custom-font(28px, 900, inherit, inherit);
+      @include custom-font(22px, 900, inherit, inherit);
     }
     .msg-box {
       max-width: 450px;

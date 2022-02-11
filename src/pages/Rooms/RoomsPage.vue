@@ -22,7 +22,16 @@
 
         <q-tab-panel name="two">
           <div class="head q-ma-lg">一起听多人间</div>
-
+          <q-btn
+            class="q-ml-lg"
+            icon="fas fa-plus-circle"
+            color="grey-4"
+            text-color="purple"
+            glossy
+            unelevated
+          >
+            创建房间
+          </q-btn>
           <div class="row justify-center">
             <div
               class="pieces q-ma-md flex flex-center"
@@ -70,6 +79,51 @@ export default defineComponent({
   setup() {
     let store = useStore()
     let rooms = ref([])
+
+    rooms.value = [
+      {
+        id: '10001',
+        name: '一起听快乐的歌曲',
+        info: '喜欢电子音乐',
+        starterId: '123',
+        people: 0,
+        song: {
+          id: '',
+          url: '',
+          progress: 0, // 歌曲进度
+          status: false,
+        },
+        timer: null,
+      },
+      {
+        id: '10002',
+        name: '失恋了',
+        info: '于是你不停的散落，我不停的拾获',
+        starterId: '123',
+        people: 0,
+        song: {
+          id: '',
+          url: '',
+          progress: 0, // 歌曲进度
+          status: false,
+        },
+        timer: null,
+      },
+      {
+        id: '10003',
+        name: '深夜网易云',
+        info: '生而为人，我很抱歉',
+        starterId: '123',
+        people: 0,
+        song: {
+          id: '',
+          url: '',
+          progress: 0, // 歌曲进度
+          status: false,
+        },
+        timer: null,
+      },
+    ]
 
     onMounted(() => {
       socket.connect()
