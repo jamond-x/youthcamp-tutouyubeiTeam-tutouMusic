@@ -309,18 +309,19 @@ export default defineComponent({
      * @description 检查登录状态,只针对右上角显示
      */
     const checkLoginState = () => {
-      // 首先检查localStorage
+      // 每次检查localStorage
       let tmpLoginFlag = Number(window.localStorage.getItem('loginFlag')) || 0
       if (tmpLoginFlag) {
-        // 有登录过
+        // 有登录过 持久化存储
         updateLoginFlag(1)
         let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         nickname.value = userInfo['nickname']
         avatarUrl.value = userInfo['avatarUrl']
         userBackgroundUrl.value = userInfo['backgroundUrl']
         userSignature.value = userInfo['signature']
+        store.dispatch('updateUserInfo', { loginFlag: tmpLoginFlag, userInfo })
       } else {
-        // 没登陆过
+        // 没登陆过 vuex中数据为默认数据不需要修改
         updateLoginFlag(0)
         nickname.value = '秃头预备'
         avatarUrl.value =
@@ -570,7 +571,7 @@ export default defineComponent({
       updateLoginFlag,
       goClick,
       checkLoginState,
-      goHome
+      goHome,
     }
   },
 })

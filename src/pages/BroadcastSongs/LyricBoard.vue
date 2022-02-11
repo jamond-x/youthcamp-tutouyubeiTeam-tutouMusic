@@ -259,9 +259,12 @@ export default defineComponent({
     getSimilarSongs()
 
     const getSimilarPlaylist = async () => {
+      if (!props.songId) {
+        return
+      }
       let { playlists } = await SimilarPlaylists(props.songId)
       similarPlaylists.value = playlists
-      if (playlists.length === 0) {
+      if (!playlists || playlists.length === 0) {
         similarPlaylistsBar.value = false
       }
     }

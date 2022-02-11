@@ -62,6 +62,10 @@ export default store(function (/* { ssrContext } */) {
         content.commit('setUser', { loginFlag, userInfo })
         return res
       },
+      async updateUserInfo(content, payload) {
+        let { loginFlag, userInfo } = payload
+        content.commit('setUser', { loginFlag, userInfo })
+      },
     },
   })
 
