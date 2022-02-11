@@ -167,12 +167,12 @@ export default defineComponent({
         // done()
       } else {
         // 未登录则分批请求
-        let trackIdsStr = trackIds.value.slice((index - 1) * 100, index * 100 + 99).join(',')
+        let trackIdsStr = trackIds.value.slice((index - 1) * 30, (index - 1) * 30 + 30).join(',')
         let data = { ids: trackIdsStr }
         QuerySongDetail(data).then(res => {
           let tracks = res.songs
           tracksDecorate(tracks)
-          if (index * 100 + 99 > trackIds.value.length) {
+          if ((index - 1) * 30 + 30 > trackIds.value.length) {
             done(true)
           } else {
             done(false)

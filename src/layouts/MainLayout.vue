@@ -134,27 +134,29 @@
         @closePop="broadcastPageStatus = false"
       />
     </q-footer>
-    <q-dialog
-      v-model="broadcastPageStatus"
-      transition-show="slide-up"
-      transition-hide="slide-down"
-      transition-duration="700"
-      persistent
-      full-width
-      full-height
-      no-shake
-      class="broadcast-panel scroll"
-    >
-      <LyricBoard
-        :songId="currentSongId"
-        :songDetail="currentSongDetail"
-        :songCurrentTime="currentTime"
-        @changeSong="immediatelyBroadcast"
-        @changePlaylist="newPlaylist"
-        @addSongToList="pushToList"
-        @changeProgress="handleChangeProgress"
-      />
-    </q-dialog>
+    <keep-alive>
+      <q-dialog
+        v-model="broadcastPageStatus"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+        transition-duration="700"
+        persistent
+        full-width
+        full-height
+        no-shake
+        class="broadcast-panel scroll"
+      >
+        <LyricBoard
+          :songId="currentSongId"
+          :songDetail="currentSongDetail"
+          :songCurrentTime="currentTime"
+          @changeSong="immediatelyBroadcast"
+          @changePlaylist="newPlaylist"
+          @addSongToList="pushToList"
+          @changeProgress="handleChangeProgress"
+        />
+      </q-dialog>
+    </keep-alive>
   </q-layout>
   <q-dialog v-model="showLogin" persistent><LoginPanel /></q-dialog>
 </template>
@@ -309,22 +311,26 @@ export default defineComponent({
      * @description 检查登录状态,只针对右上角显示
      */
     const checkLoginState = () => {
-      // 首先检查localStorage
+      // 每次检查localStorage
       let tmpLoginFlag = Number(window.localStorage.getItem('loginFlag')) || 0
       if (tmpLoginFlag) {
-        // 有登录过
+        // 有登录过 持久化存储
         updateLoginFlag(1)
         let userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
         nickname.value = userInfo['nickname']
         avatarUrl.value = userInfo['avatarUrl']
         userBackgroundUrl.value = userInfo['backgroundUrl']
         userSignature.value = userInfo['signature']
+        store.dispatch('updateUserInfo', { loginFlag: tmpLoginFlag, userInfo })
       } else {
-        // 没登陆过
+        // 没登陆过 vuex中数据为默认数据不需要修改
         updateLoginFlag(0)
         nickname.value = '秃头预备'
         avatarUrl.value =
           'https://cdn.jsdelivr.net/gh/jamond-x/public-resources@latest/Avatar/Avatar-Maker%20(3).png'
+        userSignature.value = '这个人很懒，什么都留下了'
+        userBackgroundUrl.value =
+          'https://images.unsplash.com/photo-1643944398479-0fd9eaee5cbc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1174&q=80'
       }
     }
 
@@ -570,7 +576,7 @@ export default defineComponent({
       updateLoginFlag,
       goClick,
       checkLoginState,
-      goHome
+      goHome,
     }
   },
 })
