@@ -134,27 +134,30 @@
         @closePop="broadcastPageStatus = false"
       />
     </q-footer>
-    <q-dialog
-      v-model="broadcastPageStatus"
-      transition-show="slide-up"
-      transition-hide="slide-down"
-      transition-duration="700"
-      persistent
-      full-width
-      full-height
-      no-shake
-      class="broadcast-panel scroll"
-    >
-      <LyricBoard
-        :songId="currentSongId"
-        :songDetail="currentSongDetail"
-        :songCurrentTime="currentTime"
-        @changeSong="immediatelyBroadcast"
-        @changePlaylist="newPlaylist"
-        @addSongToList="pushToList"
-        @changeProgress="handleChangeProgress"
-      />
-    </q-dialog>
+    <keep-alive>
+      <q-dialog
+        v-model="broadcastPageStatus"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+        transition-duration="700"
+        persistent
+        full-width
+        full-height
+        no-shake
+        class="broadcast-panel scroll"
+      >
+        <LyricBoard
+          v-if="currentSongId"
+          :songId="currentSongId"
+          :songDetail="currentSongDetail"
+          :songCurrentTime="currentTime"
+          @changeSong="immediatelyBroadcast"
+          @changePlaylist="newPlaylist"
+          @addSongToList="pushToList"
+          @changeProgress="handleChangeProgress"
+        />
+      </q-dialog>
+    </keep-alive>
   </q-layout>
   <q-dialog v-model="showLogin" persistent><LoginPanel /></q-dialog>
 </template>
