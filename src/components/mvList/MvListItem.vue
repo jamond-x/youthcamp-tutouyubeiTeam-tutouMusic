@@ -52,13 +52,15 @@ export default defineComponent({
 
   .img-box {
     width: 17vw;
+    height: 10vw;
+    overflow: hidden;
+    border-radius: 8px;
     .q-img {
       width: 17vw;
       height: 10vw;
-      border-radius: 8px;
       /* 消除图片下的间隙 */
       vertical-align: middle;
-      transition: filter 1s;
+      transition: all 0.8s;
     }
     .q-icon {
       position: absolute;
@@ -77,6 +79,7 @@ export default defineComponent({
       }
       .q-img {
         filter: brightness(75%);
+        transform: scale(1.05);
       }
     }
   }
