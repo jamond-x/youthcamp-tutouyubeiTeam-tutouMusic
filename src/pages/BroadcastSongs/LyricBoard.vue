@@ -1,5 +1,8 @@
 <template>
   <div :class="['broadcast-container scroll', $q.dark.isActive ? 'lyric-dark' : 'lyric-light']">
+    <div class="mask">
+      <img :src="songDetail.al.picUrl" />
+    </div>
     <div class="header">
       <div class="column items-center">
         <div class="q-mt-md">
@@ -223,6 +226,7 @@ export default defineComponent({
       setTimeout(() => {
         swiperInstance.value.setTranslate(-50)
       }, 5000)
+      // console.log(props.songDetail.al.picUrl);
     }
     //TODO: 歌词加上翻译
     const initLyric = () => {
@@ -414,11 +418,25 @@ export default defineComponent({
   grid-template-rows: 1fr 6fr 2fr;
   margin: 0;
   padding: 0;
+  .mask {
+    // 遮罩层
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    filter: blur(300px) brightness(1);
+    img {
+      width: 100%;
+      height: 50%;
+    }
+  }
   .header {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     text-transform: capitalize;
     cursor: pointer;
+    z-index: 1;
     & > div {
       grid-area: 1/2/2/3;
       & > div {
@@ -431,6 +449,7 @@ export default defineComponent({
     & > div + div {
       grid-area: 1/3/2/4;
     }
+
     .singer {
       text-decoration: none;
     }
@@ -450,7 +469,7 @@ export default defineComponent({
     position: absolute;
     left: 3rem;
     top: 30%;
-
+    z-index: 2;
     .similar-songs {
       width: 200px;
       height: 200px;
@@ -467,6 +486,8 @@ export default defineComponent({
     position: absolute;
     right: 3rem;
     top: 30%;
+    z-index: 2;
+
     .similar-playlists {
       width: 200px;
       height: 200px;
@@ -481,6 +502,8 @@ export default defineComponent({
   }
   .lyric {
     @extend .scroll_lyric;
+    z-index: 1;
+    color: white;
     user-select: none;
     & ul {
       list-style: none;
