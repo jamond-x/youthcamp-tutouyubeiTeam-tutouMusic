@@ -466,11 +466,11 @@ export default defineComponent({
       // songsList.pop()
 
       //删去多余id
-      for (let i = 0; i < props.songListToAudio.length; i++) {
-        if (songsList[i].id != props.songListToAudio[i]) {
-          songsList.splice(i, 1)
-        }
-      }
+      // for (let i = 0; i < props.songListToAudio.length; i++) {
+      //   if (songsList[i].id != props.songListToAudio[i]) {
+      //     songsList.splice(i, 1)
+      //   }
+      // }
 
       /**
        * 统一获取歌曲的URL
