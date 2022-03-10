@@ -28,3 +28,5 @@ class Request {
     return this.instance.request(config)
   }
 }
+
+export default Request
