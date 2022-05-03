@@ -1,6 +1,12 @@
 <template>
-  <div class="row wrap justify-start">
-    <song-list-item v-for="(item, index) in songLists" :key="index" :list-item="item" :width="width" :height="height" />
+  <div class="row wrap justify-center">
+    <song-list-item
+      v-for="(item, index) in songLists"
+      :key="index"
+      :list-item="item"
+      :width="width"
+      :height="height"
+    />
   </div>
 </template>
 
@@ -35,8 +41,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-
-
     return {
       // songLists: props.songLists
     }

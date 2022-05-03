@@ -1,36 +1,44 @@
 <template>
-  <div class="row">
+  <div class="row justify-center">
     <!-- 轮播图 -->
-    <q-carousel
-      v-model="slide"
-      animated
-      transition-prev="slide-right"
-      transition-next="slide-left"
-      infinite
-      :autoplay="4000"
-      control-color="grey-6"
-      navigation
-      arrows
-      height="25vw"
-      class="rounded-borders col-12"
-      :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
-    >
-      <q-carousel-slide
-        :name="index"
-        v-for="(item, index) in state.banners"
-        :key="item"
-        class="row justify-center no-wrap"
+    <div class="col-12 row justify-center">
+      <q-carousel
+        v-model="slide"
+        animated
+        transition-prev="slide-right"
+        transition-next="slide-left"
+        infinite
+        :autoplay="4000"
+        control-color="grey-6"
+        navigation
+        arrows
+        :height="$q.screen.width > 1500 ? '25vh' : '30vh'"
+        class="rounded-borders col-sm-10 col-md-7 col-lg-7 col-xl-6"
+        :class="[$q.dark.mode ? 'body--dark' : 'body--light']"
       >
-        <img class="bannerImage" :src="item.imageUrl" alt="" />
-      </q-carousel-slide>
-    </q-carousel>
-    <q-skeleton v-show="!finishLoading" width="100%" height="25vw" class="skeleton" />
+        <q-carousel-slide
+          :name="index"
+          v-for="(item, index) in state.banners"
+          :key="item"
+          class="row justify-center no-wrap"
+        >
+          <img class="bannerImage" :src="item.imageUrl" alt="" />
+        </q-carousel-slide>
+      </q-carousel>
+    </div>
+    <q-skeleton
+      v-show="!finishLoading"
+      width="100%"
+      :height="$q.screen.width > 1500 ? '25vh' : '30vh'"
+      class="skeleton"
+    />
 
-    <p class="title">
+    <p class="title col-12">
       推荐歌单
       <q-icon name="chevron_right" />
     </p>
-    <song-list class="col-12" :song-lists="state.songlist" :width="13" :height="13" />
+
+    <song-list class="col-sm-12" :song-lists="state.songlist" :width="13" :height="13" />
   </div>
 </template>
 
