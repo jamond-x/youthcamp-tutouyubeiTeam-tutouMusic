@@ -1,5 +1,5 @@
 <template>
-  <div class="list-item" @click="itemClick">
+  <div class="list-item q-ma-md" @click="itemClick">
     <div class="img-box">
       <q-img :src="listItem.picUrl || listItem.coverImgUrl" :width="imgWidth" :height="imgHeight" />
       <q-icon name="play_circle" />
@@ -52,7 +52,7 @@ export default defineComponent({
     return {
       itemClick,
       imgWidth,
-      imgHeight
+      imgHeight,
     }
   },
 })
@@ -75,6 +75,9 @@ export default defineComponent({
 
   .img-box {
     width: 13vw;
+    // width: 16vw;
+    // width: 40%;
+
     .q-img {
       // width: 13vw;
       // height: 13vw;
