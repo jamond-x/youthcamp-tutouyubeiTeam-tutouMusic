@@ -5,50 +5,56 @@
         <PlaylistSkeleton />
       </template>
       <template v-else>
-        <div class="Wrapper flex row no-wrap q-pa-md">
-          <div class="topBanner">
+        <div class="parent">
+          <div class="mask">
             <img :src="playlist.coverImgUrl" />
           </div>
-          <q-separator vertical inset spaced="2vw" />
-          <div class="flex column justify-between">
-            <div class="text-h3 text-weight-bold row">{{ playlist.name }}</div>
-            <div class="row q-mt-sm">
-              <q-btn-group class="q-mr-md" rounded>
-                <q-btn @click="playList(trackIds)">
-                  <q-icon name="fas fa-play" size="16px" />
-                  <span class="q-ml-md">播放全部</span>
-                </q-btn>
-                <q-btn @click="playMoreList(trackIds)">
-                  <q-icon name="fas fa-heart" size="16px" />
-                </q-btn>
-              </q-btn-group>
-              <q-btn label="收藏" rounded>({{ playlist.subscribedCount }})</q-btn>
+          <div class="Wrapper flex row no-wrap q-pa-md text-white">
+            <div class="topBanner">
+              <img :src="playlist.coverImgUrl" />
             </div>
-            <div class="row">
-              <div class="row flex items-center">
-                <q-avatar size="25px" class="cursor__pointer q-mr-sm">
-                  <img class="listHeadImg" :src="creator.avatarUrl" />
-                </q-avatar>
-                <div class="text-subtitle2">
-                  {{ creator.nickname }} {{ formatDate(playlist.createTime) }}创建
-                </div>
-                <div class="row q-mt-md q-ml-lg">
-                  <p class="text-subtitle2 q-mr-md">歌曲: {{ playlist.trackCount }}</p>
-                  <p class="text-subtitle2">播放: {{ playlist.playCount }}</p>
+            <q-separator vertical inset spaced="2vw" />
+            <div class="flex column justify-start">
+              <div class="text-h4 text-weight-bold row q-my-md">{{ playlist.name }}</div>
+              <div class="row q-my-md">
+                <q-btn-group class="q-mr-md" rounded>
+                  <q-btn @click="playList(trackIds)">
+                    <q-icon name="fas fa-play" size="16px" />
+                    <span class="q-ml-md">播放全部</span>
+                  </q-btn>
+                  <q-btn @click="playMoreList(trackIds)">
+                    <q-icon name="fas fa-heart" size="16px" />
+                  </q-btn>
+                </q-btn-group>
+                <q-btn label="收藏" rounded>({{ playlist.subscribedCount }})</q-btn>
+              </div>
+              <div class="row q-my-md">
+                <div class="row flex items-center">
+                  <q-avatar size="25px" class="cursor__pointer q-mr-sm">
+                    <img class="listHeadImg" :src="creator.avatarUrl" />
+                  </q-avatar>
+                  <div class="text-subtitle2">
+                    {{ creator.nickname }} {{ formatDate(playlist.createTime) }}创建
+                  </div>
+                  <div class="row q-mt-md q-ml-lg">
+                    <p class="text-subtitle2 q-mr-md">歌曲: {{ playlist.trackCount }}</p>
+                    <p class="text-subtitle2">播放: {{ playlist.playCount }}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </template>
+      <q-separator inset spaced="2vw" />
       <div class="songList q-mt-md" v-if="finishLoading">
         <q-infinite-scroll @load="onLoad" :offset="250" debounce="1000">
           <template v-for="(item, index) in finalTrack" :key="index">
             <div class="song-list-item row q-mb-xs" @click="play(item['id'])">
               <div class="col">
                 <div class="song-item">
-                  <div class="song-item-content">
-                    <h5 class="text-h6 text-weight-bold">{{ item['name'] }}</h5>
+                  <div class="song-item-content q-pt-sm">
+                    <div class="song-name">{{ item['name'] }}</div>
                     <div class="text-subtitle2">{{ item['authorStr'] }}</div>
                   </div>
                 </div>
@@ -79,7 +85,7 @@
         </q-infinite-scroll>
         <!-- 返回顶部按钮 -->
         <back-to-top bottom="100px" right="50px" visibleoffset="600">
-          <q-btn round color="primary" icon="navigation" size="lg" />
+          <q-btn round color="dark" icon="navigation" size="md" />
         </back-to-top>
       </div>
     </div>
@@ -232,7 +238,9 @@ export default defineComponent({
 }
 .topBanner {
   position: relative;
-  height: 14vw;
+  // height: calc(100vh -  );
+  // max-height: 400px;
+  height: 20vh;
   overflow: hidden;
   img {
     height: 100%;
@@ -240,10 +248,37 @@ export default defineComponent({
   }
 }
 
+.parent {
+  position: relative;
+  z-index: 0;
+}
+
+.mask {
+  // 遮罩层
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  filter: blur(40px) brightness(0.8) contrast(1) saturate(1.5);
+  img {
+    width: 250%;
+    height: 90%;
+  }
+}
+
 .Wrapper {
+  position: relative;
+  z-index: 5;
   width: 100%;
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+}
+
+.songList {
+  position: relative;
+  z-index: 10;
 }
 .song-list-item {
   height: 5rem;
@@ -285,6 +320,10 @@ export default defineComponent({
 .song-item-content {
   position: relative;
   width: calc(100% - 4.75rem);
+  .song-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
 }
 
 .song-list-item:hover {
