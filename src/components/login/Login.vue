@@ -67,6 +67,7 @@ import { defineComponent, ref, watch, inject } from 'vue'
 import { useQuasar } from 'quasar'
 import { useStore } from 'vuex'
 import md5 from 'js-md5'
+import { refreshCookie } from 'src/utils/request/broadcastSong/broadcast.js'
 export default defineComponent({
   name: 'Login',
   setup(props, { emit }) {
@@ -104,6 +105,7 @@ export default defineComponent({
           showNotify(`登录失败!,检查手机号和密码!`)
         }
         isLoading.value = false
+        refreshCookie()
       })
     }
     const showNotify = msg => {

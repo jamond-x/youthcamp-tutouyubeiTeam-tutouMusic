@@ -248,6 +248,7 @@ export default defineComponent({
     const togglePlay = throttle(async () => {
       if (audio.value.paused) {
         if (isUnNull(intervalTimer)) {
+          console.log(songsList[currentSongIndex.value])
           if (isUnNull(songsList[currentSongIndex.value].songUrl)) {
             $q.notify({
               message: '资源链接无效(该歌曲没有版权或者需要登录)',
@@ -385,6 +386,7 @@ export default defineComponent({
 
     const queryUrls = async id => {
       const { data } = await GetSongUrl(id)
+      console.log(data)
       if (isUnNull(data)) return
       for (let obj of data) {
         for (let j of songsList) {
