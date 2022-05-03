@@ -189,6 +189,7 @@ import { defineComponent, ref, nextTick, provide, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { throttle, debounce } from 'quasar'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -357,7 +358,7 @@ export default defineComponent({
      * @description 立即播放某首歌曲
      * @param {String} id: 播放歌曲的id
      */
-    const immediatelyBroadcast = id => {
+    const immediatelyBroadcast = throttle(id => {
       playMode.value = 0
       const res = storeId(id, playMode.value)
       if (res) return
@@ -365,13 +366,13 @@ export default defineComponent({
         songIdMap.set(id, 0)
         songsList.value.unshift(id)
       })
-    }
+    }, 500)
     /**
      * 添加一首歌曲到播放列表
      * id: 歌曲id
      * order： 添加方式   true：即下一首播放  false: 添加至播放列表最后
      */
-    const addSongToPlaylist = (id, order) => {
+    const addSongToPlaylist = throttle((id, order) => {
       if (order) {
         playMode.value = 2
         const res = storeId(id, playMode.value)
@@ -391,14 +392,14 @@ export default defineComponent({
           songsList.value.push(id)
         })
       }
-    }
+    }, 1000)
 
     /**
      * 更新整个播放列表  应用场景为播放某歌单所有歌曲
      * list :  string[]
      * ['132111561','165615','4848648']
      */
-    const newPlaylist = list => {
+    const newPlaylist = throttle(list => {
       playMode.value = 1
       nextTick(() => {
         list.forEach(el => {
@@ -406,14 +407,14 @@ export default defineComponent({
         })
         songsList.value = list
       })
-    }
+    }, 500)
 
     /**
      * 在现有列表中添加子播放列表
      * list :  string[]
      * ['132111561','165615','4848648']
      */
-    const addPlaylist = list => {
+    const addPlaylist = throttle(list => {
       playMode.value = 4
       nextTick(() => {
         list.forEach(el => {
@@ -421,7 +422,7 @@ export default defineComponent({
           songsList.value.push(el)
         })
       })
-    }
+    }, 500)
 
     //*  *************************************************
 
@@ -538,6 +539,7 @@ export default defineComponent({
     provide('updateLoginFlag', updateLoginFlag)
     provide('immediatelyBroadcast', immediatelyBroadcast)
 
+    console.log('你好，欢迎使用秃头音乐！')
     return {
       essentialLinks: linksList,
       songsList,
