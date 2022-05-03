@@ -8,6 +8,13 @@ if (isUnNull(cookie)) {
   cookie = ''
 }
 
+export const refreshCookie = () => {
+  cookie = window.localStorage.getItem('cookie')
+  if (isUnNull(cookie)) {
+    cookie = ''
+  }
+}
+
 const api = createApi(
   axios.create({
     baseURL: REQUEST_BASE_URL,
