@@ -11,13 +11,20 @@ const api = createApi(
 )
 
 // 获取推荐歌单（发现页个性推荐中使用）
-export const QueryRecommendSongList = async (url = 'personalized') => {
+export const QueryRecommendSongList = async (
+  url = 'personalized',
+  cookie = window.localStorage.getItem('cookie')
+) => {
   return await api({
     // url: 'recommend/resource'
     url,
     params: {
-      limit: 10
-    }
+      limit: 10,
+      cookie,
+    },
+    data: {
+      cookie,
+    },
   })
 }
 
@@ -26,15 +33,15 @@ export const QueryQualitySongList = async data => {
   return await api({
     url: 'top/playlist/highquality',
     params: {
-      limit: 1
-    }
+      limit: 1,
+    },
   })
 }
 
 // 获取歌单标签（发现页歌单中使用）
 export const QuerySongListTags = async data => {
   return await api({
-    url: 'playlist/highquality/tags'
+    url: 'playlist/highquality/tags',
   })
 }
 
@@ -48,7 +55,7 @@ export const QuerySongListByTag = async (data, offset) => {
       // tag: data
       cat: data,
       offset,
-      limit: 20
-    }
+      limit: 20,
+    },
   })
 }
