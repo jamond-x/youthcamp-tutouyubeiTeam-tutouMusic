@@ -220,6 +220,7 @@ export default defineComponent({
     let $router = useRouter()
     let mode = ref('light_mode')
     let broadcastPageStatus = ref(false)
+    // 测试一下vercel的发布
     let avatarUrl = ref('https://upyun.hokori.online/2022-05-25/1653484192-404153-avatar-maker.png')
     let nickname = ref('秃头预备')
     let userSignature = ref('这个人很懒，什么都留下了')
