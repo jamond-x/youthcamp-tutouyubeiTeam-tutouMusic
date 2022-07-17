@@ -13,7 +13,8 @@ export const IS_DEV = process.env.DEV
 //   ? 'http://localhost:3000'
 //   : 'https://netease-cloud-music-api-rho-lemon.vercel.app' // 线上地址
 
-export const REQUEST_BASE_URL = 'https://netease-cloud-music-api-rho-lemon.vercel.app' // 线上地址
+// export const REQUEST_BASE_URL = 'https://netease-cloud-music-api-rho-lemon.vercel.app' // 线上地址
+export const REQUEST_BASE_URL = 'https://netease-cloud-music-api-jamond-x.vercel.app/'
 
 // 接口汇总
 // 示例
